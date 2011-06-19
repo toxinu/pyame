@@ -1,0 +1,6 @@
+[default]
+######################################
+# Variables ##########################
+######################################
+content_folder		= content
+template_name		= default

@@ -1,0 +1,44 @@
+There is a mini how to create [[http://www.minecraft.net/|MineCraft]] server on Debian Lenny.
+
+====== Download ======
+In first, download the .jar [[http://www.minecraft.net/download/minecraft_server.jar|here]]
+
+====== Installation ======
+Now, you have to install Sun Jvm.
+
+The MineCraft dev notice that its better to use the Sun (proprietary) Jvm.
+Add "non-free" on each lines in your **/etc/apt/sources.list** like that :
+<code>
+deb http://ftp.nerim.net/debian/ lenny main non-free
+deb-src http://ftp.nerim.net/debian/ lenny main non-free
+
+deb http://security.debian.org/ lenny/updates main non-free
+deb-src http://security.debian.org/ lenny/updates main non-free
+
+deb http://volatile.debian.org/debian-volatile lenny/volatile main non-free
+deb-src http://volatile.debian.org/debian-volatile lenny/volatile main non-free
+</code>
+Update the sources list :
+<code>
+apt-get update
+</code>
+And install the Sun Jvm :
+<code>
+apt-get install sun-java6-jre
+</code>
+
+====== Usage ======
+I notice you to create a little bash script like that :
+<code>
+#!/bin/bash
+
+java -Xmx1024M -Xms1024M -jar /root/minecraft/minecraft_server.jar nogui >> /root/minecraft/log_serv 2>&1 &                                   
+</code>
+And :
+<code>
+chmod +x your_script.sh
+./your_script.sh
+</code>
+With this little bash script you launch your MineCraft Server with a **log_serv** file with a little histo.
+
+To finish you have to open the 25565 port on your router.

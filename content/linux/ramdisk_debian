@@ -1,0 +1,5 @@
+How to create a quickly ramdisk on Debian Squeeze :
+  mkdir /mnt/ramdisk
+  mount -t tmpfs none /mnt/ramdisk
+
+Please go to http://socketubs.net/
