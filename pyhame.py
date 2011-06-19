@@ -58,7 +58,7 @@ def content_listing():
 						elif i == "welcome_content":
 							welcome_content_file = open("%s/%s" % (oPaths, i), 'r')
 							welcome_content = welcome_content_file.read()
-							welcome_content = welcome_content.replace('\n', '<br \>')
+							welcome_content = welcome_content.replace('\n', '<br>')
 							welcome_content_file.close()
 						else:
 							html_content_folder = html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>" % (oPaths, i, i))
