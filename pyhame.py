@@ -8,8 +8,30 @@ section = "default"
 
 config = configparser.RawConfigParser()
 config.read(config_file)
-content_folder = config.get(section, 'content_folder')
-template_name = config.get(section, 'template_name')
+
+content_folder		= config.get(section, 'content_folder')
+template_name		= config.get(section, 'template_name')
+webshare_active		= config.get(section, 'webshare')
+port				= int(config.get(section, 'port'))
+
+# WebShare
+def webshare(port):
+	import http.server, socketserver, urllib.request, re
+
+	Handler = http.server.SimpleHTTPRequestHandler
+	httpd = socketserver.TCPServer(("", port), Handler)
+
+	page = str((urllib.request.urlopen('http://icanhazip.com/').read()))
+	ips = re.findall('(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})', page)
+	pub_ip = str(ips[0])
+
+	print("# Starting web server at port %s ..." % port)
+	print("##  Tape in your browser :")
+	print("##   http://localhost:%s for local access" % port)
+	print("##   http://%s:%s for public access" % (pub_ip, port))
+	print("# To stop server, Ctrl-C")
+	print("...")
+	httpd.serve_forever()
 
 # List content folder files
 def content_listing():
@@ -111,3 +133,6 @@ html_content_folder = content_listing()
 index_content = setup_index(template_file)
 # Write index.html file
 write_index(index_content)
+# Webshare
+if webshare_active == "yes":
+	webshare(port)

@@ -1,6 +1,16 @@
 [default]
-######################################
-# Variables ##########################
-######################################
+
+#############
+## General ##
+#############
+# Folder where you drop content files
 content_folder		= content
+# Template folder name
 template_name		= default
+
+###############
+## Web Share ##
+###############
+# Not active by default, just set yes if you want to.
+webshare			= no
+port				= 8000
