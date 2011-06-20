@@ -11,6 +11,8 @@ content_folder		= content
 content_html		= yes
 # Template folder name
 template_name		= default
+# Ip protocole to used. Ipv6 default. Set ipv4 or ipv6.
+ip_proto			= ipv4
 
 ###############
 ## Web Share ##

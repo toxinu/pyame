@@ -12,10 +12,11 @@ config.read(config_file)
 
 content_folder		= config.get(section, u'content_folder')
 template_name		= config.get(section, u'template_name')
-website_url       = config.get(section, u'website_url')
+website_url			= config.get(section, u'website_url')
 content_html		= config.get(section, u'content_html')
 webshare_active		= config.get(section, u'webshare')
 port				= int(config.get(section, u'port'))
+ip_proto            = config.get(section, 'ip_proto')
 
 # WebShare
 def webshare(port):
@@ -33,7 +34,13 @@ def webshare(port):
 	HandlerClass.protocol_version = Protocol
 	httpd = ServerClass(server_address, HandlerClass)
 
-	page = unicode((urllib2.urlopen(u'http://icanhazip.com/').read()))
+	if ip_proto == "ipv4":
+		page = str((urllib.request.urlopen('http://ipv4.icanhazip.com/').read()))
+	elif ip_proto == "ipv6":
+		page = str((urllib.request.urlopen('http://ipv6.icanhazip.com/').read()))
+	else:
+		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\". Auto is used...")
+		page = str((urllib.request.urlopen('http://icanhazip.com/').read()))	
 	ips = re.findall(u'(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})', page)
 	pub_ip = unicode(ips[0])
 
