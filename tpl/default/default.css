@@ -16,6 +16,26 @@ h2 {
 	-moz-border-radius: 10px;
 	border-radius: 10px; 
 }
+h2 a {
+	text-decoration: none;
+	color: black;
+}
+footer {
+    clear:both;
+    font-family: Verdana, Tahoma;
+    font-size: 11px;
+    text-align: center;
+    margin-top: 15px;
+    background-color: #CDCCCC;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+
+/* ################# */
+/* ##### Index ##### */
+/* ################# */
+
 #welcome_message {
 	margin: auto;
 	text-align: center;
@@ -43,17 +63,6 @@ h2 {
 	font-size: 11px;
 	margin-top: 40px;
 }
-footer {
-    clear:both;
-	font-family: Verdana, Tahoma;
-	font-size: 11px;
-	text-align: center;
-	margin-top: 10px;
-	background-color: #CDCCCC;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
-}
 #menu .folder_title {
 	font-weight: bold;
 	text-transform: uppercase;
@@ -66,4 +75,27 @@ footer {
 #menu a {
 	color: #3F3F3F;
 	text-decoration: none;
+}
+
+/* ################# */
+/* ##### View  ##### */
+/* ################# */
+
+#file_name {
+	font-weight: bold;
+    margin: auto;
+	font-size: 18px;
+    text-align: center;
+    font-family: Verdana, Tahoma;
+    margin-bottom: 25px;
+    width: 600px;
+    outline: 2px dotted #CDCCCC; 
+    outline-offset: 10px; /*Delete if you don't want an offset*/
+}
+#file_content {
+	margin: auto;
+	width: 600px;
+	font-family: Verdana, Tahoma;
+    font-size: 11px;
+    margin-top: 40px;
 }

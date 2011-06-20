@@ -11,6 +11,8 @@ config.read(config_file)
 
 content_folder		= config.get(section, 'content_folder')
 template_name		= config.get(section, 'template_name')
+website_url       = config.get(section, 'website_url')
+content_html		= config.get(section, 'content_html')
 webshare_active		= config.get(section, 'webshare')
 port				= int(config.get(section, 'port'))
 
@@ -33,8 +35,32 @@ def webshare(port):
 	print("...")
 	httpd.serve_forever()
 
+# Html content rendering
+def html_content_file(path_to_file):
+	html_render_file = "html_" + path_to_file + ".html"
+	brute_file = open(path_to_file, 'r')
+	html_file = open(html_render_file, 'w')
+	html_file.write(text_to_html(brute_file.read()))
+	html_file.close()
+	brute_file.close()
+
+# Text file parser to html
+def text_to_html(brute_content):
+	global file_content
+	file_content = brute_content.replace('\n', '<br>')
+	template_view = read_template_view()
+	html_file_content = setup_view(template_view)
+	return html_file_content
+	
+# Html content folder
+def html_content_folder_make(path):
+	if not os.path.exists("html_%s" % content_folder):
+		os.makedirs("html_%s" % content_folder)
+	if not os.path.exists(path):
+		os.makedirs(path)
+
 # List content folder files
-def content_listing():
+def content_listing(content_html):
 	global website_title
 	global welcome_message
 	global footer
@@ -49,6 +75,8 @@ def content_listing():
 	# Iterate through root folder to collected folders
 	for oDirPaths, oDirNames, oFiles in os.walk( content_folder, True, None ):
     	# Add folder to list
+		if content_html == "yes":
+			html_content_folder_make("html_%s" % oDirPaths)
 		aDirs.append( oDirPaths )
 
 	# Check if folders were collected
@@ -58,9 +86,10 @@ def content_listing():
 		# Iterate through collected folder to get files
 		for oDir in aDirs:
 			html_content_folder = html_content_folder + ("<span class=\"folder_title\">%s</span>\n<ul>" % oDir)
-
 			for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
+				global file_name
 				for i in oDirFiles:
+					file_name = i
 					if oDir == content_folder:
 						if i == "website_title":
 							website_title_file = open("%s/%s" % (oPaths, i), 'r')
@@ -83,21 +112,51 @@ def content_listing():
 							welcome_content = welcome_content.replace('\n', '<br>')
 							welcome_content_file.close()
 						else:
-							html_content_folder = html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>" % (oPaths, i, i))
+							if content_html == "yes":
+								html_content_file("%s/%s" % (oPaths, i))
+								html_content_folder = html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>" % (oPaths, i, i))
+							else:
+								html_content_folder = html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>" % (oPaths, i, i))
 					else:
-						html_content_folder = html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>" % (oPaths, i, i))
+						if content_html == "yes":
+							html_content_folder = html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>" % (oPaths, i, i))
+							html_content_file("%s/%s" % (oPaths, i))
+						else:
+							html_content_folder = html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>" % (oPaths, i, i))
 				break
 			html_content_folder += ("</ul>")
 	return html_content_folder
 
-# Read template
-def read_template(template_name):
-	template_file = open("tpl/%s/%s" % (template_name, template_name), 'r')
-	template_content = template_file.read()
-	template_file.close()
-	return template_content
+# Read template index
+def read_template_index():
+	template_file_index = open("tpl/%s/%s_index" % (template_name, template_name), 'r')
+	template_content_index = template_file_index.read()
+	template_file_index.close()
+	return template_content_index
 
-# Replace template variables
+# Read template view
+def read_template_view():
+	template_file_view = open("tpl/%s/%s_view" % (template_name, template_name), 'r')
+	template_content_view = template_file_view.read()
+	template_file_view.close()
+	return template_content_view
+
+# Replace template variables view
+def setup_view(template_file):
+	if website_title:
+		template_file = template_file.replace("set_website_title", website_title)
+	else:
+		template_file = template_file.replace("set_website_title", "Create your website_title file")
+	if footer:
+		template_file = template_file.replace("set_footer", footer)
+	else:
+		template_file = template_file.replace("set_footer", "Create your footer file")
+	template_file = template_file.replace("set_file_name", file_name)
+	template_file = template_file.replace("set_file_content", file_content)
+	template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
+	return template_file
+
+# Replace template variables index
 def setup_index(template_file):
 	if website_title:
 		template_file = template_file.replace("set_website_title", website_title)
@@ -116,6 +175,7 @@ def setup_index(template_file):
 	else:
 		template_file = template_file.replace("set_footer", "Create your footer file")
 	template_file = template_file.replace("set_content_listing", html_content_folder)
+	template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
 	return template_file
 
 # Write index
@@ -125,12 +185,12 @@ def write_index(index_final):
 	index.close()
 
 ####
-# Read template
-template_file = read_template(template_name)
+# Read template Index
+template_file_index = read_template_index()
 # Set up content listing and other specials files
-html_content_folder = content_listing()
+html_content_folder = content_listing(content_html)
 # Set up index content
-index_content = setup_index(template_file)
+index_content = setup_index(template_file_index)
 # Write index.html file
 write_index(index_content)
 # Webshare
