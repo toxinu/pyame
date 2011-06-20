@@ -22,17 +22,10 @@ ip_proto            = config.get(section, 'ip_proto')
 def webshare(port):
 	import re
 	import urllib2, urllib
-	import BaseHTTPServer
-	from SimpleHTTPServer import SimpleHTTPRequestHandler
+	import SimpleHTTPServer, SocketServer
 
-	HandlerClass = SimpleHTTPRequestHandler
-	ServerClass  = BaseHTTPServer.HTTPServer
-	Protocol     = "HTTP/1.0"
-
-	server_address = ('127.0.0.1', port)
-	
-	HandlerClass.protocol_version = Protocol
-	httpd = ServerClass(server_address, HandlerClass)
+	Handler = SimpleHTTPServer.SimpleHTTPRequestHandler
+	httpd = SocketServer.TCPServer(("", port), Handler)
 
 	if ip_proto == "ipv4":
 		page = str((urllib2.urlopen('http://ipv4.icanhazip.com/').read()))
