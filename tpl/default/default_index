@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<LINK REL=StyleSheet HREF="tpl/default/default.css" TYPE="text/css" MEDIA=screen>
+		<meta charset="utf-8">
+		<title>set_website_title</title>
+	</head>
+	<body>
+		<h2><a href="set_website_url">set_website_title</a></h2>
+		<div id="welcome_message">set_welcome_message</div>
+		<div id="menu">set_content_listing</div>
+		<div id="welcome_content">set_welcome_content</div>
+	<footer>
+		set_footer
+		<br />
+	</footer>
+	</body>
+</html>
