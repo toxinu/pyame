@@ -12,5 +12,5 @@ template_name		= default
 ## Web Share ##
 ###############
 # Not active by default, just set yes if you want to.
-webshare			= no
+webshare			= yes
 port				= 8000
