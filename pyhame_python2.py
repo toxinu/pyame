@@ -35,9 +35,9 @@ def webshare(port):
 	httpd = ServerClass(server_address, HandlerClass)
 
 	if ip_proto == "ipv4":
-		page = str((urllib.request.urlopen('http://ipv4.icanhazip.com/').read()))
+		page = str((urllib2.urlopen('http://ipv4.icanhazip.com/').read()))
 	elif ip_proto == "ipv6":
-		page = str((urllib.request.urlopen('http://ipv6.icanhazip.com/').read()))
+		page = str((urllib2.urlopen('http://ipv6.icanhazip.com/').read()))
 	else:
 		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\". Auto is used...")
 		page = str((urllib.request.urlopen('http://icanhazip.com/').read()))	
