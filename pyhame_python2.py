@@ -64,8 +64,14 @@ def text_to_html(brute_content):
 	
 # Html content folder
 def html_content_folder_make(path):
-	if not os.path.exists(u"html_%s" % content_folder):
-		os.makedirs(u"html_%s" % content_folder)
+	if not 'html_content_root_delete' in globals():
+		if os.path.exists("html_%s" % content_folder):
+			import shutil
+			shutil.rmtree("html_%s" % content_folder)
+		else:
+			os.makedirs("html_%s" % content_folder)
+		global html_content_root_delete
+		html_content_root_delete = True
 	if not os.path.exists(path):
 		os.makedirs(path)
 
