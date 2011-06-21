@@ -27,9 +27,12 @@ __Others good things for advanced users :__
 
 ### Preview
 
+Just create a tree files/directories like that :
+![alt text](http://socketubs.net/tree_screen.png "Tree files")
+
 You can easy watch the face of default template [here](http://socketubs.net:8000).
 
-And a screenshot of the tree files/directories [here](http://socketubs.net/tree_screen.png). To understand the simple usage of __pyhame__.
+In just one command. Easy to understand the simple usage of __pyhame__.
 
 Todo
 ---------------
