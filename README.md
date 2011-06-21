@@ -22,6 +22,7 @@ __Good things for simple users :__
 __Others good things for advanced users :__
 
   - Easy to write template
+  - Choose between ipv4 and ipv6
   - Python 3 and 2.6 ready
   - Code with my feet
 
@@ -38,7 +39,6 @@ In just one command. Easy to understand the simple usage of __pyhame__.
 Todo
 ---------------
                                   
-  - Add Ipv4/ipv6 choice for icanhazip
   - Auto create defaults files
   - Delete old html files
   - Downloadable link to text file                     
