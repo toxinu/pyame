@@ -28,6 +28,7 @@ __Others good things for advanced users :__
 ### Preview
 
 Just create a tree files/directories like that :
+
 ![alt text](http://socketubs.net/tree_screen.png "Tree files")
 
 You can easy watch the face of default template [here](http://socketubs.net:8000).
