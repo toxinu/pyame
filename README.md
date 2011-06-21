@@ -4,13 +4,11 @@ __Pyhame__ is easy website creator written in _Python_.
 You just put files/folders in your content folder and launch pyhame.
 You dont need to do Html/Css/Php or other web language.
 
-
-
 ### Where is the magic ?
 
 After that your files/folders will be automaticaly parse and a static html5 website will be create with a embed http python server.
 
-__To sum up :__
+__Good things for simple users :__
 
   - Just write text files
   - Just create directories
@@ -18,6 +16,28 @@ __To sum up :__
   - Embedded Http Web Server
   - Simple Html template
   - Very light static web site
+  - W3C Html5 validate ([link](http://validator.w3.org/check?uri=http%3A%2F%2Fsocketubs.net%3A8000%2F))
 
 
-## In progres...
+__Others good things for advanced users :__
+
+  - Easy to write template
+  - Python 3 and 2.6 ready
+  - Code with my feet
+
+### Preview
+
+You can easy watch the face of default template [here](http://socketubs.net:8000).
+
+And a screenshot of the tree files/directories [here](http://socketubs.net/tree_screen.png). To understand the simple usage of __pyhame__.
+
+Todo
+---------------
+                                  
+  - Add Ipv4/ipv6 choice for icanhazip
+  - Auto create defaults files
+  - Delete old html files
+  - Downloadable link to text file                     
+  - Make archive after website rendering
+  - Protect content with specific file (protect.mksite)
+  - Many other...
