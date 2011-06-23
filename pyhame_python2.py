@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
-# Version : 0.1
+# Version : 0.2
 import os, ConfigParser, stat, types
 from io import open
 

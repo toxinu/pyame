@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Version : 0.1
+# Version : 0.2
 import os, configparser, stat, types
 
 config_file = "default.cnf"

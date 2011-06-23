@@ -1,6 +1,6 @@
 Description
 ---------------
-__Pyhame__ is an easy website creator written in _Python_.
+__Pyhame 0.2__ is an easy website creator written in _Python_.
 You just put files/folders in your content folder and launch pyhame.
 You dont need to do Html/Css/Php or other web language.
 
