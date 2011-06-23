@@ -64,6 +64,10 @@ footer {
 	-moz-border-radius: 10px;
 	border-radius: 10px;	 
 }
+#menu ul {
+	margin-top: 5px;
+	margin-bottom: 9px;
+}
 #root_menu .root_content_title, #sub_menu .sub_content_title {
 	font-weight: bold;
 	text-transform: uppercase;
