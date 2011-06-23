@@ -40,7 +40,6 @@ Todo
 ---------------
                                   
   - Auto create defaults files
-  - Delete old html files
   - Downloadable link to text file                     
   - Make archive after website rendering
   - Protect content with specific file (protect.mksite)
