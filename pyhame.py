@@ -71,9 +71,8 @@ def html_content_folder_make(path):
 		html_content_root_delete = True
 	if not os.path.exists(path):
 		os.makedirs(path)
-
-# List content folder files
-def content_listing(content_html):
+# Recover specials files in content folder
+def recover_special_files():
 	global website_title
 	global welcome_message
 	global footer
@@ -82,6 +81,30 @@ def content_listing(content_html):
 	welcome_message = False
 	footer = False
 	welcome_content = False
+	for i in os.listdir(content_folder):
+		if i == "website_title":
+			website_title_file = open("%s/%s" % (content_folder, i), 'r')
+			website_title = website_title_file.readline()
+			website_title = website_title.replace('\n', '')
+			website_title_file.close()
+		elif i == "footer":
+			footer_file = open("%s/%s" % (content_folder, i), 'r')
+			footer = footer_file.readline()
+			footer = footer.replace('\n', '')
+			footer_file.close()
+		elif i == "welcome_message":
+			welcome_message_file = open("%s/%s" % (content_folder, i), 'r')
+			welcome_message = welcome_message_file.readline()
+			welcome_message = welcome_message.replace('\n', '')
+			welcome_message_file.close()
+		elif i == "welcome_content":
+			welcome_content_file = open("%s/%s" % (content_folder, i), 'r')
+			welcome_content = welcome_content_file.read()
+			welcome_content = welcome_content.replace('\n', '<br>')
+			welcome_content_file.close()
+	
+# List content folder files
+def content_listing(content_html):
 	# Create empty list to store collected folders
 	aDirs = []
 	global root_html_content_folder
@@ -110,27 +133,7 @@ def content_listing(content_html):
 				for i in oDirFiles:
 					file_name = i
 					if oDir == content_folder:
-						if i == "website_title":
-							website_title_file = open("%s/%s" % (oPaths, i), 'r')
-							website_title = website_title_file.readline()
-							website_title = website_title.replace('\n', '')
-							website_title_file.close()
-						elif i == "footer":
-							footer_file = open("%s/%s" % (oPaths, i), 'r')
-							footer = footer_file.readline()
-							footer = footer.replace('\n', '')
-							footer_file.close()
-						elif i == "welcome_message":
-							welcome_message_file = open("%s/%s" % (oPaths, i), 'r')
-							welcome_message = welcome_message_file.readline()
-							welcome_message = welcome_message.replace('\n', '')
-							welcome_message_file.close()
-						elif i == "welcome_content":
-							welcome_content_file = open("%s/%s" % (oPaths, i), 'r')
-							welcome_content = welcome_content_file.read()
-							welcome_content = welcome_content.replace('\n', '<br>')
-							welcome_content_file.close()
-						else:
+						if (i != "website_title") and (i != "footer") and (i != "welcome_message") and (i != "welcome_content"):
 							if content_html == "yes":
 								html_content_file("%s/%s" % (oPaths, i))
 								root_html_content_folder = root_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
@@ -211,7 +214,12 @@ def write_index(index_final):
 	index.write(index_final)
 	index.close()
 
-####
+######################################
+# Start script #######################
+######################################
+
+# Recover special files like welcome_message ...
+recover_special_files()
 # Read template Index
 template_file_index = read_template_index()
 # Set up content listing and other specials files
