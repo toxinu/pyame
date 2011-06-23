@@ -14,6 +14,8 @@ __Good things for simple users :__
   - Just create directories
   - Just run pyhame.py (Python 3 and 2.6 versions are ready)
   - Embedded Http Web Server
+  - Downloadable file link
+  - Permalink on each page
   - Simple Html template
   - Very light static web site
   - W3C Html5 validate ([link](http://validator.w3.org/check?uri=http%3A%2F%2Fsocketubs.net%3A8000%2F))
@@ -40,7 +42,6 @@ Todo
 ---------------
                                   
   - Auto create defaults files
-  - Downloadable link to text file                     
   - Make archive after website rendering
   - Protect content with specific file (protect.mksite)
   - Many other...
