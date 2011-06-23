@@ -26,10 +26,10 @@ def webshare(port):
 
 	if ip_proto == "ipv4":
 		page = str((urllib.request.urlopen('http://ipv4.icanhazip.com/').read()))
-		pub_ip = page.replace('\n', '')
+		pub_ip = page[2:-3]
 	elif ip_proto == "ipv6":
 		page = str((urllib.request.urlopen('http://ipv6.icanhazip.com/').read()))
-		pub_ip = page.replace('\n', '')
+		pub_ip = page[2:-3]
 	else:
 		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\".")
 		quit()
