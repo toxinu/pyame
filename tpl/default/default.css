@@ -46,12 +46,17 @@ footer {
 	outline: 2px dotted #CDCCCC; 
     outline-offset: 10px; /*Delete if you don't want an offset*/
 }
+#welcome_content {
+    font-family: Verdana, Tahoma;
+    font-size: 11px;
+    margin-top: 40px;
+}
 #menu {
 	font-family: Verdana, Tahoma;
 	background-color: #CDCCCC;
-	width: 200px;
-	padding: 7px;
-	padding-left: 17px;
+	width: 220px;
+	padding: 5px;
+	padding-left: 0px;
 	margin-right: 15px;
 	margin-bottom: 10px;
 	float: left;
@@ -59,21 +64,26 @@ footer {
 	-moz-border-radius: 10px;
 	border-radius: 10px;	 
 }
-#welcome_content {
-	font-family: Verdana, Tahoma;
-	font-size: 11px;
-	margin-top: 40px;
-}
-#menu .folder_title {
+#root_menu .root_content_ul .root_content_title {
 	font-weight: bold;
 	text-transform: uppercase;
 	font-size: 11px;
+	cursor : default;
+	margin-left: -25px;
 }
-#menu li {
+#sub_menu .sub_content_ul .sub_content_title {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 11px;
+	cursor : default;
+	margin-left: -25px;
+}
+#root_menu li, #sub_menu li {
 	font-size: 11px;
 	list-style: circle;
 }
-#menu a {
+#root_menu a, #sub_menu a {
+	margin-right: 5px;
 	color: #3F3F3F;
 	text-decoration: none;
 }

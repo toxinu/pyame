@@ -87,7 +87,10 @@ def content_listing(content_html):
 	welcome_content = False
 	# Create empty list to store collected folders
 	aDirs = []
-	html_content_folder = u""
+	global root_html_content_folder
+	global sub_html_content_folder	
+	root_html_content_folder = u""
+	sub_html_content_folder = u""
 	# Iterate through root folder to collected folders
 	for oDirPaths, oDirNames, oFiles in os.walk( content_folder, True, None ):
     	# Add folder to list
@@ -101,7 +104,10 @@ def content_listing(content_html):
 	else:
 		# Iterate through collected folder to get files
 		for oDir in aDirs:
-			html_content_folder = html_content_folder + (u"<span class=\"folder_title\">%s</span>\n<ul>" % oDir)
+			if oDir == content_folder:
+				 root_html_content_folder = root_html_content_folder + ("<ul class=\"root_content_ul\"><a href=\"#\" class=\"root_content_title\">%s</a>\n" % oDir)
+			else:
+				sub_html_content_folder = sub_html_content_folder + ("<ul class=\"sub_content_ul\"><a href=\"#\" class=\"sub_content_title\">%s</a>\n" % oDir)
 			for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 				global file_name
 				for i in oDirFiles:
@@ -130,18 +136,25 @@ def content_listing(content_html):
 						else:
 							if content_html == u"yes":
 								html_content_file(u"%s/%s" % (oPaths, i))
-								html_content_folder = html_content_folder + (u"<li><a href=\"html_%s/%s.html\">%s</a></li>" % (oPaths, i, i))
+								root_html_content_folder = root_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
 							else:
-								html_content_folder = html_content_folder + (u"<li><a href=\"%s/%s\">%s</a></li>" % (oPaths, i, i))
+								root_html_content_folder = root_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
 					else:
 						if content_html == u"yes":
-							html_content_folder = html_content_folder + (u"<li><a href=\"html_%s/%s.html\">%s</a></li>" % (oPaths, i, i))
+							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
 							html_content_file(u"%s/%s" % (oPaths, i))
 						else:
-							html_content_folder = html_content_folder + (u"<li><a href=\"%s/%s\">%s</a></li>" % (oPaths, i, i))
+							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
 				break
-			html_content_folder += (u"</ul>")
-	return html_content_folder
+			if oDir == content_folder:
+				root_html_content_folder += ("</ul>\n")
+			else:
+				sub_html_content_folder += ("</ul>\n")
+
+# Replace spaces by %20 in a href url
+def replace_spaces(url):
+	url = url.replace(" ", "%20")
+	return url
 
 # Read template index
 def read_template_index():
@@ -190,7 +203,8 @@ def setup_index(template_file):
 		template_file = template_file.replace(u"set_footer", footer)
 	else:
 		template_file = template_file.replace(u"set_footer", u"Create your footer file")
-	template_file = template_file.replace(u"set_content_listing", html_content_folder)
+	template_file = template_file.replace(u"set_root_menu", root_html_content_folder)
+	template_file = template_file.replace(u"set_sub_menu", sub_html_content_folder)
 	template_file = template_file.replace(u"set_website_url", u"http://%s:%s" % (website_url, port))
 	return template_file
 
@@ -204,7 +218,7 @@ def write_index(index_final):
 # Read template Index
 template_file_index = read_template_index()
 # Set up content listing and other specials files
-html_content_folder = content_listing(content_html)
+content_listing(content_html)
 # Set up index content
 index_content = setup_index(template_file_index)
 # Write index.html file
