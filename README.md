@@ -39,6 +39,10 @@ You can easy watch the face of default template [here](http://socketubs.net:8000
 
 In just one command. Easy to understand the simple usage of __pyhame__.
 
+### Downloads
+
+  - [Pyhame-0.2](https://github.com/downloads/Socketubs/pyhame/pyhame-0.2-linux.zip)
+
 Todo
 ---------------
                                   
