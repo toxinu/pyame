@@ -19,6 +19,7 @@ __Good things for simple users :__
   - Simple Html template
   - Very light static web site
   - W3C Html5 validate ([link](http://validator.w3.org/check?uri=http%3A%2F%2Fsocketubs.net%3A8000%2F))
+  - Create an .zip archive of your website on each html rendering
 
 
 __Others good things for advanced users :__
@@ -42,6 +43,5 @@ Todo
 ---------------
                                   
   - Auto create defaults files
-  - Make archive after website rendering
   - Protect content with specific file (protect.mksite)
   - Many other...
