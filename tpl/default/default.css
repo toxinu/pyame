@@ -64,19 +64,12 @@ footer {
 	-moz-border-radius: 10px;
 	border-radius: 10px;	 
 }
-#root_menu .root_content_ul .root_content_title {
+#root_menu .root_content_title, #sub_menu .sub_content_title {
 	font-weight: bold;
 	text-transform: uppercase;
 	font-size: 11px;
 	cursor : default;
-	margin-left: -25px;
-}
-#sub_menu .sub_content_ul .sub_content_title {
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 11px;
-	cursor : default;
-	margin-left: -25px;
+	margin-left: 10px;
 }
 #root_menu li, #sub_menu li {
 	font-size: 11px;

@@ -102,9 +102,9 @@ def content_listing(content_html):
 		# Iterate through collected folder to get files
 		for oDir in aDirs:
 			if oDir == content_folder:
-				root_html_content_folder = root_html_content_folder + ("<ul class=\"root_content_ul\"><a href=\"#\" class=\"root_content_title\">%s</a>\n" % oDir)
+				root_html_content_folder = root_html_content_folder + ("<a href=\"#\" class=\"root_content_title\">%s</a><ul class=\"root_content_ul\">\n" % oDir)
 			else:
-				sub_html_content_folder = sub_html_content_folder + ("<ul class=\"sub_content_ul\"><a href=\"#\" class=\"sub_content_title\">%s</a>\n" % oDir)
+				sub_html_content_folder = sub_html_content_folder + ("<a href=\"#\" class=\"sub_content_title\">%s</a><ul class=\"sub_content_ul\">\n" % oDir)
 			for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 				global file_name
 				for i in oDirFiles:
