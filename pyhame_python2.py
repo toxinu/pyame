@@ -118,8 +118,12 @@ def content_listing(content_html):
 				sub_html_content_folder = sub_html_content_folder + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
 			for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 				global file_name
+				global dl_file_link
+				global permalink
 				for i in oDirFiles:
 					file_name = i
+					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (replace_spaces(oPaths), replace_spaces(i))
+					permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (replace_spaces(oPaths), replace_spaces(i))
 					if oDir == content_folder:
 						tmp_check = False
 						for f in special_files:
@@ -176,6 +180,8 @@ def setup_view(template_file):
 	template_file = template_file.replace(u"set_file_name", file_name)
 	template_file = template_file.replace(u"set_file_content", file_content)
 	template_file = template_file.replace(u"set_website_url", u"http://%s:%s" % (website_url, port))
+	template_file = template_file.replace("set_dl_file_link", dl_file_link)
+	template_file = template_file.replace("set_permalink", permalink)
 	return template_file
 
 # Replace template variables index

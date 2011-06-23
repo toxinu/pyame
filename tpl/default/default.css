@@ -89,16 +89,27 @@ footer {
 /* ##### View  ##### */
 /* ################# */
 
-#file_name {
-	font-weight: bold;
+#file_description {
     margin: auto;
-	font-size: 18px;
-    text-align: center;
-    font-family: Verdana, Tahoma;
     margin-bottom: 25px;
     width: 600px;
     outline: 2px dotted #CDCCCC; 
     outline-offset: 10px; /*Delete if you don't want an offset*/
+}
+#file_name {
+	font-size: 18px;
+	font-weight: bold;
+	text-align: center;
+	font-family: Verdana, Tahoma;
+}
+#file_links {
+	color: #CDCCCC;
+	text-align: center;
+}
+#file_links a {
+	color: #5F9EA0;
+	font-size: 11px;
+	text-decoration: none;
 }
 #file_content {
 	margin: auto;
