@@ -26,13 +26,13 @@ def webshare(port):
 
 	if ip_proto == "ipv4":
 		page = str((urllib.request.urlopen('http://ipv4.icanhazip.com/').read()))
+		pub_ip = page.replace('\n', '')
 	elif ip_proto == "ipv6":
 		page = str((urllib.request.urlopen('http://ipv6.icanhazip.com/').read()))
+		pub_ip = page.replace('\n', '')
 	else:
-		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\". Auto is used...")
-		page = str((urllib.request.urlopen('http://icanhazip.com/').read()))
-	ips = re.findall('(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})\.(?:[\d]{1,3})', page)
-	pub_ip = str(ips[0])
+		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\".")
+		quit()
 
 	print("# Starting web server at port %s ..." % port)
 	print("##  Tape in your browser :")
