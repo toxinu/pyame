@@ -1,69 +1,32 @@
-<flattr>
-
-title=My Wiki/Blog about my brain
-
-description=This is my writting blog/wiki about my studies, works and other. In fact, this is my brain. You can contribut to this, host your documents, a part of your brain too. 
-
-category=text
-
-align=right
-
-</flattr>
-
-======Install Grub2 on Archlinux======
+##################################
+### Install Grub2 on Archlinux ###
+##################################
 
 If you want to upgrade your grub-legacy to grub2 do that.
 
-
-
 On your archlinux system : 
 
-<code>
-
-pacman -S grub2
-
-grub-install /dev/sdX --no-floppy
-
-</code>
+  pacman -S grub2
+  grub-install /dev/sdX --no-floppy
 
 Where sdX is your boot partition.
 
-<code>
-
-grub-mkconfig -o /boot/grub/grub.cfg
-
-</code>
+  grub-mkconfig -o /boot/grub/grub.cfg
 
 And reboot !
 
-
-
 If you want to add another entrie, write it in ///etc/grub.d/40_custom//.
-
-
 
 An example for a windows entrie :
 
-<code>
-
-# (2) Windows XP
-
-menuentry "Windows XP" {
-
-set root=(hd0,3)
-
-chainloader +1
-
-}
-
-</code>
+  # (2) Windows XP
+  menuentry "Windows XP" {
+  set root=(hd0,3)
+  chainloader +1
+  }
 
 Save and enter : 
 
-<code>
-
-grub-mkconfig -o /boot/grub/grub.cfg
-
-</code>
+  grub-mkconfig -o /boot/grub/grub.cfg
 
 It's done !
