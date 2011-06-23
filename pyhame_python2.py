@@ -17,6 +17,7 @@ content_html		= config.get(section, u'content_html')
 webshare_active		= config.get(section, u'webshare')
 port				= int(config.get(section, u'port'))
 ip_proto            = config.get(section, 'ip_proto')
+archive             = config.get(section, 'archive')
 
 # WebShare
 def webshare(port):
@@ -44,6 +45,23 @@ def webshare(port):
 	print u"# To stop server, Ctrl-C"
 	print u"..."
 	httpd.serve_forever()
+
+# Archive maker
+def create_archive():
+	import zipfile
+	from time import gmtime, strftime
+
+	# Create archives diretorie if not exist
+	if not os.path.exists("archives"):
+		os.makedirs("archives")
+
+	# Create archive
+	archive = zipfile.ZipFile('archives/%s.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
+	archive.write(content_folder)
+	archive.write("html_%s" % content_folder)
+	archive.write("index.html")
+	archive.write("tpl/%s" % template_name)
+	archive.close()
 
 # Html content rendering
 def html_content_file(path_to_file):
@@ -227,6 +245,9 @@ content_listing(content_html)
 index_content = setup_index(template_file_index)
 # Write index.html file
 write_index(index_content)
+if archive == "yes":
+	# Create archive
+	create_archive()
 # Webshare
 if webshare_active == u"yes":
 	webshare(port)
