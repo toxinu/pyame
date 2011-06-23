@@ -41,7 +41,11 @@ In just one command. Easy to understand the simple usage of __pyhame__.
 
 ### Downloads
 
-  - [Pyhame-0.2](https://github.com/downloads/Socketubs/pyhame/pyhame-0.2-linux.zip)
+  - [Pyhame-0.2-linux](https://github.com/downloads/Socketubs/pyhame/pyhame-0.2-linux.zip)
+
+Maybe the linux version could work on Mac Os with Python 3 or 2.6
+And maybe on Windows too.
+Please if you make tests, tell me the result.
 
 Todo
 ---------------
