@@ -27,7 +27,7 @@ __Others good things for advanced users :__
 
   - Easy to write template
   - Choose between ipv4 and ipv6
-  - Python 3.x
+  - Python 3.2
   - Code with my feet
 
 ### Preview
@@ -42,7 +42,7 @@ In just one command. Easy to understand the simple usage of __pyhame__.
 
 ### Other
 
-Maybe the linux version could work on Mac Os with Python 3.x
+Maybe the linux version could work on Mac Os with Python 3.2
 And maybe on Windows too.
 Please if you make tests, tell me the result.
 
