@@ -13,7 +13,7 @@ __Good things for simple users :__
   - Just write text files
   - Markdown usage
   - Just create directories
-  - Just run pyhame.py (Python 3 and 2.6 versions are ready)
+  - Just run pyhame.py
   - Embedded Http Web Server
   - Downloadable file link
   - Permalink on each page
@@ -27,7 +27,7 @@ __Others good things for advanced users :__
 
   - Easy to write template
   - Choose between ipv4 and ipv6
-  - Python 3.2
+  - Python 3.x
   - Code with my feet
 
 ### Preview
@@ -42,7 +42,7 @@ In just one command. Easy to understand the simple usage of __pyhame__.
 
 ### Other
 
-Maybe the linux version could work on Mac Os with Python 3.2
+Maybe the linux version could work on Mac Os with Python 3.x
 And maybe on Windows too.
 Please if you make tests, tell me the result.
 
