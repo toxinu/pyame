@@ -3,8 +3,8 @@
 # Version : 0.2
 import sys
 # Check Python version
-if sys.version_info < (3, 2):
-	print("Must use Python 3.2")
+if sys.version_info < (3, 1):
+	print("Must use Python 3.1")
 	sys.exit(0)
 
 import os, configparser, stat, types
