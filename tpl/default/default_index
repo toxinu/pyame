@@ -6,7 +6,7 @@
 		<title>set_website_title</title>
 	</head>
 	<body>
-		<h2><a href="set_website_url">set_website_title</a></h2>
+		<h2 id="website_title"><a href="set_website_url">set_website_title</a></h2>
 		<div id="welcome_message">set_welcome_message</div>
 		<div id="menu">
 			<div id="root_menu">set_root_menu</div>

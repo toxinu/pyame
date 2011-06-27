@@ -7,7 +7,7 @@ body {
 	width: 900px;
 	margin: auto;
 }
-h2 {
+#website_title {
 	text-align: center;
 	font-family: Artifika-Regular;
 	font-size: 30px;
@@ -16,7 +16,7 @@ h2 {
 	-moz-border-radius: 10px;
 	border-radius: 10px; 
 }
-h2 a {
+#website_title a {
 	text-decoration: none;
 	color: black;
 }

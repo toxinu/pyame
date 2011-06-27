@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Version : 0.2
-import os, configparser, stat, types
+import os, configparser, stat, types, sys
 
 config_file = "default.cnf"
 section = "default"
@@ -70,9 +70,11 @@ def html_content_file(path_to_file):
 	brute_file.close()
 
 # Text file parser to html
-def text_to_html(brute_content):
+def text_to_html(brute_file):
 	global file_content
-	file_content = brute_content.replace('\n', '<br>')
+	sys.path.append('lib')
+	import markdown
+	file_content = markdown.markdown(brute_file)	
 	template_view = read_template_view()
 	html_file_content = setup_view(template_view)
 	return html_file_content

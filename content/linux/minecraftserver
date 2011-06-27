@@ -1,44 +1,43 @@
-There is a mini how to create [[http://www.minecraft.net/|MineCraft]] server on Debian Lenny.
+There is a mini how to create [MineCraft](http://www.minecraft.net/) server on __Debian Lenny__.
 
-====== Download ======
-In first, download the .jar [[http://www.minecraft.net/download/minecraft_server.jar|here]]
+# Download
+In first, _download_ the .jar [here](http://www.minecraft.net/download/minecraft_server.jar).
 
-====== Installation ======
+# Installation
+
 Now, you have to install Sun Jvm.
 
-The MineCraft dev notice that its better to use the Sun (proprietary) Jvm.
-Add "non-free" on each lines in your **/etc/apt/sources.list** like that :
-<code>
-deb http://ftp.nerim.net/debian/ lenny main non-free
-deb-src http://ftp.nerim.net/debian/ lenny main non-free
+The MineCraft dev notice that its better to use the Sun ( _proprietary_ ) __Jvm__.
 
-deb http://security.debian.org/ lenny/updates main non-free
-deb-src http://security.debian.org/ lenny/updates main non-free
+Add "_non-free_" on each lines in your __/etc/apt/sources.list__ like that :
 
-deb http://volatile.debian.org/debian-volatile lenny/volatile main non-free
-deb-src http://volatile.debian.org/debian-volatile lenny/volatile main non-free
-</code>
+    deb http://ftp.nerim.net/debian/ lenny main non-free
+    deb-src http://ftp.nerim.net/debian/ lenny main non-free
+    deb http://security.debian.org/ lenny/updates main non-free
+    deb-src http://security.debian.org/ lenny/updates main non-free
+    deb http://volatile.debian.org/debian-volatile lenny/volatile main non-free
+    deb-src http://volatile.debian.org/debian-volatile lenny/volatile main non-free
+
 Update the sources list :
-<code>
-apt-get update
-</code>
+
+    apt-get update
+
 And install the Sun Jvm :
-<code>
-apt-get install sun-java6-jre
-</code>
 
-====== Usage ======
+    apt-get install sun-java6-jre
+
+# Usage
+
 I notice you to create a little bash script like that :
-<code>
-#!/bin/bash
 
-java -Xmx1024M -Xms1024M -jar /root/minecraft/minecraft_server.jar nogui >> /root/minecraft/log_serv 2>&1 &                                   
-</code>
+    #!/bin/bash
+    java -Xmx1024M -Xms1024M -jar /root/minecraft/minecraft_server.jar nogui >> /root/minecraft/log_serv 2>&1 &                                
+
 And :
-<code>
-chmod +x your_script.sh
-./your_script.sh
-</code>
-With this little bash script you launch your MineCraft Server with a **log_serv** file with a little histo.
 
-To finish you have to open the 25565 port on your router.
+    chmod +x your_script.sh
+    ./your_script.sh
+
+With this little bash script you launch your MineCraft Server with a __log_serv__ file with a little histo.
+
+To finish you have to open the __25565__ port on your router.
