@@ -1,7 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Version : 0.2
-import os, configparser, stat, types, sys
+import sys
+# Check Python version
+if sys.version_info < (3, 2):
+	print("Must use Python 3.2")
+	sys.exit(0)
+
+import os, configparser, stat, types
 
 config_file = "default.cnf"
 section = "default"
