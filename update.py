@@ -40,10 +40,9 @@ def update():
 	status = process.poll()
 
 	process = Popen(update_command02 ,shell=True, stderr=STDOUT, stdout=PIPE)
-	print("%s :\n" % update_command02)
 	output,stderr = process.communicate()
 	status = process.poll()
-	print(output)
+	print("\n%s" % output)
 	print("####################################")
 	print("##  Your Pyhame is up to date !   ##")
 	print("####################################\n")
