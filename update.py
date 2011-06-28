@@ -14,6 +14,23 @@ update_command02 = "git pull"
 
 from subprocess import Popen, PIPE, STDOUT
 
+# Archive maker
+def create_archive():
+    import zipfile
+    from time import gmtime, strftime
+
+    # Create archives diretorie if not exist
+    if not os.path.exists("archives"):
+        os.makedirs("archives")
+
+    # Create archive
+    archive = zipfile.ZipFile('archives/%s_update.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
+    archive.write(content_folder)
+    archive.write("html_%s" % content_folder)
+    archive.write("index.html")
+    archive.write("tpl/%s" % template_name)
+    archive.close()
+
 # Check
 def check():
 	process = Popen(check_command01 ,shell=True, stderr=STDOUT, stdout=PIPE)
@@ -50,4 +67,5 @@ def update():
 if check():
 	so = raw_input("Do updates ? (A backup will be create in archives folder). [yes/NO]\n")
 	if so == "yes":
+		create_archive()
 		update()
