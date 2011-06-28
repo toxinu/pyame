@@ -5,7 +5,7 @@ print("## Update script require git-core ##")
 print("####################################\n")
 
 ## Checking updates commands
-check_command01 = "cat .git/FETCH_HEAD"
+check_command01 = "cat .git/ORIG_HEAD"
 check_command02 = "git ls-remote origin -h refs/heads/master"
 
 ## Update commands
