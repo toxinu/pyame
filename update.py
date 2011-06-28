@@ -1,25 +1,54 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+print("####################################")
+print("## Update script require git-core ##")
+print("####################################\n")
 
-print("Update script require git-core\n")
+## Checking updates commands
+check_command01 = "cat .git/FETCH_HEAD"
+check_command02 = "git ls-remote origin -h refs/heads/master"
 
-command01 = "git reset --hard HEAD"
-command02 = "git pull"
+## Update commands
+update_command01 = "git reset --hard HEAD"
+update_command02 = "git pull"
 
 from subprocess import Popen, PIPE, STDOUT
 
-process = Popen(command01 ,shell=True, stderr=STDOUT, stdout=PIPE)
-print("%s :\n" % command01)
-output,stderr = process.communicate()
-status = process.poll()
-print(output)
+# Check
+def check():
+	process = Popen(check_command01 ,shell=True, stderr=STDOUT, stdout=PIPE)
+	#print("%s :\n" % check_command01)
+	output,stderr = process.communicate()
+	status = process.poll()
+	local_head = output[:40]
+	print("Lastest local Head :  %s" % local_head)
+	
+	process = Popen(check_command02 ,shell=True, stderr=STDOUT, stdout=PIPE)
+	#print("%s :\n" % check_command02)
+	output,stderr = process.communicate()
+	status = process.poll()
+	remote_head = output[:40]
+	print("Lastest remote Head : %s" % remote_head)
+	
+	if local_head != remote_head:
+		print("Update available")
+		return True
+	return False
 
-process = Popen(command02 ,shell=True, stderr=STDOUT, stdout=PIPE)
-print("%s :\n" % command02)
-output,stderr = process.communicate()
-status = process.poll()
-print(output)
+# Update
+def update():
+	process = Popen(update_command01 ,shell=True, stderr=STDOUT, stdout=PIPE)
+	print("%s :\n" % update_command01)
+	output,stderr = process.communicate()
+	status = process.poll()
+	print(output)
 
+	process = Popen(update_command02 ,shell=True, stderr=STDOUT, stdout=PIPE)
+	print("%s :\n" % update_command02)
+	output,stderr = process.communicate()
+	status = process.poll()
+	print(output)
 
-
-
+if check():
+	if input("Do updates ? (A backup will be create in archives folder)"):
+		update()
