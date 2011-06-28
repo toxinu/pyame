@@ -59,7 +59,7 @@ def update():
 	output = getoutput(update_command01)
 
 	output = getoutput(update_command02)
-	print("\n%s" % output)
+	print("\n%s\n" % output)
 	print("####################################")
 	print("##  Your Pyhame is up to date !   ##")
 	print("####################################\n")
