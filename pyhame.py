@@ -155,7 +155,7 @@ def html_content_file(path_to_file):
 	html_file.close()
 	brute_file.close()
 
-# Text file parser to html
+# Text file parser to html for view
 def text_to_html(brute_file):
 	global file_content
 	sys.path.append('lib')
@@ -164,7 +164,13 @@ def text_to_html(brute_file):
 	template_view = read_template_view()
 	html_file_content = setup_view(template_view)
 	return html_file_content
-	
+
+# Text file parser for special files
+def markdown_it(brute_content):
+	sys.path.append('lib')
+	import markdown
+	return markdown.markdown(brute_content)
+
 # Html content folder
 def html_content_folder_make(path):
 	if not 'html_content_root_delete' in globals():
@@ -189,7 +195,7 @@ def recover_special_files():
 			if i == file:
 				tmp_file = open("%s/%s" % (content_folder, i), 'r')
 				gl[file] = tmp_file.read()
-				gl[file] = gl[file].replace('\n', '<br>')
+				gl[file] = markdown_it(gl[file])
 				gl[file] = gl[file][:-4]
 				tmp_file.close()
 	
