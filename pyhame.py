@@ -23,7 +23,8 @@ content_html		= config.get(section, 'content_html')
 ## WebShare ##
 section = "webshare"
 webshare_active		= config.get(section, 'webshare')
-port				= int(config.get(section, 'port'))
+port_everywhere		= config.get(section, 'port_everywhere')
+port				= config.get(section, 'port')
 ip_proto			= config.get(section, 'ip_proto')
 
 ## Others ##
@@ -64,12 +65,24 @@ def pre_check():
 		sys.exit(0)
 	if webshare_active == "yes":
 		# Check if port is set
+		global port
 		if not port:
-			print("\"port\" must be given in pyhame.conf (webshare section)")
+			print("\"port\" must be given in pyhame.conf and must be an integer (webshare section)")
+			sys.exit(0)
+		try:
+			port = int(port)
+		except ValueError:
+			print("\"port\" must be an integer (webshare section)")
 			sys.exit(0)
 		if ip_proto != "ipv4" and ip_proto != "ipv6" or not ip_proto:
 			print("\"ip_proto\" must be \"ipv4\" or \"ipv6\" in pyhame.conf (webshare section)")
 			sys.exit(0)
+		global port_everywhere
+		if port_everywhere != "no" and port_everywhere != "yes" or not port_everywhere:
+			print("\"port_everywhere\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
+			sys.exit(0)
+	if webshare_active == "no":
+		port_everywhere = "no"
 	####################
 	## Others section ##
 	####################
@@ -270,7 +283,10 @@ def setup_view(template_file):
 		template_file = template_file.replace("set_footer", "Create your footer file")
 	template_file = template_file.replace("set_file_name", file_name)
 	template_file = template_file.replace("set_file_content", file_content)
-	template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
+	if port_everywhere == "yes":
+		template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
+	else:
+		template_file = template_file.replace("set_website_url", "http://%s" % website_url)
 	template_file = template_file.replace("set_dl_file_link", dl_file_link)
 	template_file = template_file.replace("set_permalink", permalink)
 	return template_file
@@ -295,7 +311,10 @@ def setup_index(template_file):
 		template_file = template_file.replace("set_footer", "Create your footer file")
 	template_file = template_file.replace("set_root_menu", root_html_content_folder)
 	template_file = template_file.replace("set_sub_menu", sub_html_content_folder)
-	template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
+	if port_everywhere == "yes":
+		template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
+	else:
+		template_file = template_file.replace("set_website_url", "http://%s" % website_url)
 	return template_file
 
 # Write index
