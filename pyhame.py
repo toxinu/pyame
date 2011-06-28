@@ -126,8 +126,8 @@ def content_listing(content_html):
     	# Add folder to list
 		if content_html == "yes":
 			html_content_folder_make("html_%s" % oDirPaths)
-		aDirs.append( oDirPaths )
-
+		aDirs.append(oDirPaths)
+		oDirNames.sort()
 	# Check if folders were collected
 	if len( aDirs ) < 1:
 		print("No folder collected.")
@@ -142,6 +142,8 @@ def content_listing(content_html):
 				global file_name
 				global dl_file_link
 				global permalink
+				oDirs.sort()
+				oDirFiles.sort()
 				for i in oDirFiles:
 					file_name = i
 					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (replace_spaces(oPaths), replace_spaces(i))
