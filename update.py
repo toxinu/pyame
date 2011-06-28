@@ -69,3 +69,7 @@ if check():
 	if so == "yes":
 		create_archive()
 		update()
+else:
+	print("\n####################################")
+	print("## Pyhame is already up to date ! ##")
+	print("####################################\n")
