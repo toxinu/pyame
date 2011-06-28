@@ -49,6 +49,6 @@ def update():
 	print("####################################\n")
 
 if check():
-	so = input("Do updates ? (A backup will be create in archives folder). [yes/NO]")
+	so = raw_input("Do updates ? (A backup will be create in archives folder). [yes/NO]\n")
 	if so == "yes":
 		update()
