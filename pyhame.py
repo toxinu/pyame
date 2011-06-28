@@ -9,20 +9,87 @@ if sys.version_info < (3, 1):
 
 import os, configparser, stat, types
 
-config_file = "default.cnf"
-section = "default"
-
 config = configparser.RawConfigParser()
+config_file = "pyhame.conf"
 config.read(config_file)
 
+## General ##
+section = "general"
 content_folder		= config.get(section, 'content_folder')
 template_name		= config.get(section, 'template_name')
 website_url			= config.get(section, 'website_url')
 content_html		= config.get(section, 'content_html')
+
+## WebShare ##
+section = "webshare"
 webshare_active		= config.get(section, 'webshare')
 port				= int(config.get(section, 'port'))
 ip_proto			= config.get(section, 'ip_proto')
+
+## Others ##
+section = "others"
 archive				= config.get(section, 'archive')
+
+#################
+### Pre-Check ###
+#################
+def pre_check():
+	#####################
+	## General section ##
+	#####################
+	# Check if content_folder is set
+	if not content_folder:
+		print("\"content_folder\" must be given in pyhame.conf (general section)")
+		sys.exit(0)
+	# Check if template_name is set
+	global template_name
+	if not template_name:
+		print("\"template_name\" must be given in pyhame.conf (general section)")
+		sys.exit(0)
+	# Check if website_url is set
+	if not website_url:
+		print("\"website_url\" must be given in pyhame.conf (general section)")
+		sys.exit(0)
+	# Check content_html value
+	if content_html != "yes" and content_html != "no" or not content_html:
+		print(content_html)
+		print("\"content_html\" must be \"yes\" or \"no\" in pyhame.conf (general section)")
+		sys.exit(0)
+	######################
+	## WebShare section ##
+	######################
+	# Check webshare_active
+	if webshare_active != "yes" and webshare_active != "no" or not webshare_active:
+		print("\"webshare_active\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
+		sys.exit(0)
+	if webshare_active == "yes":
+		# Check if port is set
+		if not port:
+			print("\"port\" must be given in pyhame.conf (webshare section)")
+			sys.exit(0)
+		if ip_proto != "ipv4" and ip_proto != "ipv6" or not ip_proto:
+			print("\"ip_proto\" must be \"ipv4\" or \"ipv6\" in pyhame.conf (webshare section)")
+			sys.exit(0)
+	####################
+	## Others section ##
+	####################
+	# Check if archive is set
+	if archive != "yes" and archive != "no" or not archive:
+		print("\"archive\" must be \"yes\" or \"no\" in pyhame.conf (others section)")
+		sys.exit(0)
+				
+	## Create defaults files
+	# Check if content_folder exist, if not, create it.
+	if not os.path.exists(content_folder):
+		print("\"content_folder\" you have given not exist. It will be automatically create")
+		os.makedirs(content_folder)
+	# Check if template_name exit
+	if not os.path.exists("tpl/%s" % template_name):
+		print("\"template_name\" you have given not exist. Default will be used.")
+		template_name = "default"
+	if not os.path.exists("tpl/%s" %template_name):
+		print("%s template not exist." % template_name)
+		sys.exit(0)
 
 # WebShare
 def webshare(port):
@@ -241,6 +308,8 @@ def write_index(index_final):
 # Start script #######################
 ######################################
 
+# Check every variables and folders
+pre_check()
 # Recover special files like welcome_message ...
 recover_special_files()
 # Read template Index
