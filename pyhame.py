@@ -241,8 +241,8 @@ def content_listing(content_html):
 				oDirFiles.sort()
 				for i in oDirFiles:
 					file_name = i
-					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (replace_spaces(oPaths), replace_spaces(i))
-					permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (replace_spaces(oPaths), replace_spaces(i))
+					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (replace_unsafe_url(oPaths), replace_unsafe_url(i))
+					permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (replace_unsafe_url(oPaths), replace_unsafe_url(i))
 					if oDir == content_folder:
 						tmp_check = False
 						for f in special_files:
@@ -252,15 +252,15 @@ def content_listing(content_html):
 						if not tmp_check:
 							if content_html == "yes":
 								html_content_file("%s/%s" % (oPaths, i))
-								root_html_content_folder = root_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
+								root_html_content_folder = root_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (replace_unsafe_url(oPaths), replace_unsafe_url(i), i))
 							else:
-								root_html_content_folder = root_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
+								root_html_content_folder = root_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (replace_unsafe_url(oPaths), replace_unsafe_url(i), i))
 					else:
 						if content_html == "yes":
-							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
+							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (replace_unsafe_url(oPaths), replace_unsafe_url(i), i))
 							html_content_file("%s/%s" % (oPaths, i))
 						else:
-							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (replace_spaces(oPaths), replace_spaces(i), i))
+							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (replace_unsafe_url(oPaths), replace_unsafe_url(i), i))
 				break
 			if oDir == content_folder:
 				root_html_content_folder += ("</ul>\n")
@@ -268,7 +268,9 @@ def content_listing(content_html):
 				sub_html_content_folder += ("</ul>\n")
 
 # Replace spaces by %20 in a href url
-def replace_spaces(url):
+def replace_unsafe_url(url):
+	url = url.replace("[", "%5B")
+	url = url.replace("]", "%5D")
 	url = url.replace(" ", "%20")
 	return url
 
