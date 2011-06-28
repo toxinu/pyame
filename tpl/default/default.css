@@ -1,6 +1,6 @@
 @font-face {
-  font-family: Artifika-Regular;
-  src: url('fonts/Artifika-Regular.ttf');
+  font-family: Ubuntu-R;
+  src: url('fonts/Ubuntu-R.ttf');
 }
 body {
 	background-color: #FCFBF2;
@@ -9,7 +9,7 @@ body {
 }
 #website_title {
 	text-align: center;
-	font-family: Artifika-Regular;
+	font-family: Ubuntu-R;
 	font-size: 30px;
 	background-color: #CDCCCC;
 	-webkit-border-radius: 10px;
