@@ -36,7 +36,7 @@ Just create a tree files/directories like that :
 
 ![alt text](http://socketubs.net/tree_screen.png "Tree files")
 
-You can easy watch the face of default template [here](http://socketubs.net:8000).
+You can easy watch the face of default template on my [website](http://socketubs.net).
 
 In just one command. Easy to understand the simple usage of __pyhame__.
 
