@@ -16,8 +16,8 @@ from subprocess import getoutput
 
 # Archive maker
 def create_archive():
-    import zipfile, os, configparser
-    from time import gmtime, strftime
+	import zipfile, os, configparser
+	from time import gmtime, strftime
 
 	config = configparser.RawConfigParser()
 	config_file = "pyhame.conf"
@@ -27,17 +27,17 @@ def create_archive():
 	content_folder      = config.get(section, 'content_folder')
 	template_name       = config.get(section, 'template_name')
 
-    # Create archives diretorie if not exist
-    if not os.path.exists("archives"):
-        os.makedirs("archives")
+	# Create archives diretorie if not exist
+	if not os.path.exists("archives"):
+		os.makedirs("archives")
 
-    # Create archive
-    archive = zipfile.ZipFile('archives/%s_update.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
-    archive.write(content_folder)
-    archive.write("html_%s" % content_folder)
-    archive.write("index.html")
-    archive.write("tpl/%s" % template_name)
-    archive.close()
+	# Create archive
+	archive = zipfile.ZipFile('archives/%s_update.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
+	archive.write(content_folder)
+	archive.write("html_%s" % content_folder)
+	archive.write("index.html")
+	archive.write("tpl/%s" % template_name)
+	archive.close()
 
 # Check
 def check():
