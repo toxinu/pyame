@@ -187,6 +187,7 @@ def html_content_folder_make(path):
 def recover_special_files():
 	global special_files
 	special_files = ["website_title","welcome_message","footer","welcome_content"]
+	exclude_markdown = ["website_title"]
 	gl = globals()
 	for f in special_files:
 		gl[f] = False		
@@ -195,8 +196,16 @@ def recover_special_files():
 			if i == file:
 				tmp_file = open("%s/%s" % (content_folder, i), 'r')
 				gl[file] = tmp_file.read()
-				gl[file] = markdown_it(gl[file])
-				gl[file] = gl[file][:-4]
+				tmp_check = False
+				for f in exclude_markdown:
+					if i == f:
+						tmp_check = True
+						break
+					if tmp_check:
+						gl[file] = gl[file].replace('\n', '<br>')
+						gl[file] = gl[file][:-4]
+					else:
+						gl[file] = markdown_it(gl[file])
 				tmp_file.close()
 	
 # List content folder files
