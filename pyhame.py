@@ -97,7 +97,7 @@ def pre_check():
 		os.makedirs(content_folder)
 	# Check if template_name exit
 	template_path = "tpl/%s" % template_name
-	if not os.path.exists(template_path) or not os.path.exists("/%s_index" % template_name) or not os.path.exists("/%s_view" % template_name) or not os.path.exists("/%s.css" % template_name):
+	if not os.path.exists(template_path) or not os.path.exists("%s/%s_index" % (template_path, template_name)) or not os.path.exists("%s/%s_view" % (template_path, template_name)) or not os.path.exists("%s/%s.css" % (template_path, template_name)):
 		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view, .css must be in template folder. Default will be used.")
 		template_name = "default"
 
