@@ -1,5 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+# Check Python version
+if sys.version_info < (3, 1):
+	print("Must use Python 3.1")
+	sys.exit(0
+
 print("####################################")
 print("## Update script require git-core ##")
 print("####################################\n")
