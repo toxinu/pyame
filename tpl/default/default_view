@@ -18,7 +18,6 @@
 		<div id="file_content">set_file_content</div>
 	<footer>
 		set_footer
-		<br />
 	</footer>
 	</body>
 </html>
