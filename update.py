@@ -7,7 +7,7 @@ if sys.version_info < (3, 1):
 	sys.exit(0)
 
 print("####################################")
-print("## Update script require git-core ##")
+print("## \033[93mUpdate script require git-core\033[0m ##")
 print("####################################\n")
 
 ## Checking updates commands
@@ -49,14 +49,14 @@ def create_archive():
 def check():
 	output = getoutput(check_command01)
 	local_head = output[:40]
-	print("Lastest local Head :  %s" % local_head)
+	print(" :: Lastest local Head :  %s" % local_head)
 	
 	output = getoutput(check_command02)
 	remote_head = output[:40]
-	print("Lastest remote Head : %s" % remote_head)
+	print(" :: Lastest remote Head : %s" % remote_head)
 	
 	if local_head != remote_head:
-		print("Update available")
+		print("\n \033[92m::\033[0m Update available !\n")
 		return True
 	return False
 
@@ -67,15 +67,15 @@ def update():
 	output = getoutput(update_command02)
 	print("\n%s\n" % output)
 	print("####################################")
-	print("##  Your Pyhame is up to date !   ##")
+	print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
 	print("####################################\n")
 
 if check():
-	so = input("Do updates ? (A backup will be create in archives folder). [yes/NO]\n")
+	so = input(" \033[93m::\033[0m Do updates ? (A backup will be create in archives folder). [yes/NO]\n")
 	if so == "yes":
 		create_archive()
 		update()
 else:
 	print("\n####################################")
-	print("## Pyhame is already up to date ! ##")
+	print("## \033[92mPyhame is already up to date !\033[0m ##")
 	print("####################################\n")
