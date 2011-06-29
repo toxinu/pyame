@@ -53,7 +53,6 @@ def pre_check():
 		sys.exit(0)
 	# Check content_html value
 	if content_html != "yes" and content_html != "no" or not content_html:
-		print(content_html)
 		print(" \033[91m::\033[0m \"content_html\" must be \"yes\" or \"no\" in pyhame.conf (general section)")
 		sys.exit(0)
 	######################
