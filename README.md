@@ -19,7 +19,7 @@ __Good things for simple users :__
   - Permalink on each page
   - Simple Html template
   - Very light static web site
-  - W3C Html5 validate ([link](http://validator.w3.org/check?uri=http%3A%2F%2Fsocketubs.net%3A8000%2F))
+  - W3C Html5 validate ([link](http://validator.w3.org/check?uri=http%3A%2F%2Fsocketubs.net%2F))
   - Create an .zip archive of your website on each html rendering
 
 
