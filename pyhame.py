@@ -40,46 +40,46 @@ def pre_check():
 	#####################
 	# Check if content_folder is set
 	if not content_folder:
-		print("\"content_folder\" must be given in pyhame.conf (general section)")
+		print(" \033[91m::\033[0m \"content_folder\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
 	# Check if template_name is set
 	global template_name
 	if not template_name:
-		print("\"template_name\" must be given in pyhame.conf (general section)")
+		print(" \033[93m::\033[0m \"template_name\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
 	# Check if website_url is set
 	if not website_url:
-		print("\"website_url\" must be given in pyhame.conf (general section)")
+		print(" \033[91m::\033[0m \"website_url\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
 	# Check content_html value
 	if content_html != "yes" and content_html != "no" or not content_html:
 		print(content_html)
-		print("\"content_html\" must be \"yes\" or \"no\" in pyhame.conf (general section)")
+		print(" \033[91m::\033[0m \"content_html\" must be \"yes\" or \"no\" in pyhame.conf (general section)")
 		sys.exit(0)
 	######################
 	## WebShare section ##
 	######################
 	# Check webshare_active
 	if webshare_active != "yes" and webshare_active != "no" or not webshare_active:
-		print("\"webshare_active\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
+		print(" \033[91m::\033[0m \"webshare_active\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
 		sys.exit(0)
 	if webshare_active == "yes":
 		# Check if port is set
 		global port
 		if not port:
-			print("\"port\" must be given in pyhame.conf and must be an integer (webshare section)")
+			print(" \033[91m::\033[0m \"port\" must be given in pyhame.conf and must be an integer (webshare section)")
 			sys.exit(0)
 		try:
 			port = int(port)
 		except ValueError:
-			print("\"port\" must be an integer (webshare section)")
+			print(" \033[91m::\033[0m \"port\" must be an integer (webshare section)")
 			sys.exit(0)
 		if ip_proto != "ipv4" and ip_proto != "ipv6" or not ip_proto:
-			print("\"ip_proto\" must be \"ipv4\" or \"ipv6\" in pyhame.conf (webshare section)")
+			print(" \033[91m::\033[0m \"ip_proto\" must be \"ipv4\" or \"ipv6\" in pyhame.conf (webshare section)")
 			sys.exit(0)
 		global port_everywhere
 		if port_everywhere != "no" and port_everywhere != "yes" or not port_everywhere:
-			print("\"port_everywhere\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
+			print(" \033[91m::\033[0m \"port_everywhere\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
 			sys.exit(0)
 	if webshare_active == "no":
 		port_everywhere = "no"
@@ -88,21 +88,19 @@ def pre_check():
 	####################
 	# Check if archive is set
 	if archive != "yes" and archive != "no" or not archive:
-		print("\"archive\" must be \"yes\" or \"no\" in pyhame.conf (others section)")
+		print(" \033[91m::\033[0m \"archive\" must be \"yes\" or \"no\" in pyhame.conf (others section)")
 		sys.exit(0)
 				
 	## Create defaults files
 	# Check if content_folder exist, if not, create it.
 	if not os.path.exists(content_folder):
-		print("\"content_folder\" you have given not exist. It will be automatically create")
+		print(" \033[93m::\033[0m \"content_folder\" you have given not exist. It will be automatically create")
 		os.makedirs(content_folder)
 	# Check if template_name exit
-	if not os.path.exists("tpl/%s" % template_name):
-		print("\"template_name\" you have given not exist. Default will be used.")
+	template_path = "tpl/%s" % template_name
+	if not os.path.exists(template_path) or not os.path.exists("/%s_index" % template_name) or not os.path.exists("/%s_view" % template_name) or not os.path.exists("/%s.css" % template_name):
+		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view, .css must be in template folder. Default will be used.")
 		template_name = "default"
-	if not os.path.exists("tpl/%s" %template_name):
-		print("%s template not exist." % template_name)
-		sys.exit(0)
 
 # WebShare
 def webshare(port):
@@ -121,7 +119,7 @@ def webshare(port):
 		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\".")
 		quit()
 
-	print("# Starting web server at port %s ..." % port)
+	print("\n# Starting web server at port %s ..." % port)
 	print("##  Tape in your browser :")
 	print("##   http://localhost:%s for local access" % port)
 	print("##   http://%s:%s for public access" % (pub_ip, port))
