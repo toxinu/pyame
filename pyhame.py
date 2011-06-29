@@ -117,14 +117,17 @@ def webshare(port):
 	else:
 		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\".")
 		quit()
-
-	print("\n# Starting web server at port %s ..." % port)
-	print("##  Tape in your browser :")
-	print("##   http://localhost:%s for local access" % port)
-	print("##   http://%s:%s for public access" % (pub_ip, port))
-	print("# To stop server, Ctrl-C")
-	print("...")
-	httpd.serve_forever()
+	try:
+		print("\n  # Starting web server at port %s ..." % port)
+		print("  ##  Tape in your browser :")
+		print("  ##   http://localhost:%s for local access" % port)
+		print("  ##   http://%s:%s for public access" % (pub_ip, port))
+		print("  # To stop server, Ctrl-C")
+		print("...")
+		httpd.serve_forever()
+	except KeyboardInterrupt:
+		print("\n \033[93m::\033[0m Ctrl-C received, shutting down server")
+		httpd.socket.close()
 
 # Archive maker
 def create_archive():
