@@ -3,7 +3,7 @@
 # Check Python version
 if sys.version_info < (3, 1):
 	print("Must use Python 3.1")
-	sys.exit(0
+	sys.exit(0)
 
 print("####################################")
 print("## Update script require git-core ##")
