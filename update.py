@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Check Python version
+import sys
 if sys.version_info < (3, 1):
 	print("Must use Python 3.1")
 	sys.exit(0)
