@@ -47,7 +47,7 @@ def create_archive():
 
 # Create conf backup
 def conf_backup():
-	import shutil
+	from shutil import copyfile
 	conf_file = "pyhame.conf"
 	conf_back = "pyhame.conf.back"
 	copyfile(conf_file, conf_back)
