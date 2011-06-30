@@ -45,7 +45,7 @@ def create_archive():
 	archive.write("tpl/%s" % template_name)
 	archive.close()
 
-# Create conf backuo
+# Create conf backup
 def conf_backup():
 	import shutil
 	conf_file = "pyhame.conf"
