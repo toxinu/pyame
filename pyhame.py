@@ -232,7 +232,10 @@ def content_listing(content_html):
 		# Iterate through collected folder to get files
 		for oDir in aDirs:
 			if oDir == content_folder:
-				root_html_content_folder = root_html_content_folder + ("<a href=\"#\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % oDir)
+				if port_everywhere == "yes":
+					root_html_content_folder = root_html_content_folder + ("<a href=\"http://%s:%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, port, oDir))
+				else:
+					root_html_content_folder = root_html_content_folder + ("<a href=\"http://%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, oDir))
 			else:
 				sub_html_content_folder = sub_html_content_folder + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
 			for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
