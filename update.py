@@ -45,6 +45,13 @@ def create_archive():
 	archive.write("tpl/%s" % template_name)
 	archive.close()
 
+# Create conf backuo
+def conf_backup():
+	import shutil
+	conf_file = "pyhame.conf"
+	conf_back = "pyhame.conf.back"
+	copyfile(conf_file, conf_back)
+
 # Check
 def check():
 	output = getoutput(check_command01)
@@ -71,9 +78,10 @@ def update():
 	print("####################################\n")
 
 if check():
-	so = input(" \033[93m::\033[0m Do updates ? (A backup will be create in archives folder). [yes/NO]\n")
+	so = input(" \033[93m::\033[0m Do updates ? (A backup (_update) will be create in archives folder and a conf file backup too). [yes/NO]\n")
 	if so == "yes":
 		create_archive()
+		conf_backup()
 		update()
 else:
 	print("\n####################################")
