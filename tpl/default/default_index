@@ -13,8 +13,8 @@
 		<h2 id="website_title"><a href="set_website_url">set_website_title</a></h2>
 		<div id="welcome_message">set_welcome_message</div>
 		<div id="menu">
-			<div id="root_menu">set_root_menu</div>
-			<div id="sub_menu">set_sub_menu</div>
+			<div id="root_menu">set_root_menu_01</div>
+			<div id="sub_menu">set_sub_menu_01</div>
 		</div>
 		<div id="welcome_content">set_welcome_content</div>
 	<footer>

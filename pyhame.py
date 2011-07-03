@@ -31,6 +31,10 @@ ip_proto			= config.get(section, 'ip_proto')
 section = "others"
 archive				= config.get(section, 'archive')
 
+## Plugins ##
+section = "plugins"
+plugins				= config.get(section, 'plugins')
+
 #################
 ### Pre-Check ###
 #################
@@ -41,6 +45,9 @@ def pre_check():
 	# Check if content_folder is set
 	if not content_folder:
 		print(" \033[91m::\033[0m \"content_folder\" must be given in pyhame.conf (general section)")
+		sys.exit(0)
+	if content_folder == "tpl" or content_folder == "lib":
+		print(" \033[91m::\033[0m \"content_folder\" cant be \"tpl\", \"lib\" or \"archives\".  (general section)")
 		sys.exit(0)
 	# Check if template_name is set
 	global template_name
@@ -100,6 +107,36 @@ def pre_check():
 	if not os.path.exists(template_path) or not os.path.exists("%s/%s_index" % (template_path, template_name)) or not os.path.exists("%s/%s_view" % (template_path, template_name)):
 		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view must be in template folder. Default will be used.")
 		template_name = "default"
+
+#################
+###  Plugins  ###
+#################
+# Import and run
+def plugins_go():
+	sys.path.append('lib')
+	global plugins
+	plugins = plugins.split(',')
+	global plugins_pre_functions
+	plugins_variables = ["plugin_hide_special_files"]
+	gl = globals()
+	for f in plugins_variables:
+		gl[f] = []
+	for plugin in plugins:
+		print("\n \033[93m::\033[0m Import %s..." % plugin)
+		exec("import plugins." + plugin)
+		print(" \033[93m::\033[0m Run %s...\n" % plugin)
+		# Plugins_Pre
+		import configparser
+		for f in plugins_variables:
+			config = configparser.RawConfigParser()
+			config_file = "lib/plugins/%s.conf" % plugin
+			config.read(config_file)
+			section = "variables"
+			for each in config.get(section, f).split(','):
+				gl[f].append(each)
+		#exec("plugins.%s.main()" % plugin)
+		print(" \033[92m::\033[0m Success")
+	print(plugin_hide_special_files)
 
 # WebShare
 def webshare(port):
@@ -207,17 +244,21 @@ def recover_special_files():
 					else:
 						gl[file] = markdown_it(gl[file])
 				tmp_file.close()
-	
+
 # List content folder files
 def content_listing(content_html):
 	# Import for escape unsafe char in url
 	from urllib.parse import quote
 	# Create empty list to store collected folders
 	aDirs = []
-	global root_html_content_folder
-	global sub_html_content_folder
-	root_html_content_folder = ""
-	sub_html_content_folder = ""
+	global root_menu_01
+	global root_menu_02
+	global sub_menu_01
+	global sub_menu_02
+	root_menu_01 = ""
+	root_menu_02 = ""
+	sub_menu_01 = ""
+	sub_menu_02 = ""
 	# Iterate through root folder to collected folders
 	for oDirPaths, oDirNames, oFiles in os.walk( content_folder, True, None ):
     	# Add folder to list
@@ -233,11 +274,11 @@ def content_listing(content_html):
 		for oDir in aDirs:
 			if oDir == content_folder:
 				if port_everywhere == "yes":
-					root_html_content_folder = root_html_content_folder + ("<a href=\"http://%s:%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, port, oDir))
+					root_menu_01 = root_menu_01 + ("<a href=\"http://%s:%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, port, oDir))
 				else:
-					root_html_content_folder = root_html_content_folder + ("<a href=\"http://%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, oDir))
+					root_menu_01 = root_menu_01 + ("<a href=\"http://%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, oDir))
 			else:
-				sub_html_content_folder = sub_html_content_folder + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
+				sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
 			for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 				global file_name
 				global dl_file_link
@@ -249,28 +290,34 @@ def content_listing(content_html):
 					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (quote(oPaths), quote(i))
 					permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (quote(oPaths), quote(i))
 					if oDir == content_folder:
-						tmp_check = False
-						for f in special_files:
+						plugin_tmp_check = False
+						for f in plugin_hide_special_files:
 							if i == f:
-								tmp_check = True
+								plugin_tmp_check = True
 								break
-						if not tmp_check:
-							if content_html == "yes":
-								html_content_file("%s/%s" % (oPaths, i))
-								root_html_content_folder = root_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
-							else:
-								root_html_content_folder = root_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+						if not plugin_tmp_check:
+							tmp_check = False
+							for f in special_files:
+								if i == f:
+									tmp_check = True
+									break
+							if not tmp_check:
+								if content_html == "yes":
+									html_content_file("%s/%s" % (oPaths, i))
+									root_menu_01 = root_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+								else:
+									root_menu_01 = root_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 					else:
 						if content_html == "yes":
-							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 							html_content_file("%s/%s" % (oPaths, i))
 						else:
-							sub_html_content_folder = sub_html_content_folder + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 				break
 			if oDir == content_folder:
-				root_html_content_folder += ("</ul>\n")
+				root_menu_01 += ("</ul>\n")
 			else:
-				sub_html_content_folder += ("</ul>\n")
+				sub_menu_01 += ("</ul>\n")
 
 # Read template index
 def read_template_index():
@@ -324,8 +371,8 @@ def setup_index(template_file):
 		template_file = template_file.replace("set_footer", footer)
 	else:
 		template_file = template_file.replace("set_footer", "Create your footer file")
-	template_file = template_file.replace("set_root_menu", root_html_content_folder)
-	template_file = template_file.replace("set_sub_menu", sub_html_content_folder)
+	template_file = template_file.replace("set_root_menu_01", root_menu_01)
+	template_file = template_file.replace("set_sub_menu_01", sub_menu_01)
 	if port_everywhere == "yes":
 		template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
 	else:
@@ -341,7 +388,8 @@ def write_index(index_final):
 ######################################
 # Start script #######################
 ######################################
-
+# Plugins
+plugins_go()
 # Check every variables and folders
 pre_check()
 # Recover special files like welcome_message ...
