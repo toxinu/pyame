@@ -19,6 +19,7 @@ content_folder		= config.get(section, 'content_folder')
 template_name		= config.get(section, 'template_name')
 website_url			= config.get(section, 'website_url')
 content_html		= config.get(section, 'content_html')
+extensions_to_render= config.get(section, 'extensions_to_render')
 
 ## WebShare ##
 section = "webshare"
@@ -30,10 +31,6 @@ ip_proto			= config.get(section, 'ip_proto')
 ## Others ##
 section = "others"
 archive				= config.get(section, 'archive')
-
-## Plugins ##
-section = "plugins"
-plugins				= config.get(section, 'plugins')
 
 #################
 ### Pre-Check ###
@@ -220,6 +217,7 @@ def html_content_folder_make(path):
 		html_content_root_delete = True
 	if not os.path.exists(path):
 		os.makedirs(path)
+
 # Recover specials files in content folder
 def recover_special_files():
 	global special_files
@@ -244,6 +242,36 @@ def recover_special_files():
 					else:
 						gl[file] = markdown_it(gl[file])
 				tmp_file.close()
+
+# List extensions to render
+def create_extensions_to_render_list():
+	global extensions_to_render_list
+	extensions_to_render_list = []
+	for extension in extensions_to_render.split(','):
+		extension = extension.replace('"', '')
+		extensions_to_render_list.append(extension)
+
+# Check file extension
+def check_file_extension(filename):
+	filename = filename.split('.')
+	tmp_extension_check = False
+	if len(filename) == 1:
+		return True
+	for extension in extensions_to_render_list:
+		if filename[-1] == extension:
+			return True
+			break
+	return False
+
+# Remove extension
+def remove_extension(filename):
+	filename = filename.split('.')
+	tmp_extension_check = False
+	for extension in extensions_to_render_list:
+		if filename[-1] == extension:
+			del filename[-1]
+	filename = ''.join(filename)
+	return filename
 
 # List content folder files
 def content_listing(content_html):
@@ -297,14 +325,22 @@ def content_listing(content_html):
 								break
 						if not tmp_check:
 							if content_html == "yes":
-								html_content_file("%s/%s" % (oPaths, i))
-								root_menu_01 = root_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+								if check_file_extension(i):
+									html_content_file("%s/%s" % (oPaths, i))
+									filename_without_extension = i.split('.')					
+									root_menu_01 = root_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+								else:
+									root_menu_01 = root_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))									
 							else:
 								root_menu_01 = root_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 					else:
 						if content_html == "yes":
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
-							html_content_file("%s/%s" % (oPaths, i))
+							if check_file_extension(i):
+								html_content_file("%s/%s" % (oPaths, i))
+								filename_without_extension = i.split('.')
+								sub_menu_01 = sub_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+							else:
+								sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 						else:
 							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 				break
@@ -384,6 +420,8 @@ def write_index(index_final):
 ######################################
 # Check every variables and folders
 pre_check()
+# Create extensions to render list
+create_extensions_to_render_list()
 # Recover special files like welcome_message ...
 recover_special_files()
 # Read template Index
