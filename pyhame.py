@@ -290,23 +290,17 @@ def content_listing(content_html):
 					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (quote(oPaths), quote(i))
 					permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (quote(oPaths), quote(i))
 					if oDir == content_folder:
-						plugin_tmp_check = False
-						for f in plugin_hide_special_files:
+						tmp_check = False
+						for f in special_files:
 							if i == f:
-								plugin_tmp_check = True
+								tmp_check = True
 								break
-						if not plugin_tmp_check:
-							tmp_check = False
-							for f in special_files:
-								if i == f:
-									tmp_check = True
-									break
-							if not tmp_check:
-								if content_html == "yes":
-									html_content_file("%s/%s" % (oPaths, i))
-									root_menu_01 = root_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
-								else:
-									root_menu_01 = root_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+						if not tmp_check:
+							if content_html == "yes":
+								html_content_file("%s/%s" % (oPaths, i))
+								root_menu_01 = root_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							else:
+								root_menu_01 = root_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 					else:
 						if content_html == "yes":
 							sub_menu_01 = sub_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
