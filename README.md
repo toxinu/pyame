@@ -11,7 +11,7 @@ After that your files/folders will be automaticaly parse and a static html5 webs
 __Good things for simple users :__
 
   - Just write text files
-  - Markdown usage
+  - __Markdown__ usage
   - Just create directories
   - Just run pyhame.py
   - Embedded Http Web Server
@@ -21,21 +21,21 @@ __Good things for simple users :__
   - Very light static web site
   - W3C Html5 validate ([link](http://validator.w3.org/check?uri=http%3A%2F%2Fsocketubs.net%2F))
   - Create an .zip archive of your website on each html rendering
-  - Write with the best editor ever vim through ssh (for bearded man)
-
+  - Write with the best editor ever vim through ssh (for bearded man)		
 
 __Others good things for advanced users :__
 
   - Easy to write template
   - Choose between ipv4 and ipv6
   - Python 3.x
+  - Sweet update script with git repo (just for Linux and Mac Os with git-core)
   - Coded with my feet
 
 ### Preview
 
 Just create a tree files/directories like that :
 
-![alt text](http://socketubs.net/tree_screen.png "Tree files")
+![alt text](http://mail.socketubs.net/tree_screen.png "Tree files")
 
 You can easy watch the face of default template on my [website](http://socketubs.net).
 
