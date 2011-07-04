@@ -388,8 +388,6 @@ def write_index(index_final):
 ######################################
 # Start script #######################
 ######################################
-# Plugins
-plugins_go()
 # Check every variables and folders
 pre_check()
 # Recover special files like welcome_message ...
