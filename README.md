@@ -64,11 +64,14 @@ Archlinux :
 ## Run
 
 Debian :
+
 	apt-get install screen
 	screen -S pyhame
 	python3 pyhame.py # And Ctrl-A + D
 	screen -x pyhame # To attach the pyhame screen
+
 Archlinux :
+
 	pacman -S screen
 	screen -S pyhame
 	./pyhame.py # And Ctrl-A + D
@@ -77,6 +80,7 @@ Archlinux :
 ## Web proxy
 
 Nginx :
+
 	server {
     	listen   80;
 	    server_name wiki.socketubs.net www.socketubs.net socketubs.net;
