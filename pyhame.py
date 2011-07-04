@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Version : 0.3
+# Version : 0.3-1
 import sys
 # Check Python version
 if sys.version_info < (3, 1):
