@@ -139,7 +139,8 @@ def plugins_go():
 def webshare(port):
 	import http.server, socketserver, urllib.request, re
 
-	Handler = http.server.SimpleHTTPRequestHandler
+
+	Handler = ServerHandler
 	httpd = socketserver.TCPServer(("", port), Handler)
 
 	if ip_proto == "ipv4":
