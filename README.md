@@ -1,6 +1,6 @@
 Description
 ---------------
-__Pyhame 0.2__ is an easy website creator written in _Python_.
+__Pyhame 0.3__ is an easy website creator written in _Python_.
 You just put files/folders in your content folder and launch pyhame.
 You dont need to do Html/Css/Php or other web language.
 
@@ -46,3 +46,7 @@ In just one command. Easy to understand the simple usage of __pyhame__.
 Work on Linux (tested on archlinux and Debian Squeeze with [python3.1-minimal](http://packages.debian.org/squeeze/python3.1-minimal))
 Work on Windows (tested on Windows Seven 64bits with [Python 3.2 x86-64](http://www.python.org/download/releases/3.2/)
 Could work on Mac Os. (not tested)
+
+### Other Again
+
+  - 0.3 : _July 4 2011_
