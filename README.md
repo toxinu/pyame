@@ -11,7 +11,7 @@ After that your files/folders will be automaticaly parse and a static html5 webs
 __Good things for simple users :__
 
   - Just write text files
-  - __Markdown__ usage
+  - __Markdown__ usage with highlight.js for code rendering
   - Just create directories
   - Just run pyhame.py
   - Embedded Http Web Server
