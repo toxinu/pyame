@@ -160,6 +160,7 @@ footer a {
 }
 #file_content {
 	margin: auto;
+	padding: 5px;
 	width: 900px;
 	font-family: Verdana, Tahoma;
     font-size: 11px;
