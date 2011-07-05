@@ -15,22 +15,33 @@ config.read(config_file)
 
 ## General ##
 section = "general"
-content_folder		= config.get(section, 'content_folder')
-template_name		= config.get(section, 'template_name')
-website_url			= config.get(section, 'website_url')
-content_html		= config.get(section, 'content_html')
-extensions_to_render= config.get(section, 'extensions_to_render')
+try:
+	content_folder		= config.get(section, 'content_folder')
+	template_name		= config.get(section, 'template_name')
+	website_url			= config.get(section, 'website_url')
+	content_html		= config.get(section, 'content_html')
+	extensions_to_render= config.get(section, 'extensions_to_render')
+except configparser.Error as err:
+	print('There is an error in pyhame.conf (%s)' % err)
+	sys.exit(1)
 
 ## WebShare ##
 section = "webshare"
-webshare_active		= config.get(section, 'webshare')
-port_everywhere		= config.get(section, 'port_everywhere')
-port				= config.get(section, 'port')
-ip_proto			= config.get(section, 'ip_proto')
-
+try:
+	webshare_active		= config.get(section, 'webshare')
+	port_everywhere		= config.get(section, 'port_everywhere')
+	port				= config.get(section, 'port')
+	ip_proto			= config.get(section, 'ip_proto')
+except configparser.Error as err:
+	print('There is an error in pyhame.conf (%s)' % err)
+	sys.exit(1)
 ## Others ##
 section = "others"
-archive				= config.get(section, 'archive')
+try:
+	archive				= config.get(section, 'archive')
+except configparser.Error as err:
+	print('There is an error in pyhame.conf (%s)' % err)
+	sys.exit(1)
 
 #################
 ### Pre-Check ###
