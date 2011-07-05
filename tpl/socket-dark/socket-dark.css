@@ -17,6 +17,7 @@ body {
 	font-size: 0.625em;
 	text-align: center;
 	margin: auto;
+	margin-bottom: 10px;
     text-align: center;
     font-family: Verdana, Tahoma;
     width: 500px;
@@ -66,6 +67,7 @@ footer a {
 }
 #open_menu {
 	margin: auto;
+	margin-top: 20px;
 	width: 200px;
 	background-color: #CDCCCC;
     -webkit-border-radius: 10px;
@@ -83,7 +85,9 @@ footer a {
 	font-family: Verdana, Tahoma;
 	background-color: #CDCCCC;
 	width: 600px;
-	margin: 20px 0px 20px 0px;
+	margin: auto;
+	margin-top: 20px;
+	margin-bottom: 20px;
 	padding: 10px 0px 10px 0px;
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
@@ -101,6 +105,7 @@ footer a {
 #root_menu {
 	width: 600px;
 	text-align: center;
+	margin: auto;
 	margin-bottom: -10px;
 }
 #root_menu a {
@@ -115,6 +120,9 @@ footer a {
 }
 #root_menu li {
 	display: inline-block;
+}
+#sub_menu {
+	margin: auto;
 }
 #sub_menu .sub_content_title {
 	font-weight: bold;
