@@ -394,6 +394,8 @@ def setup_view(template_file):
 		template_file = template_file.replace("set_website_url", "http://%s" % website_url)
 	template_file = template_file.replace("set_dl_file_link", dl_file_link)
 	template_file = template_file.replace("set_permalink", permalink)
+	template_file = template_file.replace("set_root_menu_01", root_menu_01)
+	template_file = template_file.replace("set_sub_menu_01", sub_menu_01)
 	return template_file
 
 # Replace template variables index
