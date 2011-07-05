@@ -6,7 +6,10 @@
 		<title>set_website_title</title>
 		<link rel="shortcut icon" type="image/x-icon" href="/tpl/socket-dark/favicon.ico">
 		<!-- Highlight script and css -->
-		<script src="/lib/highlight/highlight.js"></script>
+		<script src="/lib/highlight/highlight.pack.js"></script>
+		<script type="text/javascript">
+			hljs.initHighlightingOnLoad();
+		</script>
 		<link rel="stylesheet" href="/lib/highlight/styles/dark.css">
 		<!-- End of Highlight import -->
 	</head>
