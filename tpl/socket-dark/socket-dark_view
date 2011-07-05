@@ -4,6 +4,7 @@
 		<LINK REL=StyleSheet HREF="/tpl/socket-dark/socket-dark.css" TYPE="text/css" MEDIA=screen>
 		<meta charset="utf-8">
 		<title>set_website_title</title>
+		<link rel="shortcut icon" type="image/x-icon" href="/tpl/socket-dark/favicon.ico">
 		<!-- Highlight script and css -->
 		<script src="/lib/highlight/highlight.js"></script>
 		<link rel="stylesheet" href="/lib/highlight/styles/dark.css">

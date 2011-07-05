@@ -4,6 +4,7 @@
 		<LINK REL=StyleSheet HREF="tpl/socket-dark/socket-dark.css" TYPE="text/css" MEDIA=screen>
 		<meta charset="utf-8">
 		<title>set_website_title</title>
+		<link rel="shortcut icon" type="image/x-icon" href="/tpl/socket-dark/favicon.ico">
 		<script type="text/javascript" src="/tpl/socket-dark/js/jquery-1.3.2.js"></script>
 		<script type="text/javascript" src="/tpl/socket-dark/js/collapse.js"></script>
 		<!-- Highlight script and css -->
