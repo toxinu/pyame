@@ -168,6 +168,10 @@ footer a {
 	-webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
+	-o-transition:background-color 500ms ease-in-out;
+    -webkit-transition:background-color 500ms ease-in-out;
+    -moz-transition: background-color 500ms ease-in-out;
+    transition: background-color 500ms ease-in-out;
 }
 #file_content:hover {
     background-color:#212020;
