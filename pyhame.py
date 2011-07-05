@@ -306,7 +306,8 @@ def content_listing(content_html):
 				else:
 					root_menu_01 = root_menu_01 + ("<a href=\"http://%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, oDir))
 			else:
-				sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
+				if os.listdir(oDir):
+					sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
 			for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 				global file_name
 				global dl_file_link
@@ -347,7 +348,8 @@ def content_listing(content_html):
 			if oDir == content_folder:
 				root_menu_01 += ("</ul>\n")
 			else:
-				sub_menu_01 += ("</ul>\n")
+				if os.listdir(oDir):
+					sub_menu_01 += ("</ul>\n")
 
 # Read template index
 def read_template_index():
