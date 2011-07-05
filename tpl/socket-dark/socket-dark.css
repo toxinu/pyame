@@ -164,6 +164,16 @@ footer a {
 	font-family: Verdana, Tahoma;
     font-size: 11px;
     margin-top: 40px;
+	-webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+}
+#file_content:hover {
+    background-color:#212020;
+    -o-transition:background-color 500ms ease-in-out;
+    -webkit-transition:background-color 500ms ease-in-out;
+    -moz-transition: background-color 500ms ease-in-out;
+    transition: background-color 500ms ease-in-out;
 }
 #file_content a {
 	text-decoration: none;
