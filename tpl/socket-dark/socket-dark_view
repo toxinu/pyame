@@ -34,6 +34,7 @@
 			</div>
 		<footer>
 			set_footer
+			Powered by <a href="https://github.com/Socketubs/pyhame">Pyhame</a>
 		</footer>
 	</body>
 </html>
