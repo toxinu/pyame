@@ -365,7 +365,13 @@ def menu_generator(content_html):
 			root_menu_01 += ("</ul>\n")
 		else:
 			if os.listdir(oDir):
-				sub_menu_01 += ("</ul>\n")
+				tmp_check = False
+				for f in exclude_folders_listing_list:
+					if oDir == f:
+						tmp_check = True
+						break
+				if not tmp_check:
+					sub_menu_01 += ("</ul>\n")
 
 # Rendering html content files
 def rendering_html_content_files():
