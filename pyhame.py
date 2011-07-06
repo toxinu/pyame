@@ -338,9 +338,9 @@ def content_listing(content_html):
 						if not tmp_check:
 							if content_html == "yes":
 								if check_file_extension(i):
-									html_content_file("%s/%s" % (oPaths, i))
 									filename_without_extension = i.split('.')					
 									root_menu_01 = root_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+									html_content_file("%s/%s" % (oPaths, i))
 								else:
 									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))									
 							else:
@@ -348,9 +348,9 @@ def content_listing(content_html):
 					else:
 						if content_html == "yes":
 							if check_file_extension(i):
-								html_content_file("%s/%s" % (oPaths, i))
 								filename_without_extension = i.split('.')
 								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+								html_content_file("%s/%s" % (oPaths, i))
 							else:
 								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 						else:
