@@ -10,7 +10,6 @@ After that your files/folders will be automaticaly parse and a static html5 webs
 
 __Good things for simple users :__
 
-  - Just write text files
   - __Markdown__ usage with highlight.js for code rendering
   - Just create directories
   - Just run pyhame.py
@@ -21,7 +20,8 @@ __Good things for simple users :__
   - Very light static web site
   - W3C Html5 validate ([link](http://validator.w3.org/check?uri=http%3A%2F%2Fsocketubs.net%2F))
   - Create an .zip archive of your website on each html rendering
-  - Write with the best editor ever vim through ssh (for bearded man)		
+  - Write with the best editor ever vim through ssh (for bearded man)
+  - Can exclude special file extensions and folders	
 
 __Others good things for advanced users :__
 
