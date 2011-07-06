@@ -21,6 +21,7 @@ try:
 	website_url			= config.get(section, 'website_url')
 	content_html		= config.get(section, 'content_html')
 	extensions_to_render= config.get(section, 'extensions_to_render')
+	exclude_folders_listing = config.get(section, 'exclude_folders_listing')
 except configparser.Error as err:
 	print('There is an error in pyhame.conf (%s)' % err)
 	sys.exit(1)
@@ -262,6 +263,14 @@ def create_extensions_to_render_list():
 		extension = extension.replace('"', '')
 		extensions_to_render_list.append(extension)
 
+# List folders to not list
+def exclude_folders_listing_list():
+	global exclude_folders_listing_list
+	exclude_folders_listing_list = []
+	for folder in exclude_folders_listing.split(','):
+		folder = folder.replace('"', '')
+		exclude_folders_listing_list.append(folder)
+
 # Check file extension
 def check_file_extension(filename):
 	filename = filename.split('.')
@@ -310,35 +319,47 @@ def menu_generator(content_html):
 				root_menu_01 = root_menu_01 + ("<a href=\"http://%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, oDir))
 		else:
 			if os.listdir(oDir):
-				sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
+				tmp_check = False
+				for f in exclude_folders_listing_list:
+					if oDir == f:
+						tmp_check = True
+						break
+				if not tmp_check:
+					sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
 		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 			oDirs.sort()
 			oDirFiles.sort()
 			for i in oDirFiles:
-				if oDir == content_folder:
-					tmp_check = False
-					for f in special_files:
-						if i == f:
-							tmp_check = True
-							break
-					if not tmp_check:
+				tmp_check = False
+				for f in exclude_folders_listing_list:
+					if oDir == f:
+						tmp_check = True
+						break
+				if not tmp_check:
+					if oDir == content_folder:
+						tmp_check = False
+						for f in special_files:
+							if i == f:
+								tmp_check = True
+								break
+						if not tmp_check:
+							if content_html == "yes":
+								if check_file_extension(i):
+									filename_without_extension = i.split('.')					
+									root_menu_01 = root_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+								else:
+									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
+							else:
+								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+					else:
 						if content_html == "yes":
 							if check_file_extension(i):
-								filename_without_extension = i.split('.')					
-								root_menu_01 = root_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+								filename_without_extension = i.split('.')
+								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
 							else:
-								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
-						else:
-							root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
-				else:
-					if content_html == "yes":
-						if check_file_extension(i):
-							filename_without_extension = i.split('.')
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 						else:
 							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
-					else:
-						sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 			break
 		if oDir == content_folder:
 			root_menu_01 += ("</ul>\n")
@@ -362,24 +383,30 @@ def rendering_html_content_files():
 			global permalink
 			oDirs.sort()
 			oDirFiles.sort()
-			for i in oDirFiles:
-				file_name = i
-				dl_file_link = "<a href=\"/%s/%s\">download</a>" % (quote(oPaths), quote(i))
-				permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (quote(oPaths), quote(i))
-				if oDir == content_folder:
-					tmp_check = False
-					for f in special_files:
-						if i == f:
-							tmp_check = True
-							break
-					if not tmp_check:
+			tmp_check = False
+			for f in exclude_folders_listing_list:
+				if oPaths == f:
+					tmp_check = True
+					break
+			if not tmp_check:
+				for i in oDirFiles:
+					file_name = i
+					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (quote(oPaths), quote(i))
+					permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (quote(oPaths), quote(i))
+					if oDir == content_folder:
+						tmp_check = False
+						for f in special_files:
+							if i == f:
+								tmp_check = True
+								break
+						if not tmp_check:
+							if content_html == "yes":
+								if check_file_extension(i):
+									html_content_file("%s/%s" % (oPaths, i))
+					else:
 						if content_html == "yes":
 							if check_file_extension(i):
-								html_content_file("%s/%s" % (oPaths, i))
-				else:
-					if content_html == "yes":
-						if check_file_extension(i):
-							html_content_file("%s/%s" % (oPaths, i))	
+								html_content_file("%s/%s" % (oPaths, i))	
 
 # Read template index
 def read_template_index():
@@ -454,6 +481,8 @@ def write_index(index_final):
 ######################################
 # Check every variables and folders
 pre_check()
+# Create the list of folders to exlude in listing
+exclude_folders_listing_list()
 # Create extensions to render list
 create_extensions_to_render_list()
 # Recover special files like welcome_message ...
