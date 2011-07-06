@@ -342,7 +342,7 @@ def content_listing(content_html):
 									filename_without_extension = i.split('.')					
 									root_menu_01 = root_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
 								else:
-									root_menu_01 = root_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))									
+									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))									
 							else:
 								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 					else:
@@ -350,11 +350,11 @@ def content_listing(content_html):
 							if check_file_extension(i):
 								html_content_file("%s/%s" % (oPaths, i))
 								filename_without_extension = i.split('.')
-								sub_menu_01 = sub_menu_01 + ("<li><a href=\"html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
 							else:
-								sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 						else:
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 				break
 			if oDir == content_folder:
 				root_menu_01 += ("</ul>\n")
