@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<LINK REL=StyleSheet HREF="/tpl/simple/simple.css" TYPE="text/css" MEDIA=screen>
+		<meta charset="utf-8">
+		<title>set_website_title</title>
+		<!-- Highlight script and css -->
+		<script src="/lib/highlight/highlight.js"></script>
+		<link rel="stylesheet" href="/lib/highlight/styles/dark.css">
+		<!-- End of Highlight import -->
+		<script type="text/javascript" src="/tpl/simple/js/jquery-1.3.2.js"></script>
+		<script type="text/javascript" src="/tpl/simple/js/collapse.js"></script>
+		<script type="text/javascript">
+            animatedcollapse.addDiv('menu', 'fade=0,speed=600,hide=1')
+            animatedcollapse.ontoggle=function($, divobj, state){}
+            animatedcollapse.init()
+        </script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+				<h2 id="website_title"><a href="set_website_url">set_website_title</a></h2>
+				<div id="root_menu">set_root_menu_01</div>
+			</div>
+			<div id="open_menu">
+				<a href="'void(0)'" rel="toggle[menu]">&diams;</a>
+			</div> 
+			<div id="menu"> 
+				<div id="sub_menu">set_sub_menu_01</div>
+			</div>
+			<div id="file">
+				<div id="file_description">
+				<div id="file_name">set_file_name</div>
+				<div id="file_links">[set_dl_file_link|set_permalink]</div>
+				</div>
+				<div id="file_content">set_file_content</div>
+			</div>
+			<footer>
+				set_footer
+			</footer>
+		</div>
+	</body>
+</html>
