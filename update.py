@@ -10,15 +10,13 @@ print("####################################")
 print("## \033[93mUpdate script require git-core\033[0m ##")
 print("####################################\n")
 print(" \033[93m::\033[0m Note that you can use -f argument to force update\n")
-print(sys.argv[1])
 
 ## Checking updates commands
 check_command01 = "git show-ref origin/master"
 check_command02 = "git ls-remote origin -h refs/heads/master"
 
 ## Update commands
-update_command01 = "git reset --hard HEAD"
-update_command02 = "git pull"
+update_command01 = "git pull"
 
 ## Force commands
 force_command01 = "git reset --hard HEAD"
@@ -81,9 +79,18 @@ def update():
 	print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
 	print("####################################\n")
 
-#if sys.argv[1] == "force":
-#	output = getoutput(update_command01)
-#	output = getoutput(update_command02)
+try:
+	if sys.argv[1] == "force":
+	print(" \033[93m::\033[0m force option set")
+	output = getoutput(force_command01)
+	print("\n%s\n" % output)
+	output = getoutput(force_command02)
+	print("\n%s\n" % output)
+	print("####################################")
+	print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
+	print("####################################\n")
+except IndexError:
+	sys.argv.append(None)
 
 if check():
 	so = input(" \033[93m::\033[0m Do updates ? (A backup (_update) will be create in archives folder and a conf file backup too). [yes/NO]\n")
