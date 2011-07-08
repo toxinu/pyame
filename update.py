@@ -9,6 +9,8 @@ if sys.version_info < (3, 1):
 print("####################################")
 print("## \033[93mUpdate script require git-core\033[0m ##")
 print("####################################\n")
+print(" \033[93m::\033[0m Note that you can use -f argument to force update\n")
+print(sys.argv[1])
 
 ## Checking updates commands
 check_command01 = "git show-ref origin/master"
@@ -17,6 +19,10 @@ check_command02 = "git ls-remote origin -h refs/heads/master"
 ## Update commands
 update_command01 = "git reset --hard HEAD"
 update_command02 = "git pull"
+
+## Force commands
+force_command01 = "git reset --hard HEAD"
+force_command02 = "git pull"
 
 from subprocess import getoutput
 
@@ -69,13 +75,15 @@ def check():
 
 # Update
 def update():
-	output = getoutput(update_command01)
-
 	output = getoutput(update_command02)
 	print("\n%s\n" % output)
 	print("####################################")
 	print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
 	print("####################################\n")
+
+#if sys.argv[1] == "force":
+#	output = getoutput(update_command01)
+#	output = getoutput(update_command02)
 
 if check():
 	so = input(" \033[93m::\033[0m Do updates ? (A backup (_update) will be create in archives folder and a conf file backup too). [yes/NO]\n")
