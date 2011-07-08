@@ -21,7 +21,8 @@ try:
 	website_url			= config.get(section, 'website_url')
 	content_html		= config.get(section, 'content_html')
 	extensions_to_render= config.get(section, 'extensions_to_render')
-	exclude_folders_listing = config.get(section, 'exclude_folders_listing')
+	no_list_no_render = config.get(section, 'no_list_no_render')
+	no_list_yes_render = config.get(section, 'no_list_yes_render')
 except configparser.Error as err:
 	print('There is an error in pyhame.conf (%s)' % err)
 	sys.exit(1)
@@ -116,36 +117,6 @@ def pre_check():
 	if not os.path.exists(template_path) or not os.path.exists("%s/%s_index" % (template_path, template_name)) or not os.path.exists("%s/%s_view" % (template_path, template_name)):
 		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view must be in template folder. Default will be used.")
 		template_name = "default"
-
-#################
-###  Plugins  ###
-#################
-# Import and run
-def plugins_go():
-	sys.path.append('lib')
-	global plugins
-	plugins = plugins.split(',')
-	global plugins_pre_functions
-	plugins_variables = ["plugin_hide_special_files"]
-	gl = globals()
-	for f in plugins_variables:
-		gl[f] = []
-	for plugin in plugins:
-		print("\n \033[93m::\033[0m Import %s..." % plugin)
-		exec("import plugins." + plugin)
-		print(" \033[93m::\033[0m Run %s...\n" % plugin)
-		# Plugins_Pre
-		import configparser
-		for f in plugins_variables:
-			config = configparser.RawConfigParser()
-			config_file = "lib/plugins/%s.conf" % plugin
-			config.read(config_file)
-			section = "variables"
-			for each in config.get(section, f).split(','):
-				gl[f].append(each)
-		#exec("plugins.%s.main()" % plugin)
-		print(" \033[92m::\033[0m Success")
-	print(plugin_hide_special_files)
 
 # WebShare
 def webshare(port):
@@ -264,12 +235,20 @@ def create_extensions_to_render_list():
 		extensions_to_render_list.append(extension)
 
 # List folders to not list
-def exclude_folders_listing_list():
-	global exclude_folders_listing_list
-	exclude_folders_listing_list = []
-	for folder in exclude_folders_listing.split(','):
-		folder = folder.replace('"', '')
-		exclude_folders_listing_list.append(folder)
+def no_list_no_render_listing():
+	global no_list_no_render_list
+	no_list_no_render_list = []
+	for item in no_list_no_render.split(','):
+		item = item.replace('"', '')
+		no_list_no_render_list.append(item)
+
+# List folders to not list
+def no_list_yes_render_listing():
+	global no_list_yes_render_list
+	no_list_yes_render_list = []
+	for item in no_list_yes_render.split(','):
+		item = item.replace('"', '')
+		no_list_yes_render_list.append(item)
 
 # Check file extension
 def check_file_extension(filename):
@@ -320,8 +299,12 @@ def menu_generator(content_html):
 		else:
 			if os.listdir(oDir):
 				tmp_check = False
-				for f in exclude_folders_listing_list:
+				for f in no_list_no_render_list:
 					if oDir == f:
+						tmp_check = True
+						break
+				for f in no_list_yes_render_list:
+					if oDir ==f:
 						tmp_check = True
 						break
 				if not tmp_check:
@@ -331,7 +314,11 @@ def menu_generator(content_html):
 			oDirFiles.sort()
 			for i in oDirFiles:
 				tmp_check = False
-				for f in exclude_folders_listing_list:
+				for f in no_list_no_render_list:
+					if oDir == f:
+						tmp_check = True
+						break
+				for f in no_list_yes_render_list:
 					if oDir == f:
 						tmp_check = True
 						break
@@ -366,7 +353,7 @@ def menu_generator(content_html):
 		else:
 			if os.listdir(oDir):
 				tmp_check = False
-				for f in exclude_folders_listing_list:
+				for f in no_list_no_render_list:
 					if oDir == f:
 						tmp_check = True
 						break
@@ -390,7 +377,7 @@ def rendering_html_content_files():
 			oDirs.sort()
 			oDirFiles.sort()
 			tmp_check = False
-			for f in exclude_folders_listing_list:
+			for f in no_list_no_render_list:
 				if oPaths == f:
 					tmp_check = True
 					break
@@ -488,7 +475,8 @@ def write_index(index_final):
 # Check every variables and folders
 pre_check()
 # Create the list of folders to exlude in listing
-exclude_folders_listing_list()
+no_list_no_render_listing()
+no_list_yes_render_listing()
 # Create extensions to render list
 create_extensions_to_render_list()
 # Recover special files like welcome_message ...
