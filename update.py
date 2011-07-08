@@ -81,14 +81,15 @@ def update():
 
 try:
 	if sys.argv[1] == "force":
-	print(" \033[93m::\033[0m force option set")
-	output = getoutput(force_command01)
-	print("\n%s\n" % output)
-	output = getoutput(force_command02)
-	print("\n%s\n" % output)
-	print("####################################")
-	print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
-	print("####################################\n")
+		print(" \033[93m::\033[0m force option set")
+		output = getoutput(force_command01)
+		print("\n%s\n" % output)
+		output = getoutput(force_command02)
+		print("\n%s\n" % output)
+		print("####################################")
+		print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
+		print("####################################\n")
+		sys.exit(0)
 except IndexError:
 	sys.argv.append(None)
 
