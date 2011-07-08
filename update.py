@@ -82,6 +82,8 @@ def update():
 try:
 	if sys.argv[1] == "force":
 		print(" \033[93m::\033[0m force option set")
+		create_archive()
+		conf_backup()
 		output = getoutput(force_command01)
 		print("\n%s\n" % output)
 		output = getoutput(force_command02)
