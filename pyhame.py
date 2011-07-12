@@ -357,6 +357,10 @@ def menu_generator(content_html):
 					if oDir == f:
 						tmp_check = True
 						break
+				for f in no_list_yes_render_list:
+					if oDir ==f:
+						tmp_check = True
+						break
 				if not tmp_check:
 					sub_menu_01 += ("</ul>\n")
 
