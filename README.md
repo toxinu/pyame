@@ -35,7 +35,7 @@ __Others good things for advanced users :__
 
 Just create a tree files/directories like that :
 
-![alt text](http://mail.socketubs.net/tree_screen.png "Tree files")
+![alt text](http://socketubs.net/home/Images/tree_screen.png "Tree files")
 
 You can easy watch the face of default template on my [website](http://socketubs.net).
 
