@@ -32,6 +32,7 @@
 			<div id="welcome_content">set_welcome_content</div>
 			<footer>
 			set_footer
+			Powered by <a href="http://pyhame.socketubs.net/">Pyhame</a>
 			</footer>
 		</div>
 	</body>
