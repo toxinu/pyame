@@ -152,8 +152,8 @@ def init_pyhame():
 		print(" \033[93m::\033[0m Pyhame initilization...")
 		open(init_lock_path, 'a').close()
 		os.utime(init_lock_path, None)
-		if os.path.exists(conf_path):
-			os.remove(conf_path)			
+		if os.path.exists(config_file):
+			os.remove(config_file)			
 		shutil.copyfile(config_file+".default", config_file)
 		read_conf()
 		if not os.path.exists(content_folder):
