@@ -203,7 +203,6 @@ def create_archive():
 	archive = zipfile.ZipFile('archives/%s.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
 	archive.write(content_folder)
 	archive.write(static_path)
-	archive.write("%s/%s" % (tpl_path, template_name))
 	archive.close()
 
 # Replace content_folder by static_path in urls
@@ -333,15 +332,11 @@ def menu_generator(content_html):
 	# Create empty list to store collected folders
 	aDirs = []
 	global root_menu_01
-	global root_menu_02
 	global sub_menu_01
-	global sub_menu_02
 	root_menu_01 = ""
-	root_menu_02 = ""
 	sub_menu_01 = ""
-	sub_menu_02 = ""
 	# Iterate through root folder to collected folders
-	for oDirPaths, oDirNames, oFiles in os.walk( content_folder, True, None ):
+	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
 		aDirs.append(oDirPaths)
 		oDirNames.sort()
 	for oDir in aDirs:
@@ -527,6 +522,15 @@ def write_index(index_final):
 	index.write(index_final)
 	index.close()
 
+# Copy template to static
+def static_template():
+	from distutils import dir_util
+
+	dest_dir = static_path+"/_template" 
+	src_dir = tpl_path+"/"+template_name
+
+	dir_util.copy_tree(src_dir, dest_dir)	
+
 ######################################
 # Start script #######################
 ######################################
@@ -548,6 +552,7 @@ rendering_html_content_files()
 index_content = setup_index(template_file_index)
 # Write index.html file
 write_index(index_content)
+static_template()
 if archive == "yes":
 	# Create archive
 	create_archive()
