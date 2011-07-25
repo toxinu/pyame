@@ -404,7 +404,6 @@ def menu_generator(content_html):
 						if content_html == "yes":
 							if check_file_extension(i):
 								filename_without_extension = i.split('.')
-								print(oPaths)
 								sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
 							else:
 								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
@@ -546,7 +545,7 @@ def static_other():
 	dir_util.copy_tree(src_dir, dest_dir)
 
 	# hightlight
-	dest_dir = static_path+"/_other"
+	dest_dir = static_path+"/_other/highlight"
 	src_dir = lib_path+"/highlight"
 	dir_util.copy_tree(src_dir, dest_dir)
 
