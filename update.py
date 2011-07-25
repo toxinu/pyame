@@ -26,35 +26,32 @@ from subprocess import getoutput
 
 # Archive maker
 def create_archive():
-	import zipfile, os, configparser
+	import tarfile, os, configparser
 	from time import gmtime, strftime
 
 	config = configparser.RawConfigParser()
-	config_file = "pyhame.conf"
+	config_file = "ressources/pyhame.conf"
 	config.read(config_file)
 
 	section = "general"
 	content_folder      = config.get(section, 'content_folder')
-	template_name       = config.get(section, 'template_name')
+	static_path			= config.get(section, 'static_path')
 
 	# Create archives diretorie if not exist
 	if not os.path.exists("archives"):
 		os.makedirs("archives")
 
 	# Create archive
-	archive = zipfile.ZipFile('archives/%s_update.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
-	archive.write(content_folder)
-	archive.write("html_%s" % content_folder)
-	archive.write("index.html")
-	archive.write("tpl/%s" % template_name)
-	archive.close()
+	tar = tarfile.open("archives/%si_update.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
+	tar.add(content_folder, filter=reset)
+	tar.add(static_path_folder, filter=reset)
+	tar.close()
 
 # Create conf backup
 def conf_backup():
 	from shutil import copyfile
-	conf_file = "pyhame.conf"
-	conf_back = "pyhame.conf.back"
-	copyfile(conf_file, conf_back)
+	config_back = config_file + ".back"
+	copyfile(config_file, config_back)
 
 # Check
 def check():
