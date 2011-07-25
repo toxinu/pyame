@@ -33,14 +33,9 @@ def create_archive():
 		os.makedirs("archives")
 
 	# Create archive
-	def reset(tarinfo):
-		tarinfo.uid = tarinfo.gid = 0
-		tarinfo.uname = tarinfo.gname = "pyhame"
-		return tarinfo
-
 	tar = tarfile.open("archives/%si_update.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
-	tar.add(content_folder, filter=reset)
-	tar.add(static_path, filter=reset)
+	tar.add(content_folder)
+	tar.add(static_path)
 	tar.close()
 
 # Create conf backup
