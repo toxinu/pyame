@@ -10,45 +10,66 @@ if sys.version_info < (3, 1):
 import os, configparser, stat, types
 
 config = configparser.RawConfigParser()
-config_file = "pyhame.conf"
-config.read(config_file)
+config_file = "ressources/pyhame.conf"
+init_lock_path	= "ressources/init.lock"
 
+
+#############
 ## General ##
-section = "general"
-try:
-	content_folder		= config.get(section, 'content_folder')
-	template_name		= config.get(section, 'template_name')
-	website_url			= config.get(section, 'website_url')
-	content_html		= config.get(section, 'content_html')
-	extensions_to_render= config.get(section, 'extensions_to_render')
-	no_list_no_render = config.get(section, 'no_list_no_render')
-	no_list_yes_render = config.get(section, 'no_list_yes_render')
-except configparser.Error as err:
-	print('There is an error in pyhame.conf (%s)' % err)
-	sys.exit(1)
-
-## WebShare ##
-section = "webshare"
-try:
-	webshare_active		= config.get(section, 'webshare')
-	port_everywhere		= config.get(section, 'port_everywhere')
-	port				= config.get(section, 'port')
-	ip_proto			= config.get(section, 'ip_proto')
-except configparser.Error as err:
-	print('There is an error in pyhame.conf (%s)' % err)
-	sys.exit(1)
-## Others ##
-section = "others"
-try:
-	archive				= config.get(section, 'archive')
-except configparser.Error as err:
-	print('There is an error in pyhame.conf (%s)' % err)
-	sys.exit(1)
+#############
+def read_conf():
+	config.read(config_file)
+	section = "general"
+	global content_folder, template_name, website_url, content_html, extensions_to_render
+	global no_list_no_render, no_list_yes_render, tpl_path, lib_path, static_path
+	try:
+		content_folder		= config.get(section, 'content_folder')
+		template_name		= config.get(section, 'template_name')
+		website_url			= config.get(section, 'website_url')
+		content_html		= config.get(section, 'content_html')
+		extensions_to_render= config.get(section, 'extensions_to_render')
+		no_list_no_render	= config.get(section, 'no_list_no_render')
+		no_list_yes_render	= config.get(section, 'no_list_yes_render')
+		tpl_path			= config.get(section, 'tpl_path')
+		lib_path			= config.get(section, 'lib_path')
+		static_path			= config.get(section, 'static_path')
+	except configparser.Error as err:
+		print('There is an error in pyhame.conf (%s)' % err)
+		sys.exit(1)
+	## WebShare ##
+	section = "webshare"
+	global webshare_active, port_everywhere, port, ip_proto
+	try:
+		webshare_active		= config.get(section, 'webshare')
+		port_everywhere		= config.get(section, 'port_everywhere')
+		port				= config.get(section, 'port')
+		ip_proto			= config.get(section, 'ip_proto')
+	except configparser.Error as err:
+		print('There is an error in pyhame.conf (%s)' % err)
+		sys.exit(1)
+	## Others ##
+	section = "others"
+	global archive
+	try:
+		archive				= config.get(section, 'archive')
+	except configparser.Error as err:
+		print('There is an error in pyhame.conf (%s)' % err)
+		sys.exit(1)
 
 #################
 ### Pre-Check ###
 #################
 def pre_check():
+	try:
+		if sys.argv[1] == "init":
+			init_pyhame()
+	except IndexError:
+	    sys.argv.append(None)
+	if not os.path.exists(config_file):
+		print(" \033[91m::\033[0m There is no config file. Must run pyhame.py init")
+		sys.exit(0)
+	else:
+		read_conf()
 	#####################
 	## General section ##
 	#####################
@@ -71,6 +92,9 @@ def pre_check():
 	# Check content_html value
 	if content_html != "yes" and content_html != "no" or not content_html:
 		print(" \033[91m::\033[0m \"content_html\" must be \"yes\" or \"no\" in pyhame.conf (general section)")
+		sys.exit(0)
+	if not tpl_path or not lib_path or not static_path:
+		print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  and \"lib_path\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
 	######################
 	## WebShare section ##
@@ -113,10 +137,30 @@ def pre_check():
 		print(" \033[93m::\033[0m \"content_folder\" you have given not exist. It will be automatically create")
 		os.makedirs(content_folder)
 	# Check if template_name exit
-	template_path = "tpl/%s" % template_name
+	template_path = "%s/%s" % (tpl_path, template_name)
 	if not os.path.exists(template_path) or not os.path.exists("%s/%s_index" % (template_path, template_name)) or not os.path.exists("%s/%s_view" % (template_path, template_name)):
 		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view must be in template folder. Default will be used.")
 		template_name = "default"
+
+# Init Pyhame
+def init_pyhame():
+	import shutil
+	if os.path.exists(init_lock_path):
+		print(" \033[91m::\033[0m You have already initialize your pyhame installation. You can remove init.lock file but many files will be overwrite")
+		sys.exit(0)
+	else:
+		print(" \033[93m::\033[0m Pyhame initilization...")
+		open(init_lock_path, 'a').close()
+		os.utime(init_lock_path, None)
+		if os.path.exists(conf_path):
+			os.remove(conf_path)			
+		shutil.copyfile(config_file+".default", config_file)
+		read_conf()
+		if not os.path.exists(content_folder):
+			os.makedirs(content_folder)
+		if os.path.exists(static_path):
+			shutil.rmtree(static_path)
+		os.makedirs(static_path)
 
 # WebShare
 def webshare(port):
@@ -158,14 +202,25 @@ def create_archive():
 	# Create archive
 	archive = zipfile.ZipFile('archives/%s.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
 	archive.write(content_folder)
-	archive.write("html_%s" % content_folder)
-	archive.write("index.html")
-	archive.write("tpl/%s" % template_name)
+	archive.write(static_path)
+	archive.write("%s/%s" % (tpl_path, template_name))
 	archive.close()
+
+# Replace content_folder by static_path in urls
+def re_content_static(path):
+	import re
+	tmp = path.split('/')
+	tmp[0] = static_path
+	new_path = ""
+	for i in tmp:
+		new_path += "/"+i
+	new_path = new_path[1:]
+	return new_path
+		
 
 # Html content rendering
 def html_content_file(path_to_file):
-	html_render_file = "html_" + path_to_file + ".html"
+	html_render_file = re_content_static(path_to_file) + ".html"
 	brute_file = open(path_to_file, 'r')
 	html_file = open(html_render_file, 'w')
 	html_file.write(text_to_html(brute_file.read()))
@@ -175,7 +230,7 @@ def html_content_file(path_to_file):
 # Text file parser to html for view
 def text_to_html(brute_file):
 	global file_content
-	sys.path.append('lib')
+	sys.path.append(lib_path)
 	import markdown
 	file_content = markdown.markdown(brute_file)	
 	template_view = read_template_view()
@@ -184,22 +239,21 @@ def text_to_html(brute_file):
 
 # Text file parser for special files
 def markdown_it(brute_content):
-	sys.path.append('lib')
+	sys.path.append(lib_path)
 	import markdown
 	return markdown.markdown(brute_content)
 
 # Html content folder
-def html_content_folder_make(path):
-	if not 'html_content_root_delete' in globals():
-		if os.path.exists("html_%s" % content_folder):
-			import shutil
-			shutil.rmtree("html_%s" % content_folder)
-		else:
-			os.makedirs("html_%s" % content_folder)
-		global html_content_root_delete
-		html_content_root_delete = True
-	if not os.path.exists(path):
-		os.makedirs(path)
+def static_folder_maker(path):
+	if not 'reset_static' in globals():
+		import shutil
+		if os.path.exists(static_path):
+			shutil.rmtree(static_path)
+		os.makedirs(static_path)
+		global reset_static
+		reset_static = True
+	if not os.path.exists(re_content_static(path)):
+		os.makedirs(re_content_static(path))
 
 # Recover specials files in content folder
 def recover_special_files():
@@ -368,9 +422,9 @@ def menu_generator(content_html):
 def rendering_html_content_files():
 	from urllib.parse import quote
 	aDirs = []
-	for oDirPaths, oDirNames, oFiles in os.walk( content_folder, True, None ):
+	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
 		if content_html == "yes":
-			html_content_folder_make("html_%s" % oDirPaths)
+			static_folder_maker(re_content_static(oDirPaths))
 		aDirs.append(oDirPaths)
 		oDirNames.sort()
 	for oDir in aDirs:
@@ -407,14 +461,14 @@ def rendering_html_content_files():
 
 # Read template index
 def read_template_index():
-	template_file_index = open("tpl/%s/%s_index" % (template_name, template_name), 'r')
+	template_file_index = open("%s/%s/%s_index" % (tpl_path, template_name, template_name), 'r')
 	template_content_index = template_file_index.read()
 	template_file_index.close()
 	return template_content_index
 
 # Read template view
 def read_template_view():
-	template_file_view = open("tpl/%s/%s_view" % (template_name, template_name), 'r')
+	template_file_view = open("%s/%s/%s_view" % (tpl_path, template_name, template_name), 'r')
 	template_content_view = template_file_view.read()
 	template_file_view.close()
 	return template_content_view
@@ -469,7 +523,7 @@ def setup_index(template_file):
 
 # Write index
 def write_index(index_final):
-	index = open("index.html", 'w')
+	index = open("%s/index.html" % static_path, 'w')
 	index.write(index_final)
 	index.close()
 
