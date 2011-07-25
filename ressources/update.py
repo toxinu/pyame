@@ -16,6 +16,9 @@ update_command01 = "git pull"
 force_command01 = "git reset --hard HEAD"
 force_command02 = "git pull"
 
+## Clean command
+clean_command01 = "git clean -d -x -f"
+
 # Archive maker
 def create_archive():
 	import tarfile, configparser
@@ -67,17 +70,34 @@ def update():
 	print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
 	print("####################################\n")
 
+# Clean 
+def clean_install():
+	output = getoutput(clean_command01)
+	print(" \033[91m::\033[0m Clean your pyhame installation. Must run pyhame.py init now.")
+	print("\n%s\n" % output)
+	print("####################################")
+	print("##  \033[92mYour Pyhame is now clean  !\033[0m   ##")
+	print("####################################\n")
+
 # Run the Update
-def run(force):
+def run(option):
+	if option == "force":
+		force = True
+		clean = False
+	elif option == "clean":
+		clean = True
+		force = False
 	from subprocess import getoutput
 	print("####################################")
 	print("## \033[93mUpdate script require git-core\033[0m ##")
 	print("####################################\n")
 	if not force:
-		print(" \033[93m::\033[0m Note that you can use -f argument to force update\n")
+		print(" \033[93m::\033[0m Note that you can use force argument to force update\n")
+	if not clean:
+		print(" \033[93m::\033[0m Note that you can use clean argument to clean installation\n")
 
 	if force:
-		print(" \033[93m::\033[0m force option set")
+		print(" \033[93m::\033[0m Force option set")
 		if os.path.exists(config_file):
 			create_archive()
 			conf_backup()
@@ -88,6 +108,14 @@ def run(force):
 		print("####################################")
 		print("##  \033[92mYour Pyhame is up to date !\033[0m   ##")
 		print("####################################\n")
+		sys.exit(0)
+
+	if clean:
+		print(" \033[93m::\033[0m Clean option set")
+		if os.path.exists(config_file):
+			create_archive()
+			conf_backup()
+		clean_install()
 		sys.exit(0)
 
 	if check():

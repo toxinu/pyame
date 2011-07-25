@@ -13,7 +13,6 @@ config = configparser.RawConfigParser()
 config_file = "ressources/pyhame.conf"
 init_lock_path	= "ressources/init.lock"
 
-
 #############
 ## General ##
 #############
@@ -60,10 +59,20 @@ def read_conf():
 #################
 def pre_check():
 	try:
+		if sys.argv[1] == "help":
+			print("Usage : ./pyhame.py [OPTION] ...")
+			print("    init         -> Initialisation of Pyhame installation")
+			print("    update       -> Update Pyhame installation via git")
+			print("    update force -> Force Update of Pyhame")
+			print("    clean        -> Clean Pyhame installation (Warning)")
+			sys.exit(0)			
+	except IndexError:
+		sys.argv.append(None)
+	try:
 		if sys.argv[1] == "update":
 			if len(sys.argv) > 2:
-				if sys.argv[2] == "-f":
-					force = True
+				if sys.argv[2] == "force":
+					force = "force"
 				else:
 					force = False
 			else:
@@ -71,6 +80,11 @@ def pre_check():
 			update_pyhame(force)
 	except IndexError:
 		sys.argv.append(None)
+	try:
+		if sys.argv[1] == "clean":
+			clean_pyhame()
+	except IndexError:
+			sys.argv.append(None)
 	try:
 		if sys.argv[1] == "init":
 			init_pyhame()
@@ -175,6 +189,13 @@ def update_pyhame(force):
 	sys.path.append("ressources")
 	import update
 	update.run(force)
+	sys.exit(0)
+
+# Clean Pyhame install
+def clean_pyhame():
+	sys.path.append("ressources")
+	import update
+	update.run("clean")
 	sys.exit(0)
 
 # WebShare
