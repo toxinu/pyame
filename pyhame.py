@@ -60,6 +60,16 @@ def read_conf():
 #################
 def pre_check():
 	try:
+		if sys.argv[1] == "update":
+			if len(sys.argv) > 2:
+				if sys.argv[2] == "-f":
+					force = True
+			else:
+				force = False
+			update_pyhame(force)
+	except IndexError:
+		sys.argv.append(None)
+	try:
 		if sys.argv[1] == "init":
 			init_pyhame()
 	except IndexError:
@@ -157,6 +167,12 @@ def init_pyhame():
 		if os.path.exists(static_path):
 			shutil.rmtree(static_path)
 		os.makedirs(static_path)
+
+# Update Pyhame
+def update_pyhame(force):
+	sys.path.append("ressources")
+	import update
+	update.run(force)
 
 # WebShare
 def webshare(port):
