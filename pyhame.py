@@ -173,6 +173,7 @@ def update_pyhame(force):
 	sys.path.append("ressources")
 	import update
 	update.run(force)
+	sys.exit(0)
 
 # WebShare
 def webshare(port):
