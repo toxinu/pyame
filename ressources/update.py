@@ -40,7 +40,7 @@ def create_archive():
 
 	tar = tarfile.open("archives/%si_update.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
 	tar.add(content_folder, filter=reset)
-	tar.add(static_path_folder, filter=reset)
+	tar.add(static_path, filter=reset)
 	tar.close()
 
 # Create conf backup
