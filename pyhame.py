@@ -334,7 +334,7 @@ def remove_extension(filename):
 	return filename
 
 # List content folder files
-def menu_generator(content_html):
+def menu_generator():
 	# Import for escape unsafe char in url
 	from urllib.parse import quote
 	# Create empty list to store collected folders
@@ -349,17 +349,18 @@ def menu_generator(content_html):
 		oDirNames.sort()
 	for oDir in aDirs:
 		if os.listdir(oDir):
-			tmp_check = False
-			for f in no_list_no_render_list:
-				if oDir == f:
-					tmp_check = True
-					break
-			for f in no_list_yes_render_list:
-				if oDir ==f:
-					tmp_check = True
-					break
-			if not tmp_check:
-				sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
+			if oDir != content_folder:
+				tmp_check = False
+				for f in no_list_no_render_list:
+					if oDir == f:
+						tmp_check = True
+						break
+				for f in no_list_yes_render_list:
+					if oDir ==f:
+						tmp_check = True
+						break
+				if not tmp_check:
+					sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
 		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 			oDirs.sort()
 			oDirFiles.sort()
@@ -544,7 +545,7 @@ recover_special_files()
 # Read template Index
 template_file_index = read_template_index()
 # Set up content listing and other specials files
-menu_generator(content_html)
+menu_generator()
 rendering_html_content_files()
 # Set up index content
 index_content = setup_index(template_file_index)
