@@ -78,7 +78,8 @@ def run(force):
 	print("####################################")
 	print("## \033[93mUpdate script require git-core\033[0m ##")
 	print("####################################\n")
-	print(" \033[93m::\033[0m Note that you can use -f argument to force update\n")
+	if not force:
+		print(" \033[93m::\033[0m Note that you can use -f argument to force update\n")
 
 	if force:
 		print(" \033[93m::\033[0m force option set")
