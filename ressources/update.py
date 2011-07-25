@@ -97,8 +97,9 @@ def run(force):
 	if check():
 		so = input(" \033[93m::\033[0m Do updates ? (A backup (_update) will be create in archives folder and a conf file backup too). [yes/NO]\n")
 		if so == "yes":
-			create_archive()
-			conf_backup()
+			if os.path.exists(config_file):
+				create_archive()
+				conf_backup()
 			update()
 	else:
 		print("\n####################################")
