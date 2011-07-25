@@ -82,11 +82,11 @@ def clean_install():
 # Run the Update
 def run(option):
 	if option == "force":
-		force = True
-		clean = False
+		force, clean = True, False
 	elif option == "clean":
-		clean = True
-		force = False
+		clean, force = True, False
+	else:
+		clean, force = False, False
 	from subprocess import getoutput
 	print("####################################")
 	print("## \033[93mUpdate script require git-core\033[0m ##")
