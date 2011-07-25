@@ -141,6 +141,7 @@ def pre_check():
 	if not os.path.exists(template_path) or not os.path.exists("%s/%s_index" % (template_path, template_name)) or not os.path.exists("%s/%s_view" % (template_path, template_name)):
 		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view must be in template folder. Default will be used.")
 		template_name = "default"
+	print(" \033[92m::\033[0m Generate your website...")
 
 # Init Pyhame
 def init_pyhame():
@@ -192,7 +193,7 @@ def webshare(port):
 
 # Archive maker
 def create_archive():
-	import zipfile
+	import tarfile
 	from time import gmtime, strftime
 
 	# Create archives diretorie if not exist
@@ -200,14 +201,18 @@ def create_archive():
 		os.makedirs("archives")
 
 	# Create archive
-	archive = zipfile.ZipFile('archives/%s.zip' % strftime("%d%b%Y_%H-%M-%S"), mode='w')
-	archive.write(content_folder)
-	archive.write(static_path)
-	archive.close()
+	def reset(tarinfo):
+		tarinfo.uid = tarinfo.gid = 0
+		tarinfo.uname = tarinfo.gname = "pyhame"
+		return tarinfo
+
+	tar = tarfile.open("archives/%s.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
+	tar.add(content_folder, filter=reset)
+	tar.add(static_path_folder, filter=reset)
+	tar.close()
 
 # Replace content_folder by static_path in urls
 def re_content_static(path):
-	import re
 	tmp = path.split('/')
 	tmp[0] = static_path
 	new_path = ""
@@ -215,7 +220,16 @@ def re_content_static(path):
 		new_path += "/"+i
 	new_path = new_path[1:]
 	return new_path
-		
+
+# Remove content folder name in path for menu generator
+def remove_content_folder_name(path):
+	tmp = path.split('/')
+	tmp = tmp[1:]
+	print(tmp)
+	new_path = ""
+	for i in tmp:
+		new_path += "/"+i
+	return new_path
 
 # Html content rendering
 def html_content_file(path_to_file):
@@ -381,8 +395,8 @@ def menu_generator(content_html):
 						if not tmp_check:
 							if content_html == "yes":
 								if check_file_extension(i):
-									filename_without_extension = i.split('.')					
-									root_menu_01 = root_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+									filename_without_extension = i.split('.')
+									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s.html\">%s</a></li>\n" % (static_path, quote(i), remove_extension(i)))
 								else:
 									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
 							else:
@@ -391,7 +405,8 @@ def menu_generator(content_html):
 						if content_html == "yes":
 							if check_file_extension(i):
 								filename_without_extension = i.split('.')
-								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/html_%s/%s.html\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_extension(i)))
+								print(oPaths)
+								sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
 							else:
 								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 						else:
@@ -523,13 +538,18 @@ def write_index(index_final):
 	index.close()
 
 # Copy template to static
-def static_template():
+def static_other():
 	from distutils import dir_util
 
+	# template
 	dest_dir = static_path+"/_template" 
 	src_dir = tpl_path+"/"+template_name
+	dir_util.copy_tree(src_dir, dest_dir)
 
-	dir_util.copy_tree(src_dir, dest_dir)	
+	# hightlight
+	dest_dir = static_path+"/_other"
+	src_dir = lib_path+"/highlight"
+	dir_util.copy_tree(src_dir, dest_dir)
 
 ######################################
 # Start script #######################
@@ -552,7 +572,7 @@ rendering_html_content_files()
 index_content = setup_index(template_file_index)
 # Write index.html file
 write_index(index_content)
-static_template()
+static_other()
 if archive == "yes":
 	# Create archive
 	create_archive()
