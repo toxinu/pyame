@@ -20,13 +20,12 @@ init_lock_path	= "ressources/init.lock"
 def read_conf():
 	config.read(config_file)
 	section = "general"
-	global content_folder, template_name, website_url, content_html, extensions_to_render
+	global content_folder, template_name, website_url, extensions_to_render
 	global no_list_no_render, no_list_yes_render, tpl_path, lib_path, static_path
 	try:
 		content_folder		= config.get(section, 'content_folder')
 		template_name		= config.get(section, 'template_name')
 		website_url			= config.get(section, 'website_url')
-		content_html		= config.get(section, 'content_html')
 		extensions_to_render= config.get(section, 'extensions_to_render')
 		no_list_no_render	= config.get(section, 'no_list_no_render')
 		no_list_yes_render	= config.get(section, 'no_list_yes_render')
@@ -88,10 +87,6 @@ def pre_check():
 	# Check if website_url is set
 	if not website_url:
 		print(" \033[91m::\033[0m \"website_url\" must be given in pyhame.conf (general section)")
-		sys.exit(0)
-	# Check content_html value
-	if content_html != "yes" and content_html != "no" or not content_html:
-		print(" \033[91m::\033[0m \"content_html\" must be \"yes\" or \"no\" in pyhame.conf (general section)")
 		sys.exit(0)
 	if not tpl_path or not lib_path or not static_path:
 		print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  and \"lib_path\" must be given in pyhame.conf (general section)")
@@ -353,24 +348,18 @@ def menu_generator(content_html):
 		aDirs.append(oDirPaths)
 		oDirNames.sort()
 	for oDir in aDirs:
-		if oDir == content_folder:
-			if port_everywhere == "yes":
-				root_menu_01 = root_menu_01 + ("<a href=\"http://%s:%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, port, oDir))
-			else:
-				root_menu_01 = root_menu_01 + ("<a href=\"http://%s\" class=\"root_content_title\">%s</a>\n<ul class=\"root_content_ul\">\n" % (website_url, oDir))
-		else:
-			if os.listdir(oDir):
-				tmp_check = False
-				for f in no_list_no_render_list:
-					if oDir == f:
-						tmp_check = True
-						break
-				for f in no_list_yes_render_list:
-					if oDir ==f:
-						tmp_check = True
-						break
-				if not tmp_check:
-					sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
+		if os.listdir(oDir):
+			tmp_check = False
+			for f in no_list_no_render_list:
+				if oDir == f:
+					tmp_check = True
+					break
+			for f in no_list_yes_render_list:
+				if oDir ==f:
+					tmp_check = True
+					break
+			if not tmp_check:
+				sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
 		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 			oDirs.sort()
 			oDirFiles.sort()
@@ -392,21 +381,15 @@ def menu_generator(content_html):
 								tmp_check = True
 								break
 						if not tmp_check:
-							if content_html == "yes":
-								if check_file_extension(i):
-									filename_without_extension = i.split('.')
-									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s.html\">%s</a></li>\n" % (quote(i), remove_extension(i)))
-								else:
-									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
-							else:
-								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
-					else:
-						if content_html == "yes":
 							if check_file_extension(i):
 								filename_without_extension = i.split('.')
-								sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
+								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s.html\">%s</a></li>\n" % (quote(i), remove_extension(i)))
 							else:
-								sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
+					else:
+						if check_file_extension(i):
+							filename_without_extension = i.split('.')
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
 						else:
 							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 			break
@@ -431,8 +414,7 @@ def rendering_html_content_files():
 	from urllib.parse import quote
 	aDirs = []
 	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
-		if content_html == "yes":
-			static_folder_maker(re_content_static(oDirPaths))
+		static_folder_maker(re_content_static(oDirPaths))
 		aDirs.append(oDirPaths)
 		oDirNames.sort()
 	for oDir in aDirs:
@@ -459,13 +441,11 @@ def rendering_html_content_files():
 								tmp_check = True
 								break
 						if not tmp_check:
-							if content_html == "yes":
-								if check_file_extension(i):
-									html_content_file("%s/%s" % (oPaths, i))
-					else:
-						if content_html == "yes":
 							if check_file_extension(i):
-								html_content_file("%s/%s" % (oPaths, i))	
+								html_content_file("%s/%s" % (oPaths, i))
+					else:
+						if check_file_extension(i):
+							html_content_file("%s/%s" % (oPaths, i))	
 
 # Read template index
 def read_template_index():
