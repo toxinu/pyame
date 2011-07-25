@@ -12,7 +12,8 @@ content_folder			= site
 # File extensions to render. Files without extension will be automaticaly listed and rendered
 extensions_to_render	= "txt","md"
 # Folders to exclude in listing and not to be rendered. For example :
-# no_list_no_render = "home/Images","content/my mp3/ladygaga"
+# no_list_no_render = "site/Images","site/my mp3/ladygaga"
+# Warning : This not recursive.
 no_list_no_render		= 
 no_list_yes_render 		= 
 # Template folder name
