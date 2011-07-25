@@ -5,11 +5,11 @@
 		<meta charset="utf-8">
 		<title>set_website_title</title>
 		<!-- Highlight script and css -->
-		<script src="_js/highlight/highlight.pack.js"></script>
+		<script src="_other/highlight/highlight.pack.js"></script>
 		<script type="text/javascript">
 			hljs.initHighlightingOnLoad();
 		</script>
-		<link rel="stylesheet" href="_template/highlight/styles/dark.css">
+		<link rel="stylesheet" href="_other/highlight/styles/dark.css">
 		<!-- End of Highlight import -->
 	</head>
 	<body>

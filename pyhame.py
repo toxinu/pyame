@@ -225,7 +225,6 @@ def re_content_static(path):
 def remove_content_folder_name(path):
 	tmp = path.split('/')
 	tmp = tmp[1:]
-	print(tmp)
 	new_path = ""
 	for i in tmp:
 		new_path += "/"+i
@@ -396,7 +395,7 @@ def menu_generator(content_html):
 							if content_html == "yes":
 								if check_file_extension(i):
 									filename_without_extension = i.split('.')
-									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s.html\">%s</a></li>\n" % (static_path, quote(i), remove_extension(i)))
+									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s.html\">%s</a></li>\n" % (quote(i), remove_extension(i)))
 								else:
 									root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
 							else:
