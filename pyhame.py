@@ -434,7 +434,7 @@ def rendering_html_content_files():
 				for i in oDirFiles:
 					file_name = i
 					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (quote(oPaths), quote(i))
-					permalink = "<a href=\"/html_%s/%s.html\">permalink</a>" % (quote(oPaths), quote(i))
+					permalink = "<a href=\"%s/%s.html\">permalink</a>" % (iremove_content_folder_name(quote(oPaths)), quote(i))
 					if oDir == content_folder:
 						tmp_check = False
 						for f in special_files:
