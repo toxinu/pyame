@@ -4,7 +4,6 @@
 import sys, os
 from subprocess import getoutput
 
-
 config_file = "ressources/pyhame.conf"
 ## Checking updates commands
 check_command01 = "git show-ref origin/master"
