@@ -64,6 +64,8 @@ def pre_check():
 			if len(sys.argv) > 2:
 				if sys.argv[2] == "-f":
 					force = True
+				else:
+					force = False
 			else:
 				force = False
 			update_pyhame(force)
