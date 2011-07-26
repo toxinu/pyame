@@ -442,13 +442,13 @@ def menu_generator():
 								filename_without_extension = i.split('.')
 								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s.html\">%s</a></li>\n" % (quote(i), remove_extension(i)))
 							else:
-								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
+								root_menu_01 = root_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
 					else:
 						if check_file_extension(i):
 							filename_without_extension = i.split('.')
 							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
 						else:
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 			break
 		if oDir == content_folder:
 			root_menu_01 += ("</ul>\n")
