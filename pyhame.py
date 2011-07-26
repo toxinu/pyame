@@ -55,17 +55,22 @@ def read_conf():
 		sys.exit(1)
 
 #################
-### Pre-Check ###
+##  Argu Check ##
 #################
-def pre_check():
+def arg_check():
+	def help():
+		print("Usage : ./pyhame.py [OPTION] ...")
+		print("    init         -> Initialisation of Pyhame installation")
+		print("    update       -> Update Pyhame installation via git")
+		print("    update force -> Force Update of Pyhame")
+		print("    clean        -> Clean Pyhame installation (Warning)")
+	if len(sys.argv) < 2:
+		help()
+		sys.exit(0)
 	try:
 		if sys.argv[1] == "help":
-			print("Usage : ./pyhame.py [OPTION] ...")
-			print("    init         -> Initialisation of Pyhame installation")
-			print("    update       -> Update Pyhame installation via git")
-			print("    update force -> Force Update of Pyhame")
-			print("    clean        -> Clean Pyhame installation (Warning)")
-			sys.exit(0)			
+			help()
+			sys.exit(0)
 	except IndexError:
 		sys.argv.append(None)
 	try:
@@ -84,17 +89,26 @@ def pre_check():
 		if sys.argv[1] == "clean":
 			clean_pyhame()
 	except IndexError:
-			sys.argv.append(None)
+		sys.argv.append(None)
 	try:
 		if sys.argv[1] == "init":
 			init_pyhame()
 	except IndexError:
-	    sys.argv.append(None)
+		sys.argv.append(None)
 	if not os.path.exists(config_file):
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame.py init")
 		sys.exit(0)
 	else:
 		read_conf()
+	try:
+		if sys.argv[1] == "run":
+			run()
+	except IndexError:
+		sys.argv.append(None)
+#################
+### Pre-Check ###
+#################
+def pre_check():
 	#####################
 	## General section ##
 	#####################
@@ -573,28 +587,31 @@ def static_other():
 ######################################
 # Start script #######################
 ######################################
-# Check every variables and folders
-pre_check()
-# Create the list of folders to exlude in listing
-no_list_no_render_listing()
-no_list_yes_render_listing()
-# Create extensions to render list
-create_extensions_to_render_list()
-# Recover special files like welcome_message ...
-recover_special_files()
-# Read template Index
-template_file_index = read_template_index()
-# Set up content listing and other specials files
-menu_generator()
-rendering_html_content_files()
-# Set up index content
-index_content = setup_index(template_file_index)
-# Write index.html file
-write_index(index_content)
-static_other()
-if archive == "yes":
-	# Create archive
-	create_archive()
-# Webshare
-if webshare_active == "yes":
-	webshare(port)
+def run():
+	# Check every options and config file
+	pre_check()
+	# Create the list of folders to exlude in listing
+	no_list_no_render_listing()
+	no_list_yes_render_listing()
+	# Create extensions to render list
+	create_extensions_to_render_list()
+	# Recover special files like welcome_message ...
+	recover_special_files()
+	# Read template Index
+	template_file_index = read_template_index()
+	# Set up content listing and other specials files
+	menu_generator()
+	rendering_html_content_files()
+	# Set up index content
+	index_content = setup_index(template_file_index)
+	# Write index.html file
+	write_index(index_content)
+	static_other()
+	if archive == "yes":
+		# Create archive
+		create_archive()
+	# Webshare
+	if webshare_active == "yes":
+		webshare(port)
+
+arg_check()
