@@ -23,9 +23,16 @@ lib_path 				= ressources/lib
 static_path 			= static
 content_folder          = site
 
-############
-# webshare #
-############
+##########
+# others #
+##########
+[others]
+# Create an archive in "archives" directorie. Set yes or no
+archive                 = no
+
+######################################
+## Web Share is not functionnal yet ##
+######################################
 [webshare]
 # Yes to active webshare, or no 
 webshare				= no
@@ -34,10 +41,3 @@ port					= 8000
 port_everywhere			= yes
 # Ip protocole to used. Ipv6 default. Set ipv4 or ipv6.
 ip_proto            	= ipv4
-
-##########
-# others #
-##########
-[others]
-# Create an archive in "archives" directorie. Set yes or no
-archive             	= no
