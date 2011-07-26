@@ -446,9 +446,9 @@ def menu_generator():
 					else:
 						if check_file_extension(i):
 							filename_without_extension = i.split('.')
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_content_folder_name(remove_extension(i))))
 						else:
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_content_folder_name(i)))
 			break
 		if oDir == content_folder:
 			root_menu_01 += ("</ul>\n")
@@ -489,7 +489,7 @@ def rendering_html_content_files():
 			if not tmp_check:
 				for i in oDirFiles:
 					file_name = i
-					dl_file_link = "<a href=\"/%s/%s\">download</a>" % (quote(oPaths), quote(i))
+					dl_file_link = "<a href=\"/_%s/%s\">download</a>" % (quote(oPaths), quote(i))
 					permalink = "<a href=\"%s/%s.html\">permalink</a>" % (remove_content_folder_name(quote(oPaths)), quote(i))
 					if oDir == content_folder:
 						tmp_check = False
