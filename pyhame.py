@@ -416,7 +416,7 @@ def menu_generator():
 						tmp_check = True
 						break
 				if not tmp_check:
-					sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % oDir)
+					sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % remove_content_folder_name(oDir))
 		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 			oDirs.sort()
 			oDirFiles.sort()
@@ -446,9 +446,9 @@ def menu_generator():
 					else:
 						if check_file_extension(i):
 							filename_without_extension = i.split('.')
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_content_folder_name(remove_extension(i))))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
 						else:
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), remove_content_folder_name(i)))
+							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 			break
 		if oDir == content_folder:
 			root_menu_01 += ("</ul>\n")
