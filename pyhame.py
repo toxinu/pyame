@@ -60,10 +60,12 @@ def read_conf():
 def arg_check():
 	def help():
 		print("Usage : ./pyhame.py [OPTION] ...")
-		print("    init         -> Initialisation of Pyhame installation")
-		print("    update       -> Update Pyhame installation via git")
-		print("    update force -> Force Update of Pyhame")
-		print("    clean        -> Clean Pyhame installation (Warning)")
+		print("    init           ->  Initialisation of Pyhame installation")
+		print("    run            ->  Run pyhame to generate website")
+		print("    update         ->  Update Pyhame installation via git")
+		print("    update force   ->  Force Update of Pyhame")
+		print("    clean          ->  Clean Pyhame installation (Warning)")
+		print("    help           ->  Print this help")
 	if len(sys.argv) < 2:
 		help()
 		sys.exit(0)
@@ -584,6 +586,12 @@ def static_other():
 	src_dir = lib_path+"/highlight"
 	dir_util.copy_tree(src_dir, dest_dir)
 
+# Symlink site into static
+def sym_site_static():
+	src_dir 	= "../"+content_folder 
+	dest_dir 	= static_path+"/_"+content_folder
+	os.symlink(src_dir, dest_dir)
+
 ######################################
 # Start script #######################
 ######################################
@@ -607,6 +615,7 @@ def run():
 	# Write index.html file
 	write_index(index_content)
 	static_other()
+	sym_site_static()
 	if archive == "yes":
 		# Create archive
 		create_archive()
