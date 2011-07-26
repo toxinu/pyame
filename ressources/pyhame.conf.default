@@ -5,23 +5,23 @@
 # General #
 ###########
 [general]
-# Website url
 website_url				= localhost
-# Folder where you drop content files
-content_folder			= site
+template_name           = default
+
 # File extensions to render. Files without extension will be automaticaly listed and rendered
 extensions_to_render	= "txt","md"
+
 # Folders to exclude in listing and not to be rendered. For example :
 # no_list_no_render = "site/Images","site/my mp3/ladygaga"
 # Warning : This not recursive.
 no_list_no_render		= 
 no_list_yes_render 		= 
-# Template folder name
-template_name			= default
+
 # Ressources
 tpl_path				= ressources/tpl
 lib_path 				= ressources/lib
 static_path 			= static
+content_folder          = site
 
 ############
 # webshare #
