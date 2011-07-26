@@ -17,7 +17,7 @@ force_command01 = "git reset --hard HEAD"
 force_command02 = "git pull"
 
 ## Clean command
-clean_command01 = "git clean -dfx -e archives"
+clean_command01 = "git clean -dfX"
 
 # Archive maker
 def create_archive():
@@ -72,7 +72,7 @@ def update():
 
 # Clean 
 def clean_install():
-	gitignore_content = "*\n!archives\n!pyhame.py\n!ressources"
+	gitignore_content = "*\n!archives\n!pyhame.py\n!ressources\n!ressources/pyhame.conf.back"
 	gitignore_file = open(".gitignore", 'w')
 	gitignore_file.write(gitignore_content)
 	gitignore_file.close()
