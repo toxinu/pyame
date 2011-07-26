@@ -72,6 +72,10 @@ def update():
 
 # Clean 
 def clean_install():
+	gitignore_content = "*\n!archives\n!pyhame.py\n!ressources"
+	gitignore_file = open(".gitignore", 'w')
+	gitignore_file.write(gitignore_content)
+	gitignore_file.close()
 	output = getoutput(clean_command01)
 	print(" \033[91m::\033[0m Clean your pyhame installation. Must run pyhame.py init now.")
 	print("\n%s\n" % output)
