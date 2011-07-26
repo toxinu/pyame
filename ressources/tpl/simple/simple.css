@@ -1,13 +1,13 @@
 @font-face {
   font-family:Covington;
-  src: url('/tpl/simple/fonts/Coving01.ttf');
+  src: url('/_template/fonts/Coving01.ttf');
 }
 @font-face {
 	font-family:Cambria;
-	src: url('/tpl/simple/fonts/CAMBRIA_0.TTC');
+	src: url('/_template/fonts/CAMBRIA_0.TTC');
 }
 body {
-	background-image:url('/tpl/simple/img/bg.png');
+	background-image:url('/_template/img/bg.png');
 }
 #container{
 	width:800px;
@@ -92,7 +92,13 @@ li{
 	font-family:Cambria;
 	margin-top:30px;
 }
-#welcome_content h2{
+#welcome_content a {
+	color: #6D6D6C;
+}
+#welcome_content a:hover {
+	color: #A4A39E;
+}
+#welcome_content h2 {
 	font-size:1em;
 	color: #00A99D;
 }

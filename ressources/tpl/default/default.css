@@ -52,7 +52,8 @@ footer a {
     outline-offset: 10px; /*Delete if you don't want an offset*/
 }
 #welcome_content {
-    font-family: Verdana, Tahoma;
+    margin-left: 280px;
+	font-family: Verdana, Tahoma;
     font-size: 11px;
     margin-top: 40px;
 }
@@ -61,7 +62,8 @@ footer a {
 	background-color: #CDCCCC;
 	width: 240px;
 	padding: 5px;
-	padding-left: 0px;
+	padding-top: 10px;
+	padding-left: 15px;
 	margin-right: 15px;
 	margin-bottom: 10px;
 	float: left;
@@ -73,14 +75,21 @@ footer a {
 	margin-top: 5px;
 	margin-bottom: 9px;
 }
-#root_menu .root_content_title, #sub_menu .sub_content_title {
+#root_menu {
+	padding-left: 20px;
+	margin-bottom: 10px;
+}
+#root_menu li {
+    font-size: 11px;
+	list-style: circle;
+}
+#sub_menu .sub_content_title {
 	font-weight: bold;
 	text-transform: uppercase;
 	font-size: 11px;
 	cursor : default;
-	margin-left: 10px;
 }
-#root_menu li, #sub_menu li {
+#sub_menu li {
 	font-size: 11px;
 	list-style: circle;
 }
@@ -118,7 +127,7 @@ footer a {
 }
 #file_content {
 	margin: auto;
-	width: 600px;
+	width: 98%;
 	font-family: Verdana, Tahoma;
     font-size: 11px;
     margin-top: 40px;

@@ -18,7 +18,7 @@ body {
 	font-size: 0.625em;
 	text-align: center;
 	margin: auto;
-	margin-bottom: 10px;
+	margin-bottom: 20px;
     text-align: center;
     font-family: Verdana, Tahoma;
     width: 500px;
@@ -65,6 +65,9 @@ footer a {
 #welcome_content p {
 	text-align: justify;
 }
+#welcome_content a {
+    color: white;
+}
 #open_menu {
 	margin: auto;
 	margin-top: 20px;
@@ -106,7 +109,7 @@ footer a {
 	width: 600px;
 	text-align: center;
 	margin: auto;
-	margin-bottom: -10px;
+	margin-bottom: 5px;
 }
 #root_menu a {
 	text-align: center;
