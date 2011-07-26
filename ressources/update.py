@@ -17,7 +17,7 @@ force_command01 = "git reset --hard HEAD"
 force_command02 = "git pull"
 
 ## Clean command
-clean_command01 = "git clean -d -x -f"
+clean_command01 = "git clean -dfx -e archives"
 
 # Archive maker
 def create_archive():

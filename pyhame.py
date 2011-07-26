@@ -64,7 +64,7 @@ def arg_check():
 		print("    run            ->  Run pyhame to generate website")
 		print("    update         ->  Update Pyhame installation via git")
 		print("    update force   ->  Force Update of Pyhame")
-		print("    clean          ->  Clean Pyhame installation (Warning)")
+		print("    clean          ->  Clean Pyhame installation (Exclude: archives folder)")
 		print("    help           ->  Print this help")
 	if len(sys.argv) < 2:
 		help()
