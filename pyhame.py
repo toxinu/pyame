@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# Version : 0.5-git
+version = "0.5-git"
+
 import sys
 # Check Python version
 if sys.version_info < (3, 1):
@@ -65,6 +66,7 @@ def arg_check():
 		print("    update         ->  Update Pyhame installation via git")
 		print("    update force   ->  Force Update of Pyhame")
 		print("    clean          ->  Clean Pyhame installation (Exclude: archives folder)")
+		print("    version        ->  Print pyhame version")
 		print("    help           ->  Print this help")
 	if len(sys.argv) < 2:
 		help()
@@ -72,6 +74,12 @@ def arg_check():
 	try:
 		if sys.argv[1] == "help":
 			help()
+			sys.exit(0)
+	except IndexError:
+		sys.argv.append(None)
+	try:
+		if sys.argv[1] == "version":
+			print(version)
 			sys.exit(0)
 	except IndexError:
 		sys.argv.append(None)
