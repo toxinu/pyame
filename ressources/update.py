@@ -36,7 +36,7 @@ def create_archive():
 		os.makedirs("archives")
 
 	# Create archive
-	tar = tarfile.open("archives/%si_update.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
+	tar = tarfile.open("archives/%s_update.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
 	tar.add(content_folder)
 	tar.add(static_path)
 	tar.close()
