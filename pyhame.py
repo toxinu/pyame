@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.5-git"
+version = "0.7.1"
 
 import sys
 # Check Python version
@@ -60,7 +60,7 @@ def read_conf():
 #################
 def arg_check():
 	def help():
-		print("Usage : ./pyhame.py [OPTION] ...")
+		print("Usage : pyhame [OPTION] ...")
 		print("    init           ->  Initialisation of Pyhame installation")
 		print("    run            ->  Run pyhame to generate website")
 		#print("    update         ->  Update Pyhame installation via git")
@@ -566,9 +566,9 @@ def sym_site_static():
 def send_remote(host, user, path):
 	from subprocess import getoutput
 	print(" \033[91m::\033[0m Sending output at %s@%s:%s" % (user, host, path))	
-	output = getoutput("ssh %s@%s \"rm -R %s/*\"" % (user, host, path))
+	output = getoutput("ssh %s@%s \"rm -R %s/* && mkdir %s\"" % (user, host, path, path))
 	output = getoutput("scp -r %s/* %s@%s:%s" % (static_path, user, host, path))
-	output = getoutput("scp -r %s %s@%s:%s/_%s" % (content_folder, user, host, path, content_folder))
+	output = getoutput("scp -r %s/* %s@%s:%s/_%s" % (content_folder, user, host, path, content_folder))
 
 ######################################
 # Start script #######################
