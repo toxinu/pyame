@@ -10,8 +10,9 @@ if sys.version_info < (3, 1):
 
 import os, configparser, stat, types
 
-config = configparser.RawConfigParser()
-config_file = "ressources/pyhame.conf"
+config 			= configparser.RawConfigParser()
+pwd 			= os.getcwd()
+config_file 	= "ressources/pyhame.conf"
 init_lock_path	= "ressources/init.lock"
 
 #############
@@ -62,9 +63,9 @@ def arg_check():
 		print("Usage : ./pyhame.py [OPTION] ...")
 		print("    init           ->  Initialisation of Pyhame installation")
 		print("    run            ->  Run pyhame to generate website")
-		print("    update         ->  Update Pyhame installation via git")
-		print("    update force   ->  Force Update of Pyhame")
-		print("    clean          ->  Clean Pyhame installation (Exclude: archives folder)")
+		#print("    update         ->  Update Pyhame installation via git")
+		#print("    update force   ->  Force Update of Pyhame")
+		#print("    clean          ->  Clean Pyhame installation (Exclude: archives folder)")
 		print("    version        ->  Print pyhame version")
 		print("    help           ->  Print this help")
 	if len(sys.argv) < 2:
@@ -82,23 +83,23 @@ def arg_check():
 			sys.exit(0)
 	except IndexError:
 		sys.argv.append(None)
-	try:
-		if sys.argv[1] == "update":
-			if len(sys.argv) > 2:
-				if sys.argv[2] == "force":
-					force = "force"
-				else:
-					force = False
-			else:
-				force = False
-			update_pyhame(force)
-	except IndexError:
-		sys.argv.append(None)
-	try:
-		if sys.argv[1] == "clean":
-			clean_pyhame()
-	except IndexError:
-		sys.argv.append(None)
+#	try:
+#		if sys.argv[1] == "update":
+#			if len(sys.argv) > 2:
+#				if sys.argv[2] == "force":
+#					force = "force"
+#				else:
+#					force = False
+#			else:
+#				force = False
+#			update_pyhame(force)
+#	except IndexError:
+#		sys.argv.append(None)
+#	try:
+#		if sys.argv[1] == "clean":
+#			clean_pyhame()
+#	except IndexError:
+#		sys.argv.append(None)
 	try:
 		if sys.argv[1] == "init":
 			init_pyhame()
@@ -184,6 +185,12 @@ def init_pyhame():
 		sys.exit(0)
 	else:
 		print(" \033[93m::\033[0m Pyhame initilization...")
+		if not os.path.exists("ressources"):
+			if not os.path.exists("/usr/lib/pyhame/ressources"):
+				print(" \033[91m::\033[0m Critical ressources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
+				sys.exit(0)
+			else:
+				shutil.copytree("/usr/lib/pyhame/ressources", pwd+"/ressources")
 		open(init_lock_path, 'a').close()
 		os.utime(init_lock_path, None)
 		if os.path.exists(config_file):
@@ -198,18 +205,18 @@ def init_pyhame():
 		print(" \033[93m::\033[0m You have to configure your ressources/pyhame.conf file")
 
 # Update Pyhame
-def update_pyhame(force):
-	sys.path.append("ressources")
-	import update
-	update.run(force)
-	sys.exit(0)
+#def update_pyhame(force):
+#	sys.path.append("ressources")
+#	import update
+#	update.run(force)
+#	sys.exit(0)
 
 # Clean Pyhame install
-def clean_pyhame():
-	sys.path.append("ressources")
-	import update
-	update.run("clean")
-	sys.exit(0)
+#def clean_pyhame():
+#	sys.path.append("ressources")
+#	import update
+#	update.run("clean")
+#	sys.exit(0)
 
 # Archive maker
 def create_archive():
@@ -217,8 +224,8 @@ def create_archive():
 	from time import gmtime, strftime
 
 	# Create archives diretorie if not exist
-	if not os.path.exists("archives"):
-		os.makedirs("archives")
+	if not os.path.exists(pwd+"/archives"):
+		os.makedirs(pwd+"/archives")
 
 	# Create archive
 	def reset(tarinfo):
@@ -228,7 +235,7 @@ def create_archive():
 
 	tar = tarfile.open("archives/%s.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
 	tar.add(content_folder, filter=reset)
-	tar.add(static_path_folder, filter=reset)
+	tar.add(static_path, filter=reset)
 	tar.close()
 
 # Replace content_folder by static_path in urls
@@ -587,7 +594,7 @@ def run():
 	write_index(index_content)
 	static_other()
 	sym_site_static()
-	if archive == "yes":
+	if archive == "true":
 		# Create archive
 		create_archive()
 
