@@ -35,17 +35,6 @@ def read_conf():
 	except configparser.Error as err:
 		print('There is an error in pyhame.conf (%s)' % err)
 		sys.exit(1)
-	## WebShare ##
-	section = "webshare"
-	global webshare_active, port_everywhere, port, ip_proto
-	try:
-		webshare_active		= config.get(section, 'webshare')
-		port_everywhere		= config.get(section, 'port_everywhere')
-		port				= config.get(section, 'port')
-		ip_proto			= config.get(section, 'ip_proto')
-	except configparser.Error as err:
-		print('There is an error in pyhame.conf (%s)' % err)
-		sys.exit(1)
 	## Others ##
 	section = "others"
 	global archive
@@ -54,6 +43,16 @@ def read_conf():
 	except configparser.Error as err:
 		print('There is an error in pyhame.conf (%s)' % err)
 		sys.exit(1)
+	## Remote ##
+	section = "remote"
+	global remote, remote_host, remote_user, remote_path
+	try:
+		remote				= config.get(section, 'remote')
+		remote_host			= config.get(section, 'remote_host')
+		remote_user         = config.get(section, 'remote_user')
+		remote_path         = config.get(section, 'remote_path')
+	except configparser.Error as err:
+		print('There is an error in pyhame.conf (%s)' % err)
 
 #################
 ##  Argu Check ##
@@ -141,39 +140,12 @@ def pre_check():
 	if not tpl_path or not lib_path or not static_path:
 		print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  and \"lib_path\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
-	######################
-	## WebShare section ##
-	######################
-	# Check webshare_active
-	if webshare_active != "yes" and webshare_active != "no" or not webshare_active:
-		print(" \033[91m::\033[0m \"webshare_active\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
-		sys.exit(0)
-	if webshare_active == "yes":
-		# Check if port is set
-		global port
-		if not port:
-			print(" \033[91m::\033[0m \"port\" must be given in pyhame.conf and must be an integer (webshare section)")
-			sys.exit(0)
-		try:
-			port = int(port)
-		except ValueError:
-			print(" \033[91m::\033[0m \"port\" must be an integer (webshare section)")
-			sys.exit(0)
-		if ip_proto != "ipv4" and ip_proto != "ipv6" or not ip_proto:
-			print(" \033[91m::\033[0m \"ip_proto\" must be \"ipv4\" or \"ipv6\" in pyhame.conf (webshare section)")
-			sys.exit(0)
-		global port_everywhere
-		if port_everywhere != "no" and port_everywhere != "yes" or not port_everywhere:
-			print(" \033[91m::\033[0m \"port_everywhere\" must be \"yes\" or \"no\" in pyhame.conf (webshare section)")
-			sys.exit(0)
-	if webshare_active == "no":
-		port_everywhere = "no"
 	####################
 	## Others section ##
 	####################
 	# Check if archive is set
-	if archive != "yes" and archive != "no" or not archive:
-		print(" \033[91m::\033[0m \"archive\" must be \"yes\" or \"no\" in pyhame.conf (others section)")
+	if archive != "true" and archive != "false" or not archive:
+		print(" \033[91m::\033[0m \"archive\" must be \"true\" or \"false\" in pyhame.conf (others section)")
 		sys.exit(0)
 				
 	## Create defaults files
@@ -186,8 +158,24 @@ def pre_check():
 	if not os.path.exists(template_path) or not os.path.exists("%s/%s_index" % (template_path, template_name)) or not os.path.exists("%s/%s_view" % (template_path, template_name)):
 		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view must be in template folder. Default will be used.")
 		template_name = "default"
+	###################
+	###    Remote   ###
+	###################
+	# Check remote section
+	if remote != "true" and remote != "false" or not remote:
+		print(" \033[91m::\033[0m \"remote\" must be \"true\" or \"false\" in pyhame.conf (remote section)")
+		sys.exit(0)
+	if remote == "true":
+		if remote_host == "":
+			print(" \033[91m::\033[0m \"remote_host\" must be given in pyhame.conf (remote section)")
+			sys.exit(0)
+		if remote_user == "":
+			print(" \033[91m::\033[0m \"remote_user\" must be given in pyhame.conf (remote section)")
+			sys.exit(0)
+		if remote_path == "":
+			print(" \033[91m::\033[0m \"remote_path\" must be given in pyhame.conf (remote section)")
+			sys.exit(0)
 	print(" \033[92m::\033[0m Generate your website...")
-
 # Init Pyhame
 def init_pyhame():
 	import shutil
@@ -207,6 +195,7 @@ def init_pyhame():
 		if os.path.exists(static_path):
 			shutil.rmtree(static_path)
 		os.makedirs(static_path)
+		print(" \033[93m::\033[0m You have to configure your ressources/pyhame.conf file")
 
 # Update Pyhame
 def update_pyhame(force):
@@ -221,34 +210,6 @@ def clean_pyhame():
 	import update
 	update.run("clean")
 	sys.exit(0)
-
-# WebShare
-def webshare(port):
-	import http.server, socketserver, urllib.request, re
-
-	Handler = http.server.SimpleHTTPRequestHandler
-	httpd = socketserver.TCPServer(("", port), Handler)
-
-	if ip_proto == "ipv4":
-		page = str((urllib.request.urlopen('http://ipv4.icanhazip.com/').read()))
-		pub_ip = page[2:-3]
-	elif ip_proto == "ipv6":
-		page = str((urllib.request.urlopen('http://ipv6.icanhazip.com/').read()))
-		pub_ip = page[2:-3]
-	else:
-		print("Wrong ip_proto argument. Use \"ipv4\" or \"ipv6\".")
-		quit()
-	try:
-		print("\n  # Starting web server at port %s ..." % port)
-		print("  ##  Tape in your browser :")
-		print("  ##   http://localhost:%s for local access" % port)
-		print("  ##   http://%s:%s for public access" % (pub_ip, port))
-		print("  # To stop server, Ctrl-C")
-		print("...")
-		httpd.serve_forever()
-	except KeyboardInterrupt:
-		print("\n \033[93m::\033[0m Ctrl-C received, shutting down server")
-		httpd.socket.close()
 
 # Archive maker
 def create_archive():
@@ -538,10 +499,7 @@ def setup_view(template_file):
 		template_file = template_file.replace("set_footer", "Create your footer file")
 	template_file = template_file.replace("set_file_name", file_name)
 	template_file = template_file.replace("set_file_content", file_content)
-	if port_everywhere == "yes":
-		template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
-	else:
-		template_file = template_file.replace("set_website_url", "http://%s" % website_url)
+	template_file = template_file.replace("set_website_url", "http://%s" % website_url)
 	template_file = template_file.replace("set_dl_file_link", dl_file_link)
 	template_file = template_file.replace("set_permalink", permalink)
 	template_file = template_file.replace("set_root_menu_01", root_menu_01)
@@ -568,10 +526,7 @@ def setup_index(template_file):
 		template_file = template_file.replace("set_footer", "Create your footer file")
 	template_file = template_file.replace("set_root_menu_01", root_menu_01)
 	template_file = template_file.replace("set_sub_menu_01", sub_menu_01)
-	if port_everywhere == "yes":
-		template_file = template_file.replace("set_website_url", "http://%s:%s" % (website_url, port))
-	else:
-		template_file = template_file.replace("set_website_url", "http://%s" % website_url)
+	template_file = template_file.replace("set_website_url", "http://%s" % website_url)
 	return template_file
 
 # Write index
@@ -600,6 +555,14 @@ def sym_site_static():
 	dest_dir 	= static_path+"/_"+content_folder
 	os.symlink(src_dir, dest_dir)
 
+# Send to Remote
+def send_remote(host, user, path):
+	from subprocess import getoutput
+	print(" \033[91m::\033[0m Sending output at %s@%s:%s" % (user, host, path))	
+	output = getoutput("ssh %s@%s \"rm -R %s/*\"" % (user, host, path))
+	output = getoutput("scp -r %s/* %s@%s:%s" % (static_path, user, host, path))
+	output = getoutput("scp -r %s %s@%s:%s/_%s" % (content_folder, user, host, path, content_folder))
+
 ######################################
 # Start script #######################
 ######################################
@@ -627,8 +590,7 @@ def run():
 	if archive == "yes":
 		# Create archive
 		create_archive()
-	# Webshare
-	if webshare_active == "yes":
-		webshare(port)
 
 arg_check()
+if remote == "true":
+	send_remote(remote_host, remote_user, remote_path)

@@ -27,17 +27,16 @@ content_folder          = site
 # others #
 ##########
 [others]
-# Create an archive in "archives" directorie. Set yes or no
-archive                 = no
+# Create an archive in "archives" directorie. Set true or false
+archive                 = false
 
-######################################
-## Web Share is not functionnal yet ##
-######################################
-[webshare]
-# Yes to active webshare, or no 
-webshare				= no
-port					= 8000
-# Set yes if you want, all links have :port behind each url
-port_everywhere			= yes
-# Ip protocole to used. Ipv6 default. Set ipv4 or ipv6.
-ip_proto            	= ipv4
+##########
+# Remote #
+##########
+[remote]
+# Send output to remote server. Set true or false
+remote					= false
+remote_host 			= example.tld
+remote_user 			= foo
+remote_path 			= /var/www
+
