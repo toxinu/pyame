@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.7.1"
+version = "0.7.2"
 
 import sys
 # Check Python version
@@ -597,7 +597,8 @@ def run():
 	if archive == "true":
 		# Create archive
 		create_archive()
+	if remote == "true":
+		# Send to remote server
+		send_remote(remote_host, remote_user, remote_path)
 
 arg_check()
-if remote == "true":
-	send_remote(remote_host, remote_user, remote_path)
