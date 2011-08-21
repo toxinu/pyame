@@ -133,3 +133,35 @@ def run(option):
 		print("\n####################################")
 		print("## \033[92mPyhame is already up to date !\033[0m ##")
 		print("####################################\n")
+
+# Update Pyhame
+def update_pyhame(force):
+	sys.path.append("ressources")
+	import update
+	update.run(force)
+	sys.exit(0)
+
+# Clean Pyhame install
+def clean_pyhame():
+	sys.path.append("ressources")
+	import update
+	update.run("clean")
+	sys.exit(0)
+
+try:
+	if sys.argv[1] == "update":
+		if len(sys.argv) > 2:
+			if sys.argv[2] == "force":
+				force = "force"
+			else:
+				force = False
+		else:
+			force = False
+		update_pyhame(force)
+except IndexError:
+	sys.argv.append(None)
+try:
+	if sys.argv[1] == "clean":
+		clean_pyhame()
+except IndexError:
+	sys.argv.append(None)

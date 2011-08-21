@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.7.2"
+version = "0.7.3"
 
 import sys
 # Check Python version
