@@ -12,8 +12,8 @@ import os, configparser, stat, types
 
 config 			= configparser.RawConfigParser()
 pwd 			= os.getcwd()
-config_file 	= "ressources/pyhame.conf"
-init_lock_path	= "ressources/init.lock"
+config_file 	= "resources/pyhame.conf"
+init_lock_path	= "resources/init.lock"
 
 #############
 ## General ##
@@ -23,7 +23,9 @@ def read_conf():
 	section = "general"
 	global content_folder, template_name, website_url, extensions_to_render
 	global no_list_no_render, no_list_yes_render, tpl_path, lib_path, static_path
+	global website_title
 	try:
+		website_title		= config.get(section, 'website_title')
 		content_folder		= config.get(section, 'content_folder')
 		template_name		= config.get(section, 'template_name')
 		website_url			= config.get(section, 'website_url')
@@ -63,9 +65,6 @@ def arg_check():
 		print("Usage : pyhame [OPTION] ...")
 		print("    init           ->  Initialisation of Pyhame installation")
 		print("    run            ->  Run pyhame to generate website")
-		#print("    update         ->  Update Pyhame installation via git")
-		#print("    update force   ->  Force Update of Pyhame")
-		#print("    clean          ->  Clean Pyhame installation (Exclude: archives folder)")
 		print("    version        ->  Print pyhame version")
 		print("    help           ->  Print this help")
 	if len(sys.argv) < 2:
@@ -83,23 +82,6 @@ def arg_check():
 			sys.exit(0)
 	except IndexError:
 		sys.argv.append(None)
-#	try:
-#		if sys.argv[1] == "update":
-#			if len(sys.argv) > 2:
-#				if sys.argv[2] == "force":
-#					force = "force"
-#				else:
-#					force = False
-#			else:
-#				force = False
-#			update_pyhame(force)
-#	except IndexError:
-#		sys.argv.append(None)
-#	try:
-#		if sys.argv[1] == "clean":
-#			clean_pyhame()
-#	except IndexError:
-#		sys.argv.append(None)
 	try:
 		if sys.argv[1] == "init":
 			init_pyhame()
@@ -156,9 +138,9 @@ def pre_check():
 		os.makedirs(content_folder)
 	# Check if template_name exit
 	template_path = "%s/%s" % (tpl_path, template_name)
-	if not os.path.exists(template_path) or not os.path.exists("%s/%s_index" % (template_path, template_name)) or not os.path.exists("%s/%s_view" % (template_path, template_name)):
-		print(" \033[93m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: _index, _view must be in template folder. Default will be used.")
-		template_name = "default"
+	if not os.path.exists(template_path) or not os.path.exists("%s/index.html" % template_path) or not os.path.exists("%s/view.html" % template_path):
+		print(" \033[91m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: index.html, view.html must be in template folder.")
+		sys.exit(0)
 	###################
 	###    Remote   ###
 	###################
@@ -202,21 +184,18 @@ def init_pyhame():
 		if os.path.exists(static_path):
 			shutil.rmtree(static_path)
 		os.makedirs(static_path)
+		# Create blank special files
+		special_files = ["welcome_message","footer","welcome_content"]
+		for f in special_files:
+			tmp_file = open("%s/%s" % (content_folder, f), 'w')
+			if f == "welcome_message":
+				tmp_file.write("Edit welcome_message file")
+			elif f == "footer":
+				tmp_file.write("Edit footer file")
+			elif f == "welcome_content":
+				tmp_file.write("Edit welcome_content file")	
+			tmp_file.close()
 		print(" \033[93m::\033[0m You have to configure your ressources/pyhame.conf file")
-
-# Update Pyhame
-#def update_pyhame(force):
-#	sys.path.append("ressources")
-#	import update
-#	update.run(force)
-#	sys.exit(0)
-
-# Clean Pyhame install
-#def clean_pyhame():
-#	sys.path.append("ressources")
-#	import update
-#	update.run("clean")
-#	sys.exit(0)
 
 # Archive maker
 def create_archive():
@@ -272,8 +251,7 @@ def text_to_html(brute_file):
 	sys.path.append(lib_path)
 	import markdown
 	file_content = markdown.markdown(brute_file)	
-	template_view = read_template_view()
-	html_file_content = setup_view(template_view)
+	html_file_content = generate_view()
 	return html_file_content
 
 # Text file parser for special files
@@ -297,8 +275,7 @@ def static_folder_maker(path):
 # Recover specials files in content folder
 def recover_special_files():
 	global special_files
-	special_files = ["website_title","welcome_message","footer","welcome_content"]
-	exclude_markdown = ["website_title"]
+	special_files = ["welcome_message","footer","welcome_content"]
 	gl = globals()
 	for f in special_files:
 		gl[f] = False		
@@ -308,15 +285,6 @@ def recover_special_files():
 				tmp_file = open("%s/%s" % (content_folder, i), 'r')
 				gl[file] = tmp_file.read()
 				tmp_check = False
-				for f in exclude_markdown:
-					if i == f:
-						tmp_check = True
-						break
-					if tmp_check:
-						gl[file] = gl[file].replace('\n', '<br>')
-						gl[file] = gl[file][:-4]
-					else:
-						gl[file] = markdown_it(gl[file])
 				tmp_file.close()
 
 # List extensions to render
@@ -371,10 +339,10 @@ def menu_generator():
 	from urllib.parse import quote
 	# Create empty list to store collected folders
 	aDirs = []
-	global root_menu_01
-	global sub_menu_01
-	root_menu_01 = ""
-	sub_menu_01 = ""
+	global root_menu
+	global sub_menu
+	root_menu = ""
+	sub_menu = ""
 	# Iterate through root folder to collected folders
 	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
 		aDirs.append(oDirPaths)
@@ -416,9 +384,9 @@ def menu_generator():
 						if not tmp_check:
 							if check_file_extension(i):
 								filename_without_extension = i.split('.')
-								root_menu_01 = root_menu_01 + ("<li><a href=\"/%s.html\">%s</a></li>\n" % (quote(i), remove_extension(i)))
+								root_menu = root_menu + ("<li><a href=\"/%s.html\">%s</a></li>\n" % (quote(i), remove_extension(i)))
 							else:
-								root_menu_01 = root_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
+								root_menu = root_menu + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
 					else:
 						if check_file_extension(i):
 							filename_without_extension = i.split('.')
@@ -427,7 +395,7 @@ def menu_generator():
 							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 			break
 		if oDir == content_folder:
-			root_menu_01 += ("</ul>\n")
+			root_menu += ("</ul>\n")
 		else:
 			if os.listdir(oDir):
 				tmp_check = False
@@ -482,59 +450,17 @@ def rendering_html_content_files():
 
 # Read template index
 def read_template_index():
-	template_file_index = open("%s/%s/%s_index" % (tpl_path, template_name, template_name), 'r')
+	template_file_index = open("%s/%s/index.html" % (tpl_path, template_name), 'r')
 	template_content_index = template_file_index.read()
 	template_file_index.close()
 	return template_content_index
 
 # Read template view
 def read_template_view():
-	template_file_view = open("%s/%s/%s_view" % (tpl_path, template_name, template_name), 'r')
+	template_file_view = open("%s/%s/view.html" % (tpl_path, template_name), 'r')
 	template_content_view = template_file_view.read()
 	template_file_view.close()
 	return template_content_view
-
-# Replace template variables view
-def setup_view(template_file):
-	if website_title:
-		template_file = template_file.replace("set_website_title", website_title)
-	else:
-		template_file = template_file.replace("set_website_title", "Create your website_title file")
-	if footer:
-		template_file = template_file.replace("set_footer", footer)
-	else:
-		template_file = template_file.replace("set_footer", "Create your footer file")
-	template_file = template_file.replace("set_file_name", file_name)
-	template_file = template_file.replace("set_file_content", file_content)
-	template_file = template_file.replace("set_website_url", "http://%s" % website_url)
-	template_file = template_file.replace("set_dl_file_link", dl_file_link)
-	template_file = template_file.replace("set_permalink", permalink)
-	template_file = template_file.replace("set_root_menu_01", root_menu_01)
-	template_file = template_file.replace("set_sub_menu_01", sub_menu_01)
-	return template_file
-
-# Replace template variables index
-def setup_index(template_file):
-	if website_title:
-		template_file = template_file.replace("set_website_title", website_title)
-	else:
-		template_file = template_file.replace("set_website_title", "Create your website_title file")
-	if welcome_message:
-		template_file = template_file.replace("set_welcome_message", welcome_message)
-	else:
-		template_file = template_file.replace("set_welcome_message", "Create your welcome_message file")
-	if welcome_content:
-		template_file = template_file.replace("set_welcome_content", welcome_content)
-	else:
-		template_file = template_file.replace("set_welcome_content", "Create your welcome_content file")
-	if footer:
-		template_file = template_file.replace("set_footer", footer)
-	else:
-		template_file = template_file.replace("set_footer", "Create your footer file")
-	template_file = template_file.replace("set_root_menu_01", root_menu_01)
-	template_file = template_file.replace("set_sub_menu_01", sub_menu_01)
-	template_file = template_file.replace("set_website_url", "http://%s" % website_url)
-	return template_file
 
 # Write index
 def write_index(index_final):
@@ -560,7 +486,8 @@ def static_other():
 def sym_site_static():
 	src_dir 	= "../"+content_folder 
 	dest_dir 	= static_path+"/_"+content_folder
-	os.symlink(src_dir, dest_dir)
+	if not os.path.exists(dest_dir):
+		os.symlink(src_dir, dest_dir)
 
 # Send to Remote
 def send_remote(host, user, path):
@@ -569,6 +496,23 @@ def send_remote(host, user, path):
 	output = getoutput("ssh %s@%s \"rm -R %s/* && mkdir %s\"" % (user, host, path, path))
 	output = getoutput("scp -r %s/* %s@%s:%s" % (static_path, user, host, path))
 	output = getoutput("scp -r %s/* %s@%s:%s/_%s" % (content_folder, user, host, path, content_folder))
+
+def generate_index():
+	from jinja2 import Template, Environment
+	template = Template(read_template_index())
+	write_index(template.render(website_title=website_title, welcome_message=welcome_message, welcome_content=welcome_content, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=website_url))
+
+def generate_view():
+	from jinja2 import Template
+	template = Template(read_template_view())
+	return template.render(website_title=website_title, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=website_url, file_name=file_name, file_content=file_content, dl_file_link=dl_file_link, permalink=permalink)
+
+def clear_cache():
+	import shutil
+	if os.path.exists("__pycache__"):
+		shutil.rmtree("__pycache__")
+	if os.path.exists("resources/lib/markdown/__pycache__"):
+		shutil.rmtree("resources/lib/markdown/__pycache__")
 
 ######################################
 # Start script #######################
@@ -584,16 +528,18 @@ def run():
 	# Recover special files like welcome_message ...
 	recover_special_files()
 	# Read template Index
-	template_file_index = read_template_index()
+	#template_file_index = read_template_index()
 	# Set up content listing and other specials files
 	menu_generator()
 	rendering_html_content_files()
 	# Set up index content
-	index_content = setup_index(template_file_index)
+	#index_content = setup_index(template_file_index)
 	# Write index.html file
-	write_index(index_content)
+	#write_index(index_content)
+	generate_index()
 	static_other()
 	sym_site_static()
+	clear_cache()
 	if archive == "true":
 		# Create archive
 		create_archive()

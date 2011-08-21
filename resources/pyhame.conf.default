@@ -6,6 +6,7 @@
 ###########
 [general]
 website_url				= localhost
+website_title			= localhost
 template_name           = default
 
 # File extensions to render. Files without extension will be automaticaly listed and rendered
@@ -18,8 +19,8 @@ no_list_no_render		=
 no_list_yes_render 		= 
 
 # Ressources
-tpl_path				= ressources/tpl
-lib_path 				= ressources/lib
+tpl_path				= resources/tpl
+lib_path 				= resources/lib
 static_path 			= static
 content_folder          = site
 
