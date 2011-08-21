@@ -148,20 +148,38 @@ def clean_pyhame():
 	update.run("clean")
 	sys.exit(0)
 
-try:
-	if sys.argv[1] == "update":
-		if len(sys.argv) > 2:
-			if sys.argv[2] == "force":
-				force = "force"
+def arg_check():
+	def help():
+			print("Usage : ./update [OPTION] ...")
+			print("    update         ->  Update Pyhame installation via git")
+			print("    update force   ->  Force Update of Pyhame")
+			print("    clean          ->  Clean Pyhame installation (Exclude: archives folder)")
+			print("    help           ->  Print this help")
+	if len(sys.argv) < 2:
+		help()
+		sys.exit(0)
+	try:
+		if sys.argv[1] == "help":
+			help()
+			sys.exit(0)
+	except IndexError:
+		sys.argv.append(None)
+	try:
+		if sys.argv[1] == "update":
+			if len(sys.argv) > 2:
+				if sys.argv[2] == "force":
+					force = "force"
+				else:
+					force = False
 			else:
 				force = False
-		else:
-			force = False
-		update_pyhame(force)
-except IndexError:
-	sys.argv.append(None)
-try:
-	if sys.argv[1] == "clean":
-		clean_pyhame()
-except IndexError:
-	sys.argv.append(None)
+			update_pyhame(force)
+	except IndexError:
+		sys.argv.append(None)
+	try:
+		if sys.argv[1] == "clean":
+			clean_pyhame()
+	except IndexError:
+		sys.argv.append(None)
+
+arg_check()
