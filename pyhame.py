@@ -167,12 +167,12 @@ def init_pyhame():
 		sys.exit(0)
 	else:
 		print(" \033[93m::\033[0m Pyhame initilization...")
-		if not os.path.exists("ressources"):
-			if not os.path.exists("/usr/lib/pyhame/ressources"):
-				print(" \033[91m::\033[0m Critical ressources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
+		if not os.path.exists("resources"):
+			if not os.path.exists("/usr/lib/pyhame/resources"):
+				print(" \033[91m::\033[0m Critical resources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
 				sys.exit(0)
 			else:
-				shutil.copytree("/usr/lib/pyhame/ressources", pwd+"/ressources")
+				shutil.copytree("/usr/lib/pyhame/resources", pwd+"/resources")
 		open(init_lock_path, 'a').close()
 		os.utime(init_lock_path, None)
 		if os.path.exists(config_file):
@@ -195,7 +195,7 @@ def init_pyhame():
 			elif f == "welcome_content":
 				tmp_file.write("Edit welcome_content file")	
 			tmp_file.close()
-		print(" \033[93m::\033[0m You have to configure your ressources/pyhame.conf file")
+		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")
 
 # Archive maker
 def create_archive():
@@ -360,7 +360,7 @@ def menu_generator():
 						tmp_check = True
 						break
 				if not tmp_check:
-					sub_menu_01 = sub_menu_01 + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % remove_content_folder_name(oDir))
+					sub_menu = sub_menu + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % remove_content_folder_name(oDir))
 		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 			oDirs.sort()
 			oDirFiles.sort()
@@ -390,9 +390,9 @@ def menu_generator():
 					else:
 						if check_file_extension(i):
 							filename_without_extension = i.split('.')
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
+							sub_menu = sub_menu + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
 						else:
-							sub_menu_01 = sub_menu_01 + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							sub_menu = sub_menu + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
 			break
 		if oDir == content_folder:
 			root_menu += ("</ul>\n")
@@ -408,7 +408,7 @@ def menu_generator():
 						tmp_check = True
 						break
 				if not tmp_check:
-					sub_menu_01 += ("</ul>\n")
+					sub_menu += ("</ul>\n")
 
 # Rendering html content files
 def rendering_html_content_files():
