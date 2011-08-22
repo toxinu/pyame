@@ -26,11 +26,26 @@
 			<div id="file_name">{{ file_name }}</div>
 			<div id="file_links">[{{ dl_file_link }}|{{ permalink }}]</div>
 		</div>
-		<div id="root_menu">{{ root_menu }}</div>
+		<div id="root_menu">
+			<ul>
+            {% for url, file in root_menu %}
+            	<li><a href="{{ url }}">{{ file }}</a></li>
+            {% endfor %}
+            </ul>
+		</div>
 		<div id="file_content">{{ file_content }}</div>
 		<div id="open_menu"><a href="'void(0)'" rel="toggle[menu]">Open It !</a></div>
 			<div id="menu">
-				<div id="sub_menu">{{ sub_menu }}</div>
+				<div id="sub_menu">
+					{% for foldername, filelist in sub_menu %}
+                    	{{ foldername }}
+	                    <ul>
+    	                    {% for fileurl, filename in filelist %}
+        	                <li><a href="{{ fileurl }}">{{ filename }}</a></li>
+            	            {% endfor %}
+                	    </ul>
+	                {% endfor %}
+				</div>
 			</div>
 		<footer>
 			{{ footer }}

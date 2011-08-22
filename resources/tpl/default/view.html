@@ -16,7 +16,9 @@
 		<h2 id="website_title"><a href="{{ website_url }}">{{ website_title }}</a></h2>
 		<div id="file_description">
 			<div id="file_name">{{ file_name }}</div>
-			<div id="file_links">[{{ dl_file_link }}|{{ permalink }}]</div>
+			<div id="file_links">
+				[ <a href="{{ dl_file_link }}">download</a>|<a href="{{ permalink }}">permalink</a> ]
+			</div>
 		</div>
 		<div id="file_content">{{ file_content }}</div>
 	<footer>

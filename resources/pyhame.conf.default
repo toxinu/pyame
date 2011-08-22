@@ -5,9 +5,10 @@
 # General #
 ###########
 [general]
-website_url				= localhost
 website_title			= localhost
 template_name           = default
+# Leave blank for default root website link
+website_url				= 
 
 # File extensions to render. Files without extension will be automaticaly listed and rendered
 extensions_to_render	= "txt","md"

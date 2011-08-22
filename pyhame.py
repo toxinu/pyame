@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.7.3"
+version = "0.7.5"
 
 import sys
 # Check Python version
@@ -63,7 +63,7 @@ def read_conf():
 def arg_check():
 	def help():
 		print("Usage : pyhame [OPTION] ...")
-		print("    init           ->  Initialisation of Pyhame installation")
+		print("    init           ->  Init your new website project")
 		print("    run            ->  Run pyhame to generate website")
 		print("    version        ->  Print pyhame version")
 		print("    help           ->  Print this help")
@@ -88,7 +88,7 @@ def arg_check():
 	except IndexError:
 		sys.argv.append(None)
 	if not os.path.exists(config_file):
-		print(" \033[91m::\033[0m There is no config file. Must run pyhame.py init")
+		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
 		read_conf()
@@ -117,9 +117,9 @@ def pre_check():
 		print(" \033[93m::\033[0m \"template_name\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
 	# Check if website_url is set
+	global website_url
 	if not website_url:
-		print(" \033[91m::\033[0m \"website_url\" must be given in pyhame.conf (general section)")
-		sys.exit(0)
+		website_url = "/"
 	if not tpl_path or not lib_path or not static_path:
 		print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  and \"lib_path\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
@@ -338,11 +338,10 @@ def menu_generator():
 	# Import for escape unsafe char in url
 	from urllib.parse import quote
 	# Create empty list to store collected folders
-	aDirs = []
-	global root_menu
-	global sub_menu
-	root_menu = ""
-	sub_menu = ""
+	global root_menu, sub_menu
+	root_menu, sub_menu	= [], []
+	sub_file_list = []
+	aDirs 				= []
 	# Iterate through root folder to collected folders
 	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
 		aDirs.append(oDirPaths)
@@ -359,8 +358,6 @@ def menu_generator():
 					if oDir ==f:
 						tmp_check = True
 						break
-				if not tmp_check:
-					sub_menu = sub_menu + ("<a href=\"#\" class=\"sub_content_title\">%s</a>\n<ul class=\"sub_content_ul\">\n" % remove_content_folder_name(oDir))
 		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
 			oDirs.sort()
 			oDirFiles.sort()
@@ -384,19 +381,21 @@ def menu_generator():
 						if not tmp_check:
 							if check_file_extension(i):
 								filename_without_extension = i.split('.')
-								root_menu = root_menu + ("<li><a href=\"/%s.html\">%s</a></li>\n" % (quote(i), remove_extension(i)))
+								tmp_root = ("/%s.html" % quote(i),remove_extension(i))
+								root_menu.append(tmp_root)
 							else:
-								root_menu = root_menu + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))	
+								tmp_root = ("/_%s/%s" % (quote(oPaths), quote(i)),i)
+								root_menu.append(tmp_root)
 					else:
 						if check_file_extension(i):
 							filename_without_extension = i.split('.')
-							sub_menu = sub_menu + ("<li><a href=\"%s/%s.html\">%s</a></li>\n" % (remove_content_folder_name(quote(oPaths)), quote(i), remove_extension(i)))
+							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i))
+							sub_file_list.append(file_info)
 						else:
-							sub_menu = sub_menu + ("<li><a href=\"/_%s/%s\">%s</a></li>\n" % (quote(oPaths), quote(i), i))
+							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i))
+							sub_file_list.append(file_info)
 			break
-		if oDir == content_folder:
-			root_menu += ("</ul>\n")
-		else:
+		if oDir != content_folder:
 			if os.listdir(oDir):
 				tmp_check = False
 				for f in no_list_no_render_list:
@@ -408,7 +407,9 @@ def menu_generator():
 						tmp_check = True
 						break
 				if not tmp_check:
-					sub_menu += ("</ul>\n")
+					foldername = (remove_content_folder_name(oDir), sub_file_list)
+					sub_menu.append(foldername)
+					sub_file_list = []
 
 # Rendering html content files
 def rendering_html_content_files():
@@ -420,9 +421,7 @@ def rendering_html_content_files():
 		oDirNames.sort()
 	for oDir in aDirs:
 		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
-			global file_name
-			global dl_file_link
-			global permalink
+			global file_name, dl_file_link, permalink
 			oDirs.sort()
 			oDirFiles.sort()
 			tmp_check = False
@@ -433,8 +432,8 @@ def rendering_html_content_files():
 			if not tmp_check:
 				for i in oDirFiles:
 					file_name = i
-					dl_file_link = "<a href=\"/_%s/%s\">download</a>" % (quote(oPaths), quote(i))
-					permalink = "<a href=\"%s/%s.html\">permalink</a>" % (remove_content_folder_name(quote(oPaths)), quote(i))
+					dl_file_link = "/_%s/%s" % (quote(oPaths), quote(i))
+					permalink = "%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i))
 					if oDir == content_folder:
 						tmp_check = False
 						for f in special_files:
@@ -527,15 +526,10 @@ def run():
 	create_extensions_to_render_list()
 	# Recover special files like welcome_message ...
 	recover_special_files()
-	# Read template Index
-	#template_file_index = read_template_index()
 	# Set up content listing and other specials files
 	menu_generator()
 	rendering_html_content_files()
 	# Set up index content
-	#index_content = setup_index(template_file_index)
-	# Write index.html file
-	#write_index(index_content)
 	generate_index()
 	static_other()
 	sym_site_static()
