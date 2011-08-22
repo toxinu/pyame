@@ -57,6 +57,9 @@ footer a {
     font-size: 11px;
     margin-top: 40px;
 }
+#welcome_content a {
+	text-decoration: none;
+}
 #menu {
 	font-family: Verdana, Tahoma;
 	background-color: #CDCCCC;
