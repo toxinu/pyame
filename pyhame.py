@@ -130,7 +130,6 @@ def pre_check():
 	if archive != "true" and archive != "false" or not archive:
 		print(" \033[91m::\033[0m \"archive\" must be \"true\" or \"false\" in pyhame.conf (others section)")
 		sys.exit(0)
-				
 	## Create defaults files
 	# Check if content_folder exist, if not, create it.
 	if not os.path.exists(content_folder):
@@ -176,6 +175,7 @@ def init_pyhame():
 		open(init_lock_path, 'a').close()
 		os.utime(init_lock_path, None)
 		if os.path.exists(config_file):
+			shutil.copyfile(config_file, config_file+".back")
 			os.remove(config_file)			
 		shutil.copyfile(config_file+".default", config_file)
 		read_conf()
@@ -187,14 +187,15 @@ def init_pyhame():
 		# Create blank special files
 		special_files = ["welcome_message","footer","welcome_content"]
 		for f in special_files:
-			tmp_file = open("%s/%s" % (content_folder, f), 'w')
-			if f == "welcome_message":
-				tmp_file.write("Edit welcome_message file")
-			elif f == "footer":
-				tmp_file.write("Edit footer file")
-			elif f == "welcome_content":
-				tmp_file.write("Edit welcome_content file")	
-			tmp_file.close()
+			if not os.path.exists("%s/%s" % (content_folder, f)):
+				tmp_file = open("%s/%s" % (content_folder, f), 'w')
+				if f == "welcome_message":
+					tmp_file.write("Edit welcome_message file")
+				elif f == "footer":
+					tmp_file.write("Edit footer file")
+				elif f == "welcome_content":
+					tmp_file.write("Edit welcome_content file")	
+				tmp_file.close()
 		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")
 
 # Archive maker
@@ -276,6 +277,7 @@ def static_folder_maker(path):
 def recover_special_files():
 	global special_files
 	special_files = ["welcome_message","footer","welcome_content"]
+	exclude_markdown = [""]
 	gl = globals()
 	for f in special_files:
 		gl[f] = False		
@@ -285,6 +287,15 @@ def recover_special_files():
 				tmp_file = open("%s/%s" % (content_folder, i), 'r')
 				gl[file] = tmp_file.read()
 				tmp_check = False
+				for f in exclude_markdown:
+					if i == f:
+						tmp_check = True
+						break
+					if tmp_check:
+						gl[file] = gl[file].replace('\n', '<br>')
+						gl[file] = gl[file][:-4]
+					else:
+						gl[file] = markdown_it(gl[file])
 				tmp_file.close()
 
 # List extensions to render
@@ -491,7 +502,7 @@ def sym_site_static():
 # Send to Remote
 def send_remote(host, user, path):
 	from subprocess import getoutput
-	print(" \033[91m::\033[0m Sending output at %s@%s:%s" % (user, host, path))	
+	print(" \033[93m::\033[0m Sending output at %s@%s:%s" % (user, host, path))	
 	output = getoutput("ssh %s@%s \"rm -R %s/* && mkdir %s\"" % (user, host, path, path))
 	output = getoutput("scp -r %s/* %s@%s:%s" % (static_path, user, host, path))
 	output = getoutput("scp -r %s/* %s@%s:%s/_%s" % (content_folder, user, host, path, content_folder))
@@ -512,6 +523,18 @@ def clear_cache():
 		shutil.rmtree("__pycache__")
 	if os.path.exists("resources/lib/markdown/__pycache__"):
 		shutil.rmtree("resources/lib/markdown/__pycache__")
+
+##############################
+# Check file ssh connection ##
+##############################
+def check_ssh(remote_user, remote_host):
+	from subprocess import getoutput
+	output = getoutput('ssh -oNumberOfPasswordPrompts=0 %s@%s "echo hello"' % (remote_user, remote_host))
+	if output == "hello":
+		print(" \033[92m::\033[0m Ssh connection : success !")
+	else:
+		print(" \033[91m::\033[0m Ssh connection : failed !")
+		sys.exit(0)
 
 ######################################
 # Start script #######################
@@ -538,6 +561,8 @@ def run():
 		# Create archive
 		create_archive()
 	if remote == "true":
+		# Test ssh connection
+		check_ssh(remote_user, remote_host)
 		# Send to remote server
 		send_remote(remote_host, remote_user, remote_path)
 
