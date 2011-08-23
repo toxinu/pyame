@@ -108,7 +108,7 @@ footer a {
 
 #file_description {
     margin: auto;
-    margin-bottom: 25px;
+	margin-bottom: 25px;
     width: 600px;
     outline: 2px dotted #CDCCCC; 
     outline-offset: 10px; /*Delete if you don't want an offset*/
@@ -129,11 +129,10 @@ footer a {
 	text-decoration: none;
 }
 #file_content {
-	margin: auto;
-	width: 98%;
 	font-family: Verdana, Tahoma;
     font-size: 11px;
     margin-top: 40px;
+	margin-left: 280px;
 }
 #file_content a {
 	text-decoration: none;
