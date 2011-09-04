@@ -515,7 +515,8 @@ def generate_index():
 def generate_view():
 	from jinja2 import Template
 	template = Template(read_template_view())
-	return template.render(website_title=website_title, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=website_url, file_name=file_name, file_content=file_content, dl_file_link=dl_file_link, permalink=permalink)
+	return template.render(website_title=website_title,
+	welcome_message=welcome_message, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=website_url, file_name=file_name, file_content=file_content, dl_file_link=dl_file_link, permalink=permalink)
 
 def clear_cache():
 	import shutil
