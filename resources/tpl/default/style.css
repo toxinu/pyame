@@ -3,7 +3,7 @@
   src: url('fonts/Ubuntu-R.ttf');
 }
 body {
-	background-color: #FCFBF2;
+	background-image: url('/_template/img/bg.png');
 	width: 900px;
 	margin: auto;
 }
