@@ -21,11 +21,11 @@ pwd		= os.getcwd()
 #################
 def arg_check():
 	def help():
-		print("Usage : pyhame [OPTION] ...")
-		print("    init           ->  Init your new website project")
-		print("    run            ->  Run pyhame to generate website")
-		print("    version        ->  Print pyhame version")
-		print("    help           ->  Print this help")
+		print("""Usage : pyhame [OPTION] ...
+	init           ->  Init your new website project
+	run            ->  Run pyhame to generate website
+	version        ->  Print pyhame version
+	help           ->  Print this help""")
 	if len(sys.argv) < 2:
 		help()
 		sys.exit(0)
@@ -308,9 +308,7 @@ def menu_generator():
 	from urllib.parse import quote
 	# Create empty list to store collected folders
 	global root_menu, sub_menu
-	root_menu, sub_menu	= [], []
-	sub_file_list = []
-	aDirs 				= []
+	root_menu, sub_menu, sub_file_list, aDirs = [], [], [], []
 	# Iterate through root folder to collected folders
 	for oDirPaths, oDirNames, oFiles in os.walk(conf.content_folder, True, None):
 		aDirs.append(oDirPaths)
