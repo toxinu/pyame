@@ -457,14 +457,6 @@ def sym_site_static():
 	if not os.path.exists(dest_dir):
 		os.symlink(src_dir, dest_dir)
 
-# Send to Remote
-def send_remote(host, user, path):
-	from subprocess import getoutput
-	print(" \033[93m::\033[0m Sending output at %s@%s:%s" % (user, host, path))	
-	output = getoutput("ssh %s@%s \"rm -R %s/* && mkdir %s\"" % (user, host, path, path))
-	output = getoutput("scp -r %s/* %s@%s:%s" % (conf.static_path, user, host, path))
-	output = getoutput("scp -r %s/* %s@%s:%s/_%s" % (conf.content_folder, user, host, path, conf.content_folder))
-
 def generate_index():
 	from jinja2 import Template, Environment
 	template = Template(read_template_index())
@@ -482,18 +474,8 @@ def clear_cache():
 		shutil.rmtree("__pycache__")
 	if os.path.exists("resources/lib/markdown/__pycache__"):
 		shutil.rmtree("resources/lib/markdown/__pycache__")
-
-##############################
-# Check file ssh connection ##
-##############################
-def check_ssh(remote_user, remote_host):
-	from subprocess import getoutput
-	output = getoutput('ssh -oNumberOfPasswordPrompts=0 %s@%s "echo hello"' % (remote_user, remote_host))
-	if output == "hello":
-		print(" \033[92m::\033[0m Ssh connection : success !")
-	else:
-		print(" \033[91m::\033[0m Ssh connection : failed !")
-		sys.exit(0)
+	if os.path.exists("resources/lib/__pycache__"):
+		shutil.rmtree("resources/lib/__pycache__")
 
 ######################################
 # Start script #######################
@@ -515,14 +497,15 @@ def run():
 	generate_index()
 	static_other()
 	sym_site_static()
-	clear_cache()
 	if conf.archive == "true":
 		# Create archive
 		create_archive()
 	if conf.remote == "true":
 		# Test ssh connection
-		check_ssh(conf.remote_user, conf.remote_host)
+		import remote
+		remote.check_ssh(conf.remote_host, conf.remote_user)
 		# Send to remote server
-		send_remote(conf.remote_host, conf.remote_user, conf.remote_path)
+		remote.push_ssh(conf.remote_host, conf.remote_user, conf.remote_path, conf.static_path)
+	clear_cache()
 
 arg_check()
