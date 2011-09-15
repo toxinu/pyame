@@ -3,59 +3,18 @@
 version = "0.7.5"
 
 import sys
+sys.path.append("resources")
+import os, configparser, stat, types
+from lib.conf import configuration as conf
+
 # Check Python version
 if sys.version_info < (3, 1):
 	print("Must use Python 3.1")
 	sys.exit(0)
 
-import os, configparser, stat, types
-
-config 			= configparser.RawConfigParser()
-pwd 			= os.getcwd()
-config_file 	= "resources/pyhame.conf"
+config_file	= "resources/pyhame.conf"
 init_lock_path	= "resources/init.lock"
-
-#############
-## General ##
-#############
-def read_conf():
-	config.read(config_file)
-	section = "general"
-	global content_folder, template_name, website_url, extensions_to_render
-	global no_list_no_render, no_list_yes_render, tpl_path, lib_path, static_path
-	global website_title
-	try:
-		website_title		= config.get(section, 'website_title')
-		content_folder		= config.get(section, 'content_folder')
-		template_name		= config.get(section, 'template_name')
-		website_url			= config.get(section, 'website_url')
-		extensions_to_render= config.get(section, 'extensions_to_render')
-		no_list_no_render	= config.get(section, 'no_list_no_render')
-		no_list_yes_render	= config.get(section, 'no_list_yes_render')
-		tpl_path			= config.get(section, 'tpl_path')
-		lib_path			= config.get(section, 'lib_path')
-		static_path			= config.get(section, 'static_path')
-	except configparser.Error as err:
-		print('There is an error in pyhame.conf (%s)' % err)
-		sys.exit(1)
-	## Others ##
-	section = "others"
-	global archive
-	try:
-		archive				= config.get(section, 'archive')
-	except configparser.Error as err:
-		print('There is an error in pyhame.conf (%s)' % err)
-		sys.exit(1)
-	## Remote ##
-	section = "remote"
-	global remote, remote_host, remote_user, remote_path
-	try:
-		remote				= config.get(section, 'remote')
-		remote_host			= config.get(section, 'remote_host')
-		remote_user         = config.get(section, 'remote_user')
-		remote_path         = config.get(section, 'remote_path')
-	except configparser.Error as err:
-		print('There is an error in pyhame.conf (%s)' % err)
+pwd		= os.getcwd()
 
 #################
 ##  Argu Check ##
@@ -91,7 +50,8 @@ def arg_check():
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
-		read_conf()
+		global conf
+		conf.read(conf, config_file)
 	try:
 		if sys.argv[1] == "run":
 			run()
@@ -105,56 +65,54 @@ def pre_check():
 	## General section ##
 	#####################
 	# Check if content_folder is set
-	if not content_folder:
+	if not conf.content_folder:
 		print(" \033[91m::\033[0m \"content_folder\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
-	if content_folder == "tpl" or content_folder == "lib":
+	if conf.content_folder == "tpl" or conf.content_folder == "lib":
 		print(" \033[91m::\033[0m \"content_folder\" cant be \"tpl\", \"lib\" or \"archives\".  (general section)")
 		sys.exit(0)
 	# Check if template_name is set
-	global template_name
-	if not template_name:
+	if not conf.template_name:
 		print(" \033[93m::\033[0m \"template_name\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
 	# Check if website_url is set
-	global website_url
-	if not website_url:
-		website_url = "/"
-	if not tpl_path or not lib_path or not static_path:
+	if not conf.website_url:
+		conf.website_url = "/"
+	if not conf.tpl_path or not conf.lib_path or not conf.static_path:
 		print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  and \"lib_path\" must be given in pyhame.conf (general section)")
 		sys.exit(0)
 	####################
 	## Others section ##
 	####################
 	# Check if archive is set
-	if archive != "true" and archive != "false" or not archive:
+	if conf.archive != "true" and conf.archive != "false" or not conf.archive:
 		print(" \033[91m::\033[0m \"archive\" must be \"true\" or \"false\" in pyhame.conf (others section)")
 		sys.exit(0)
 	## Create defaults files
 	# Check if content_folder exist, if not, create it.
-	if not os.path.exists(content_folder):
+	if not os.path.exists(conf.content_folder):
 		print(" \033[93m::\033[0m \"content_folder\" you have given not exist. It will be automatically create")
-		os.makedirs(content_folder)
+		os.makedirs(conf.content_folder)
 	# Check if template_name exit
-	template_path = "%s/%s" % (tpl_path, template_name)
-	if not os.path.exists(template_path) or not os.path.exists("%s/index.html" % template_path) or not os.path.exists("%s/view.html" % template_path):
+	conf.template_path = "%s/%s" % (conf.tpl_path, conf.template_name)
+	if not os.path.exists(conf.template_path) or not os.path.exists("%s/index.html" % conf.template_path) or not os.path.exists("%s/view.html" % conf.template_path):
 		print(" \033[91m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: index.html, view.html must be in template folder.")
 		sys.exit(0)
 	###################
 	###    Remote   ###
 	###################
 	# Check remote section
-	if remote != "true" and remote != "false" or not remote:
+	if conf.remote != "true" and conf.remote != "false" or not conf.remote:
 		print(" \033[91m::\033[0m \"remote\" must be \"true\" or \"false\" in pyhame.conf (remote section)")
 		sys.exit(0)
-	if remote == "true":
-		if remote_host == "":
+	if conf.remote == "true":
+		if conf.remote_host == "":
 			print(" \033[91m::\033[0m \"remote_host\" must be given in pyhame.conf (remote section)")
 			sys.exit(0)
-		if remote_user == "":
+		if conf.remote_user == "":
 			print(" \033[91m::\033[0m \"remote_user\" must be given in pyhame.conf (remote section)")
 			sys.exit(0)
-		if remote_path == "":
+		if conf.remote_path == "":
 			print(" \033[91m::\033[0m \"remote_path\" must be given in pyhame.conf (remote section)")
 			sys.exit(0)
 	print(" \033[92m::\033[0m Generate your website...")
@@ -178,17 +136,17 @@ def init_pyhame():
 			shutil.copyfile(config_file, config_file+".back")
 			os.remove(config_file)			
 		shutil.copyfile(config_file+".default", config_file)
-		read_conf()
-		if not os.path.exists(content_folder):
-			os.makedirs(content_folder)
-		if os.path.exists(static_path):
-			shutil.rmtree(static_path)
-		os.makedirs(static_path)
+		conf.read(conf, config_file)
+		if not os.path.exists(conf.content_folder):
+			os.makedirs(conf.content_folder)
+		if os.path.exists(conf.static_path):
+			shutil.rmtree(conf.static_path)
+		os.makedirs(conf.static_path)
 		# Create blank special files
 		special_files = ["welcome_message","footer","welcome_content"]
 		for f in special_files:
-			if not os.path.exists("%s/%s" % (content_folder, f)):
-				tmp_file = open("%s/%s" % (content_folder, f), 'w')
+			if not os.path.exists("%s/%s" % (conf.content_folder, f)):
+				tmp_file = open("%s/%s" % (conf.content_folder, f), 'w')
 				if f == "welcome_message":
 					tmp_file.write("Edit welcome_message file")
 				elif f == "footer":
@@ -214,14 +172,14 @@ def create_archive():
 		return tarinfo
 
 	tar = tarfile.open("archives/%s.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
-	tar.add(content_folder, filter=reset)
-	tar.add(static_path, filter=reset)
+	tar.add(conf.content_folder, filter=reset)
+	tar.add(conf.static_path, filter=reset)
 	tar.close()
 
 # Replace content_folder by static_path in urls
 def re_content_static(path):
 	tmp = path.split('/')
-	tmp[0] = static_path
+	tmp[0] = conf.static_path
 	new_path = ""
 	for i in tmp:
 		new_path += "/"+i
@@ -249,7 +207,7 @@ def html_content_file(path_to_file):
 # Text file parser to html for view
 def text_to_html(brute_file):
 	global file_content
-	sys.path.append(lib_path)
+	sys.path.append(conf.lib_path)
 	import markdown
 	file_content = markdown.markdown(brute_file)	
 	html_file_content = generate_view()
@@ -257,7 +215,7 @@ def text_to_html(brute_file):
 
 # Text file parser for special files
 def markdown_it(brute_content):
-	sys.path.append(lib_path)
+	sys.path.append(conf.lib_path)
 	import markdown
 	return markdown.markdown(brute_content)
 
@@ -265,9 +223,9 @@ def markdown_it(brute_content):
 def static_folder_maker(path):
 	if not 'reset_static' in globals():
 		import shutil
-		if os.path.exists(static_path):
-			shutil.rmtree(static_path)
-		os.makedirs(static_path)
+		if os.path.exists(conf.static_path):
+			shutil.rmtree(conf.static_path)
+		os.makedirs(conf.static_path)
 		global reset_static
 		reset_static = True
 	if not os.path.exists(re_content_static(path)):
@@ -282,9 +240,9 @@ def recover_special_files():
 	for f in special_files:
 		gl[f] = False		
 	for file in special_files:
-		for i in os.listdir(content_folder):
+		for i in os.listdir(conf.content_folder):
 			if i == file:
-				tmp_file = open("%s/%s" % (content_folder, i), 'r')
+				tmp_file = open("%s/%s" % (conf.content_folder, i), 'r')
 				gl[file] = tmp_file.read()
 				tmp_check = False
 				for f in exclude_markdown:
@@ -302,7 +260,7 @@ def recover_special_files():
 def create_extensions_to_render_list():
 	global extensions_to_render_list
 	extensions_to_render_list = []
-	for extension in extensions_to_render.split(','):
+	for extension in conf.extensions_to_render.split(','):
 		extension = extension.replace('"', '')
 		extensions_to_render_list.append(extension)
 
@@ -310,7 +268,7 @@ def create_extensions_to_render_list():
 def no_list_no_render_listing():
 	global no_list_no_render_list
 	no_list_no_render_list = []
-	for item in no_list_no_render.split(','):
+	for item in conf.no_list_no_render.split(','):
 		item = item.replace('"', '')
 		no_list_no_render_list.append(item)
 
@@ -318,7 +276,7 @@ def no_list_no_render_listing():
 def no_list_yes_render_listing():
 	global no_list_yes_render_list
 	no_list_yes_render_list = []
-	for item in no_list_yes_render.split(','):
+	for item in conf.no_list_yes_render.split(','):
 		item = item.replace('"', '')
 		no_list_yes_render_list.append(item)
 
@@ -354,12 +312,12 @@ def menu_generator():
 	sub_file_list = []
 	aDirs 				= []
 	# Iterate through root folder to collected folders
-	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
+	for oDirPaths, oDirNames, oFiles in os.walk(conf.content_folder, True, None):
 		aDirs.append(oDirPaths)
 		oDirNames.sort()
 	for oDir in aDirs:
 		if os.listdir(oDir):
-			if oDir != content_folder:
+			if oDir != conf.content_folder:
 				tmp_check = False
 				for f in no_list_no_render_list:
 					if oDir == f:
@@ -383,7 +341,7 @@ def menu_generator():
 						tmp_check = True
 						break
 				if not tmp_check:
-					if oDir == content_folder:
+					if oDir == conf.content_folder:
 						tmp_check = False
 						for f in special_files:
 							if i == f:
@@ -406,7 +364,7 @@ def menu_generator():
 							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i))
 							sub_file_list.append(file_info)
 			break
-		if oDir != content_folder:
+		if oDir != conf.content_folder:
 			if os.listdir(oDir):
 				tmp_check = False
 				for f in no_list_no_render_list:
@@ -426,7 +384,7 @@ def menu_generator():
 def rendering_html_content_files():
 	from urllib.parse import quote
 	aDirs = []
-	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
+	for oDirPaths, oDirNames, oFiles in os.walk(conf.content_folder, True, None):
 		static_folder_maker(re_content_static(oDirPaths))
 		aDirs.append(oDirPaths)
 		oDirNames.sort()
@@ -445,7 +403,7 @@ def rendering_html_content_files():
 					file_name = i
 					dl_file_link = "/_%s/%s" % (quote(oPaths), quote(i))
 					permalink = "%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i))
-					if oDir == content_folder:
+					if oDir == conf.content_folder:
 						tmp_check = False
 						for f in special_files:
 							if i == f:
@@ -460,21 +418,21 @@ def rendering_html_content_files():
 
 # Read template index
 def read_template_index():
-	template_file_index = open("%s/%s/index.html" % (tpl_path, template_name), 'r')
+	template_file_index = open("%s/%s/index.html" % (conf.tpl_path, conf.template_name), 'r')
 	template_content_index = template_file_index.read()
 	template_file_index.close()
 	return template_content_index
 
 # Read template view
 def read_template_view():
-	template_file_view = open("%s/%s/view.html" % (tpl_path, template_name), 'r')
+	template_file_view = open("%s/%s/view.html" % (conf.tpl_path, conf.template_name), 'r')
 	template_content_view = template_file_view.read()
 	template_file_view.close()
 	return template_content_view
 
 # Write index
 def write_index(index_final):
-	index = open("%s/index.html" % static_path, 'w')
+	index = open("%s/index.html" % conf.static_path, 'w')
 	index.write(index_final)
 	index.close()
 
@@ -483,19 +441,19 @@ def static_other():
 	from distutils import dir_util
 
 	# template
-	dest_dir = static_path+"/_template" 
-	src_dir = tpl_path+"/"+template_name
+	dest_dir = conf.static_path+"/_template" 
+	src_dir = conf.tpl_path+"/"+conf.template_name
 	dir_util.copy_tree(src_dir, dest_dir)
 
 	# hightlight
-	dest_dir = static_path+"/_other/highlight"
-	src_dir = lib_path+"/highlight"
+	dest_dir = conf.static_path+"/_other/highlight"
+	src_dir = conf.lib_path+"/highlight"
 	dir_util.copy_tree(src_dir, dest_dir)
 
 # Symlink site into static
 def sym_site_static():
-	src_dir 	= "../"+content_folder 
-	dest_dir 	= static_path+"/_"+content_folder
+	src_dir 	= "../"+conf.content_folder 
+	dest_dir 	= conf.static_path+"/_"+conf.content_folder
 	if not os.path.exists(dest_dir):
 		os.symlink(src_dir, dest_dir)
 
@@ -504,19 +462,19 @@ def send_remote(host, user, path):
 	from subprocess import getoutput
 	print(" \033[93m::\033[0m Sending output at %s@%s:%s" % (user, host, path))	
 	output = getoutput("ssh %s@%s \"rm -R %s/* && mkdir %s\"" % (user, host, path, path))
-	output = getoutput("scp -r %s/* %s@%s:%s" % (static_path, user, host, path))
-	output = getoutput("scp -r %s/* %s@%s:%s/_%s" % (content_folder, user, host, path, content_folder))
+	output = getoutput("scp -r %s/* %s@%s:%s" % (conf.static_path, user, host, path))
+	output = getoutput("scp -r %s/* %s@%s:%s/_%s" % (conf.content_folder, user, host, path, conf.content_folder))
 
 def generate_index():
 	from jinja2 import Template, Environment
 	template = Template(read_template_index())
-	write_index(template.render(website_title=website_title, welcome_message=welcome_message, welcome_content=welcome_content, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=website_url))
+	write_index(template.render(website_title=conf.website_title, welcome_message=welcome_message, welcome_content=welcome_content, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=conf.website_url))
 
 def generate_view():
 	from jinja2 import Template
 	template = Template(read_template_view())
-	return template.render(website_title=website_title,
-	welcome_message=welcome_message, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=website_url, file_name=file_name, file_content=file_content, dl_file_link=dl_file_link, permalink=permalink)
+	return template.render(website_title=conf.website_title,
+	welcome_message=welcome_message, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=conf.website_url, file_name=file_name, file_content=file_content, dl_file_link=dl_file_link, permalink=permalink)
 
 def clear_cache():
 	import shutil
@@ -558,13 +516,13 @@ def run():
 	static_other()
 	sym_site_static()
 	clear_cache()
-	if archive == "true":
+	if conf.archive == "true":
 		# Create archive
 		create_archive()
-	if remote == "true":
+	if conf.remote == "true":
 		# Test ssh connection
-		check_ssh(remote_user, remote_host)
+		check_ssh(conf.remote_user, conf.remote_host)
 		# Send to remote server
-		send_remote(remote_host, remote_user, remote_path)
+		send_remote(conf.remote_host, conf.remote_user, conf.remote_path)
 
 arg_check()

@@ -1,6 +1,6 @@
 class configuration:
 	"""Configuration file content"""
-	def read(self, config_file ='resources/pyhame.conf'):
+	def read(self, config_file):
 		import configparser, sys
 		config = configparser.RawConfigParser()
 		config.read(config_file)
