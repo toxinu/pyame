@@ -485,6 +485,8 @@ def run():
 		remote.check_ssh(conf.remote_host, conf.remote_user)
 		# Send to remote server
 		remote.push_ssh(conf.remote_host, conf.remote_user, conf.remote_path, conf.static_path)
-	clear_cache()
+	cache_list = ["__pycache__","resources/lib/__pycache__","resources/lib/markdown/__pycache__"]
+	import clear
+	clear.cache(cache_list)
 
 arg_check()
