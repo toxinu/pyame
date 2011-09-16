@@ -1,7 +1,6 @@
 def generate(no_list_no_render, no_list_yes_render, extensions_to_render, content_folder, special_files):
 	import os
 	from urllib.parse import quote
-	from tools import check
 	root_menu, sub_menu, sub_file_list, aDirs = [], [], [], []
 	for oDirPaths, oDirNames, oFiles in os.walk(content_folder, True, None):
 		aDirs.append(oDirPaths)

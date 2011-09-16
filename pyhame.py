@@ -264,17 +264,31 @@ def check_file_extension(filename):
 			break
 	return False
 
-# Remove extension
-def remove_extension(filename, extensions_to_render):
-	filename = filename.split('.')
-	for extension in extensions_to_render:
-		if filename[-1] == extension:
-			del filename[-1]
-	filename = ''.join(filename)
-	return filename
+# Recover special files
+def recover_special_files(content_folder, special_files, exclude_markdown):
+	import os
+	gl = globals()
+	for f in special_files:
+		gl[f] = False
+	for file in special_files:
+		for i in os.listdir(content_folder):
+			if i == file:
+				tmp_file = open("%s/%s" % (content_folder, i), 'r')
+				gl[file] = tmp_file.read()
+				tmp_file.close()
+				tmp_check = False
+			for f in exclude_markdown:
+				if i == f:
+					tmp_check = True
+					break
+				if tmp_check:
+					gl[file] = gl[file].replace('\n', '<br>')
+					gl[file] = gl[file][:-4]
+				else:
+					gl[file] = markdown.markdown(gl[file])
 
 # Rendering html content files
-def rendering_html_content_files(no_list_no_render):
+def rendering_html_content_files(no_list_no_render, special_files):
 	from urllib.parse import quote
 	aDirs = []
 	for oDirPaths, oDirNames, oFiles in os.walk(conf.content_folder, True, None):
@@ -373,32 +387,29 @@ def run():
 	no_list_no_render_list = build.string_to_list(conf.no_list_no_render)
 	no_list_yes_render_list = build.string_to_list(conf.no_list_yes_render)
 	# Recover special files like welcome_message ...
-	#recover_special_files()
-	from lib import index_files
 	special_files = ["welcome_message","welcome_content","footer"]
 	exclude_markdown = []
-	index_files.recover(conf.content_folder, special_files, exclude_markdown)
+	recover_special_files(conf.content_folder, special_files, exclude_markdown)
 	# Set up content listing and other specials files
 	from lib import menu
+	global root_menu, sub_menu
 	root_menu, sub_menu = menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
-	rendering_html_content_files(no_list_no_render_list)
+	rendering_html_content_files(no_list_no_render_list, special_files)
 	# Set up index content
 	logging.info('Running pyhame v%s' % version)
 	generate_index()
 	static_other()
 	sym_site_static()
 	if conf.archive == "true":
-		import archive
+		from lib import archive
 		archive_list = [conf.static_path,conf.content_folder]
 		archive.create(conf.archive_path, archive_list)
 	if conf.remote == "true":
-		# Test ssh connection
-		import remote
+		from lib import remote
 		remote.check_ssh(conf.remote_host, conf.remote_user)
-		# Send to remote server
 		remote.push_ssh(conf.remote_host, conf.remote_user, conf.remote_path, conf.static_path)
 	# Clear cache
-	import clear
+	from lib import clear
 	cache_list = ["__pycache__","resources/lib/__pycache__","resources/lib/markdown/__pycache__"]
 	clear.cache(cache_list)
 
