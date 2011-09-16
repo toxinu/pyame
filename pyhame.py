@@ -252,31 +252,6 @@ def static_folder_maker(path):
 	if not os.path.exists(re_content_static(path)):
 		os.makedirs(re_content_static(path))
 
-# Recover specials files in content folder
-def recover_special_files():
-	global special_files
-	special_files = ["welcome_message","footer","welcome_content"]
-	exclude_markdown = [""]
-	gl = globals()
-	for f in special_files:
-		gl[f] = False		
-	for file in special_files:
-		for i in os.listdir(conf.content_folder):
-			if i == file:
-				tmp_file = open("%s/%s" % (conf.content_folder, i), 'r')
-				gl[file] = tmp_file.read()
-				tmp_check = False
-				for f in exclude_markdown:
-					if i == f:
-						tmp_check = True
-						break
-					if tmp_check:
-						gl[file] = gl[file].replace('\n', '<br>')
-						gl[file] = gl[file][:-4]
-					else:
-						gl[file] = markdown_it(gl[file])
-				tmp_file.close()
-
 # Check file extension
 def check_file_extension(filename):
 	filename = filename.split('.')
@@ -297,82 +272,6 @@ def remove_extension(filename, extensions_to_render):
 			del filename[-1]
 	filename = ''.join(filename)
 	return filename
-
-# List content folder files
-def menu_generator(no_list_no_render, no_list_yes_render, extensions_to_render):
-	# Import for escape unsafe char in url
-	from urllib.parse import quote
-	# Create empty list to store collected folders
-	global root_menu, sub_menu
-	root_menu, sub_menu, sub_file_list, aDirs = [], [], [], []
-	# Iterate through root folder to collected folders
-	for oDirPaths, oDirNames, oFiles in os.walk(conf.content_folder, True, None):
-		aDirs.append(oDirPaths)
-		oDirNames.sort()
-	for oDir in aDirs:
-		if os.listdir(oDir):
-			if oDir != conf.content_folder:
-				tmp_check = False
-				for f in no_list_no_render:
-					if oDir == f:
-						tmp_check = True
-						break
-				for f in no_list_yes_render:
-					if oDir ==f:
-						tmp_check = True
-						break
-		for oPaths, oDirs, oDirFiles in os.walk( oDir, True, None ):
-			oDirs.sort()
-			oDirFiles.sort()
-			for i in oDirFiles:
-				tmp_check = False
-				for f in no_list_no_render:
-					if oDir == f:
-						tmp_check = True
-						break
-				for f in no_list_yes_render:
-					if oDir == f:
-						tmp_check = True
-						break
-				if not tmp_check:
-					if oDir == conf.content_folder:
-						tmp_check = False
-						for f in special_files:
-							if i == f:
-								tmp_check = True
-								break
-						if not tmp_check:
-							if check_file_extension(i):
-								filename_without_extension = i.split('.')
-								tmp_root = ("/%s.html" % quote(i),remove_extension(i, extensions_to_render))
-								root_menu.append(tmp_root)
-							else:
-								tmp_root = ("/_%s/%s" % (quote(oPaths), quote(i)),i)
-								root_menu.append(tmp_root)
-					else:
-						if check_file_extension(i):
-							filename_without_extension = i.split('.')
-							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i, extensions_to_render))
-							sub_file_list.append(file_info)
-						else:
-							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i, extensions_to_render))
-							sub_file_list.append(file_info)
-			break
-		if oDir != conf.content_folder:
-			if os.listdir(oDir):
-				tmp_check = False
-				for f in no_list_no_render:
-					if oDir == f:
-						tmp_check = True
-						break
-				for f in no_list_yes_render:
-					if oDir ==f:
-						tmp_check = True
-						break
-				if not tmp_check:
-					foldername = (remove_content_folder_name(oDir), sub_file_list)
-					sub_menu.append(foldername)
-					sub_file_list = []
 
 # Rendering html content files
 def rendering_html_content_files(no_list_no_render):
@@ -474,9 +373,14 @@ def run():
 	no_list_no_render_list = build.string_to_list(conf.no_list_no_render)
 	no_list_yes_render_list = build.string_to_list(conf.no_list_yes_render)
 	# Recover special files like welcome_message ...
-	recover_special_files()
+	#recover_special_files()
+	from lib import index_files
+	special_files = ["welcome_message","welcome_content","footer"]
+	exclude_markdown = []
+	index_files.recover(conf.content_folder, special_files, exclude_markdown)
 	# Set up content listing and other specials files
-	menu_generator(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list)
+	from lib import menu
+	root_menu, sub_menu = menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
 	rendering_html_content_files(no_list_no_render_list)
 	# Set up index content
 	logging.info('Running pyhame v%s' % version)
