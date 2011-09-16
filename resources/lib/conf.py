@@ -36,3 +36,12 @@ class configuration:
 			self.remote_path		= config.get(section, 'remote_path')
 		except configparser.Error as err:
 			print('There is an error in pyhame.conf (%s)' % err)
+
+class build:
+	def string_to_list(elements):
+		""" elements : string ("txt","md"...)"""
+		elements_list = []
+		for element in elements.split(','):
+			element = element.replace('"', '')
+			elements_list.append(element)
+		return elements_list

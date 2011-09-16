@@ -277,30 +277,6 @@ def recover_special_files():
 						gl[file] = markdown_it(gl[file])
 				tmp_file.close()
 
-# List extensions to render
-def create_extensions_to_render_list():
-	global extensions_to_render_list
-	extensions_to_render_list = []
-	for extension in conf.extensions_to_render.split(','):
-		extension = extension.replace('"', '')
-		extensions_to_render_list.append(extension)
-
-# List folders to not list
-def no_list_no_render_listing():
-	global no_list_no_render_list
-	no_list_no_render_list = []
-	for item in conf.no_list_no_render.split(','):
-		item = item.replace('"', '')
-		no_list_no_render_list.append(item)
-
-# List folders to not list
-def no_list_yes_render_listing():
-	global no_list_yes_render_list
-	no_list_yes_render_list = []
-	for item in conf.no_list_yes_render.split(','):
-		item = item.replace('"', '')
-		no_list_yes_render_list.append(item)
-
 # Check file extension
 def check_file_extension(filename):
 	filename = filename.split('.')
@@ -314,17 +290,16 @@ def check_file_extension(filename):
 	return False
 
 # Remove extension
-def remove_extension(filename):
+def remove_extension(filename, extensions_to_render):
 	filename = filename.split('.')
-	tmp_extension_check = False
-	for extension in extensions_to_render_list:
+	for extension in extensions_to_render:
 		if filename[-1] == extension:
 			del filename[-1]
 	filename = ''.join(filename)
 	return filename
 
 # List content folder files
-def menu_generator():
+def menu_generator(no_list_no_render, no_list_yes_render, extensions_to_render):
 	# Import for escape unsafe char in url
 	from urllib.parse import quote
 	# Create empty list to store collected folders
@@ -338,11 +313,11 @@ def menu_generator():
 		if os.listdir(oDir):
 			if oDir != conf.content_folder:
 				tmp_check = False
-				for f in no_list_no_render_list:
+				for f in no_list_no_render:
 					if oDir == f:
 						tmp_check = True
 						break
-				for f in no_list_yes_render_list:
+				for f in no_list_yes_render:
 					if oDir ==f:
 						tmp_check = True
 						break
@@ -351,11 +326,11 @@ def menu_generator():
 			oDirFiles.sort()
 			for i in oDirFiles:
 				tmp_check = False
-				for f in no_list_no_render_list:
+				for f in no_list_no_render:
 					if oDir == f:
 						tmp_check = True
 						break
-				for f in no_list_yes_render_list:
+				for f in no_list_yes_render:
 					if oDir == f:
 						tmp_check = True
 						break
@@ -369,7 +344,7 @@ def menu_generator():
 						if not tmp_check:
 							if check_file_extension(i):
 								filename_without_extension = i.split('.')
-								tmp_root = ("/%s.html" % quote(i),remove_extension(i))
+								tmp_root = ("/%s.html" % quote(i),remove_extension(i, extensions_to_render))
 								root_menu.append(tmp_root)
 							else:
 								tmp_root = ("/_%s/%s" % (quote(oPaths), quote(i)),i)
@@ -377,20 +352,20 @@ def menu_generator():
 					else:
 						if check_file_extension(i):
 							filename_without_extension = i.split('.')
-							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i))
+							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i, extensions_to_render))
 							sub_file_list.append(file_info)
 						else:
-							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i))
+							file_info = ("%s/%s.html" % (remove_content_folder_name(quote(oPaths)), quote(i)), remove_extension(i, extensions_to_render))
 							sub_file_list.append(file_info)
 			break
 		if oDir != conf.content_folder:
 			if os.listdir(oDir):
 				tmp_check = False
-				for f in no_list_no_render_list:
+				for f in no_list_no_render:
 					if oDir == f:
 						tmp_check = True
 						break
-				for f in no_list_yes_render_list:
+				for f in no_list_yes_render:
 					if oDir ==f:
 						tmp_check = True
 						break
@@ -400,7 +375,7 @@ def menu_generator():
 					sub_file_list = []
 
 # Rendering html content files
-def rendering_html_content_files():
+def rendering_html_content_files(no_list_no_render):
 	from urllib.parse import quote
 	aDirs = []
 	for oDirPaths, oDirNames, oFiles in os.walk(conf.content_folder, True, None):
@@ -413,7 +388,7 @@ def rendering_html_content_files():
 			oDirs.sort()
 			oDirFiles.sort()
 			tmp_check = False
-			for f in no_list_no_render_list:
+			for f in no_list_no_render:
 				if oPaths == f:
 					tmp_check = True
 					break
@@ -493,16 +468,16 @@ def generate_view():
 def run():
 	# Check every options and config file
 	pre_check()
-	# Create the list of folders to exlude in listing
-	no_list_no_render_listing()
-	no_list_yes_render_listing()
-	# Create extensions to render list
-	create_extensions_to_render_list()
+	# Create list of conf list entries
+	from lib.conf import build
+	extensions_to_render_list = build.string_to_list(conf.extensions_to_render)
+	no_list_no_render_list = build.string_to_list(conf.no_list_no_render)
+	no_list_yes_render_list = build.string_to_list(conf.no_list_yes_render)
 	# Recover special files like welcome_message ...
 	recover_special_files()
 	# Set up content listing and other specials files
-	menu_generator()
-	rendering_html_content_files()
+	menu_generator(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list)
+	rendering_html_content_files(no_list_no_render_list)
 	# Set up index content
 	logging.info('Running pyhame v%s' % version)
 	generate_index()
