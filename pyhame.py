@@ -12,9 +12,9 @@ if sys.version_info < (3, 1):
 	print("Must use Python 3.1")
 	sys.exit(0)
 
-config_file	= "resources/pyhame.conf"
+config_file		= "resources/pyhame.conf"
 init_lock_path	= "resources/init.lock"
-pwd		= os.getcwd()
+pwd				= os.getcwd()
 
 #################
 ##  Argu Check ##
@@ -155,26 +155,6 @@ def init_pyhame():
 					tmp_file.write("Edit welcome_content file")	
 				tmp_file.close()
 		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")
-
-# Archive maker
-def create_archive():
-	import tarfile
-	from time import gmtime, strftime
-
-	# Create archives diretorie if not exist
-	if not os.path.exists(pwd+"/archives"):
-		os.makedirs(pwd+"/archives")
-
-	# Create archive
-	def reset(tarinfo):
-		tarinfo.uid = tarinfo.gid = 0
-		tarinfo.uname = tarinfo.gname = "pyhame"
-		return tarinfo
-
-	tar = tarfile.open("archives/%s.tar.gz" % strftime("%d%b%Y_%H-%M-%S"), "w:gz")
-	tar.add(conf.content_folder, filter=reset)
-	tar.add(conf.static_path, filter=reset)
-	tar.close()
 
 # Replace content_folder by static_path in urls
 def re_content_static(path):
@@ -496,8 +476,9 @@ def run():
 	static_other()
 	sym_site_static()
 	if conf.archive == "true":
-		# Create archive
-		create_archive()
+		import archive
+		archive_list = [conf.static_path,conf.content_folder]
+		archive.create(conf.archive_path, archive_list)
 	if conf.remote == "true":
 		# Test ssh connection
 		import remote

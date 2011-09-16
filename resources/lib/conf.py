@@ -23,6 +23,7 @@ class configuration:
 		section = "others"
 		try:
 			self.archive                    = config.get(section, 'archive')
+			self.archive_path               = config.get(section, 'archive_path')
 		except configparser.Error as err:
 			print('There is an error in pyhame.conf (%s)' % err)
 			sys.exit(1)

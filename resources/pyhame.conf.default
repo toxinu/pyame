@@ -29,8 +29,9 @@ content_folder          = site
 # others #
 ##########
 [others]
-# Create an archive in "archives" directorie. Set true or false
+# Create an archive in archive_path directorie. Set true or false
 archive                 = false
+archive_path 			= archives
 
 ##########
 # Remote #
