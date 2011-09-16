@@ -1,15 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.7.5"
+version = "0.8.1"
 
 import sys
 sys.path.append("resources")
 import os, configparser, stat, types
-from lib.conf import configuration as conf
 
 # Check Python version
-if sys.version_info < (3, 1):
-	print("Must use Python 3.1")
+if sys.version_info < (3, 0):
+	print("Must use Python 3.0")
 	sys.exit(0)
 
 config_file		= "resources/pyhame.conf"
@@ -52,6 +51,7 @@ def arg_check():
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
+		from lib.conf import configuration as conf
 		global conf
 		conf.read(conf, config_file)
 	try:
