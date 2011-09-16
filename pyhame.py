@@ -446,15 +446,6 @@ def generate_view():
 	return template.render(website_title=conf.website_title,
 	welcome_message=welcome_message, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=conf.website_url, file_name=file_name, file_content=file_content, dl_file_link=dl_file_link, permalink=permalink)
 
-def clear_cache():
-	import shutil
-	if os.path.exists("__pycache__"):
-		shutil.rmtree("__pycache__")
-	if os.path.exists("resources/lib/markdown/__pycache__"):
-		shutil.rmtree("resources/lib/markdown/__pycache__")
-	if os.path.exists("resources/lib/__pycache__"):
-		shutil.rmtree("resources/lib/__pycache__")
-
 ######################################
 # Start script #######################
 ######################################
@@ -485,8 +476,9 @@ def run():
 		remote.check_ssh(conf.remote_host, conf.remote_user)
 		# Send to remote server
 		remote.push_ssh(conf.remote_host, conf.remote_user, conf.remote_path, conf.static_path)
-	cache_list = ["__pycache__","resources/lib/__pycache__","resources/lib/markdown/__pycache__"]
+	# Clear cache
 	import clear
+	cache_list = ["__pycache__","resources/lib/__pycache__","resources/lib/markdown/__pycache__"]
 	clear.cache(cache_list)
 
 arg_check()
