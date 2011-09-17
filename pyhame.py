@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.8.1"
+version = "0.8.2"
 
 import sys, os, configparser, stat, types
 sys.path.append("/usr/lib/pyhame/resources/lib")
@@ -14,30 +14,6 @@ lib_path 		= "/usr/lib/pyhame/resources/lib"
 config_file		= "resources/pyhame.conf"
 init_lock_path	= "resources/init.lock"
 pwd				= os.getcwd()
-
-"""
-###########
-# Summary #
-###########
-> Init
-	> version
-	> import
-	> check python version
-	> some variables
-	> logging object
-
-> Functions
-	> conf 
-    	> read
-	 	> build
-
-	> arch_check
-		> help
-
-	> pre_check
-
-	> init_pyhame
-"""
 
 #--------------------------------------------------------------------#
 ##  Argu Check 
