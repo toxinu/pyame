@@ -32,6 +32,9 @@ content_folder          = site
 archive                 = false
 archive_path 			= archives
 
+# Create log file
+log 					= false
+
 ##########
 # Remote #
 ##########
