@@ -21,7 +21,6 @@ no_list_yes_render 		=
 
 # Ressources
 tpl_path				= resources/tpl
-lib_path 				= resources/lib
 static_path 			= static
 content_folder          = site
 

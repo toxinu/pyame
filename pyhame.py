@@ -2,22 +2,46 @@
 # -*- coding: utf-8 -*-
 version = "0.8.1"
 
-import sys
-sys.path.append("resources")
-import os, configparser, stat, types
+import sys, os, configparser, stat, types
+sys.path.append("/usr/lib/pyhame/resources/lib")
 
 # Check Python version
 if sys.version_info < (3, 0):
 	print("Must use Python 3.0")
 	sys.exit(0)
 
+lib_path 		= "/usr/lib/pyhame/resources/lib"
 config_file		= "resources/pyhame.conf"
 init_lock_path	= "resources/init.lock"
 pwd				= os.getcwd()
 
-#################
-##  Argu Check ##
-#################
+"""
+###########
+# Summary #
+###########
+> Init
+	> version
+	> import
+	> check python version
+	> some variables
+	> logging object
+
+> Functions
+	> conf 
+    	> read
+	 	> build
+
+	> arch_check
+		> help
+
+	> pre_check
+
+	> init_pyhame
+"""
+
+#--------------------------------------------------------------------#
+##  Argu Check 
+#--------------------------------------------------------------------#
 def arg_check():
 	logging.info('Running pyhame v%s' % version)
 	def help():
@@ -30,7 +54,7 @@ def arg_check():
 		help()
 		sys.exit(0)
 	try:
-		if sys.argv[1] == "help":
+		if sys.argv[1] != "run" and sys.argv[1] != "version" and sys.argv[1] != "init":
 			help()
 			sys.exit(0)
 	except IndexError:
@@ -51,7 +75,7 @@ def arg_check():
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
-		from lib.conf import configuration as conf
+		from conf import configuration as conf
 		global conf
 		conf.read(conf, config_file)
 	try:
@@ -60,9 +84,9 @@ def arg_check():
 	except IndexError:
 		sys.argv.append(None)
 
-#############
-### Login ###
-#############
+#--------------------------------------------------------------------#
+## Login
+#--------------------------------------------------------------------#
 import logging
 import time
 
@@ -73,78 +97,9 @@ logging.basicConfig(
     datefmt='%d/%m/%Y %H:%M:%S',
     )
 
-#################
-### Pre-Check ###
-#################
-def pre_check():
-	#####################
-	## General section ##
-	#####################
-	# Check if content_folder is set
-	if not conf.content_folder:
-		logging.error('"content_folder" must be given in pyhame.conf (general section)')
-		print(" \033[91m::\033[0m \"content_folder\" must be given in pyhame.conf (general section)")
-		sys.exit(0)
-	if conf.content_folder == "resources" or conf.content_folder == conf.archive_path:
-		logging.error('"content_folder" cant be "resources" or "%s"' % conf.archive_path)
-		print(" \033[91m::\033[0m \"content_folder\" cant be \"resources\", or \"%s\".  (general section)" % archive_path)
-		sys.exit(0)
-	# Check if template_name is set
-	if not conf.template_name:
-		logging.error('"template_name" must be given in pyhame.conf (general section)')
-		print(" \033[93m::\033[0m \"template_name\" must be given in pyhame.conf (general section)")
-		sys.exit(0)
-	# Check if website_url is set
-	if not conf.website_url:
-		logging.info('No website_url has be given, default will be "/"')
-		conf.website_url = "/"
-	if not conf.tpl_path or not conf.lib_path or not conf.static_path:
-		logging.error('"tpl_path", "static_path" and "lib_path" must be given in pyhame.conf (general section)')
-		print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  and \"lib_path\" must be given in pyhame.conf (general section)")
-		sys.exit(0)
-	####################
-	## Others section ##
-	####################
-	# Check if archive is set
-	if conf.archive != "true" and conf.archive != "false" or not conf.archive:
-		logging.error('"archive" must be "true" or "false" in pyhame.conf (other section)')
-		print(" \033[91m::\033[0m \"archive\" must be \"true\" or \"false\" in pyhame.conf (others section)")
-		sys.exit(0)
-	## Create defaults files
-	# Check if content_folder exist, if not, create it.
-	if not os.path.exists(conf.content_folder):
-		logging.info('"content_folder" you have given not exist. It will be automatically create')
-		print(" \033[93m::\033[0m \"content_folder\" you have given not exist. It will be automatically create")
-		os.makedirs(conf.content_folder)
-	# Check if template_name exit
-	conf.template_path = "%s/%s" % (conf.tpl_path, conf.template_name)
-	if not os.path.exists(conf.template_path) or not os.path.exists("%s/index.html" % conf.template_path) or not os.path.exists("%s/view.html" % conf.template_path):
-		logging.error('"template_name" you have given not exist. Or index.html, view.html are not in your template directori')
-		print(" \033[91m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: index.html, view.html must be in template folder.")
-		sys.exit(0)
-	###################
-	###    Remote   ###
-	###################
-	# Check remote section
-	if conf.remote != "true" and conf.remote != "false" or not conf.remote:
-		logging.error('"remote" must be "true" or "false" in pyhame.conf (remote section)')
-		print(" \033[91m::\033[0m \"remote\" must be \"true\" or \"false\" in pyhame.conf (remote section)")
-		sys.exit(0)
-	if conf.remote == "true":
-		if conf.remote_host == "":
-			logging.error('"remote_host" must be given in pyhame.conf (remote section)')
-			print(" \033[91m::\033[0m \"remote_host\" must be given in pyhame.conf (remote section)")
-			sys.exit(0)
-		if conf.remote_user == "":
-			logging.error('"remote_user" must be given in pyhame.conf (remote section)')
-			print(" \033[91m::\033[0m \"remote_user\" must be given in pyhame.conf (remote section)")
-			sys.exit(0)
-		if conf.remote_path == "":
-			logging.error('"remote_path" must be given in pyhame.conf (remote section)')
-			print(" \033[91m::\033[0m \"remote_path\" must be given in pyhame.conf (remote section)")
-			sys.exit(0)
-	print(" \033[92m::\033[0m Generate your website...")
+#--------------------------------------------------------------------#
 # Init Pyhame
+#--------------------------------------------------------------------#
 def init_pyhame():
 	import shutil
 	if os.path.exists(init_lock_path):
@@ -170,6 +125,8 @@ def init_pyhame():
 			os.remove(config_file)
 		logging.info('Create new configuration file based on "pyhame.conf.default"')
 		shutil.copyfile(config_file+".default", config_file)
+		from conf import configuration as conf
+		global conf
 		conf.read(conf, config_file)
 		if not os.path.exists(conf.content_folder):
 			logging.info('Create %s' % conf.content_folder)
@@ -228,7 +185,6 @@ def html_content_file(path_to_file):
 # Text file parser to html for view
 def text_to_html(brute_file):
 	global file_content
-	sys.path.append(conf.lib_path)
 	import markdown
 	file_content = markdown.markdown(brute_file)	
 	html_file_content = generate_view()
@@ -236,7 +192,6 @@ def text_to_html(brute_file):
 
 # Text file parser for special files
 def markdown_it(brute_content):
-	sys.path.append(conf.lib_path)
 	import markdown
 	return markdown.markdown(brute_content)
 
@@ -354,7 +309,7 @@ def static_other():
 
 	# hightlight
 	dest_dir = conf.static_path+"/_other/highlight"
-	src_dir = conf.lib_path+"/highlight"
+	src_dir = lib_path+"/highlight"
 	dir_util.copy_tree(src_dir, dest_dir)
 
 # Symlink site into static
@@ -380,9 +335,10 @@ def generate_view():
 ######################################
 def run():
 	# Check every options and config file
-	pre_check()
+	from conf import configuration as conf
+	conf.check(conf, logging)
 	# Create list of conf list entries
-	from lib.conf import build
+	from conf import build
 	extensions_to_render_list = build.string_to_list(conf.extensions_to_render)
 	no_list_no_render_list = build.string_to_list(conf.no_list_no_render)
 	no_list_yes_render_list = build.string_to_list(conf.no_list_yes_render)
@@ -391,7 +347,7 @@ def run():
 	exclude_markdown = []
 	recover_special_files(conf.content_folder, special_files, exclude_markdown)
 	# Set up content listing and other specials files
-	from lib import menu
+	import menu
 	global root_menu, sub_menu
 	root_menu, sub_menu = menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
 	rendering_html_content_files(no_list_no_render_list, special_files)
@@ -401,16 +357,16 @@ def run():
 	static_other()
 	sym_site_static()
 	if conf.archive == "true":
-		from lib import archive
+		import archive
 		archive_list = [conf.static_path,conf.content_folder]
 		archive.create(conf.archive_path, archive_list)
 	if conf.remote == "true":
-		from lib import remote
+		import remote
 		remote.check_ssh(conf.remote_host, conf.remote_user)
 		remote.push_ssh(conf.remote_host, conf.remote_user, conf.remote_path, conf.static_path)
 	# Clear cache
-	from lib import clear
-	cache_list = ["__pycache__","resources/lib/__pycache__","resources/lib/markdown/__pycache__"]
+	import clear
+	cache_list = ["__pycache__"]
 	clear.cache(cache_list)
 
 arg_check()

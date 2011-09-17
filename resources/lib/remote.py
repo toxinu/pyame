@@ -1,4 +1,5 @@
 def check_ssh(remote_host, remote_user):
+	import sys
 	from subprocess import getoutput
 	output = getoutput('ssh -oNumberOfPasswordPrompts=0 %s@%s "echo hello"' % (remote_user, remote_host))
 	if output == "hello":
