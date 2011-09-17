@@ -54,7 +54,7 @@ displayandexec() {
 remove() {
   displayandexec "Remove Pyhame libraries directorie" rm -fr /usr/lib/pyhame
   displayandexec "Remove Pyhame" rm -fr /usr/bin/pyhame
-  displayandexec "Remove Jinja2" rm -fr /usr/lib/python3.2/site-packages/jinja2*
+  displayandexec "Remove Jinja2" rm -fr /usr/lib/python3.2/site-packages/{jinja2*,Jinja*}
 }
 
 end() {
