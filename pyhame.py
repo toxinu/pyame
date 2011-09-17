@@ -92,7 +92,7 @@ def init_pyhame():
 				sys.exit(0)
 			else:
 				logging.info('Create resources project with "/usr/lib/pyhame/resources"')
-				shutil.copytree("/usr/lib/pyhame/resources", pwd+"/resources")
+				shutil.copytree("/usr/lib/pyhame/resources/tpl", pwd+"/resources/tpl")
 		open(init_lock_path, 'a').close()
 		os.utime(init_lock_path, None)
 		if os.path.exists(config_file):
