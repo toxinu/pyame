@@ -2,7 +2,7 @@
 script_version="0.1"
 
 #=============================================================================
-PYHAME_VER="0.8.1"
+PYHAME_VER="0.8.1.1"
 PYHAME_URL="http://redmine.socketubs.net/attachments/download/12/Pyhame-$PYHAME_VER.tar.gz"
 
 JINJA2_VER="2.6"

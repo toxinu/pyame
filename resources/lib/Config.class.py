@@ -12,7 +12,7 @@ class Config(object):
 	# CONSTRUCTORS
 	###############
 	
-	def __init(self, pathFile):
+	def __init__(self, pathFile):
 	
 		config = configparser.RawConfigParser()
 		config.read(config_file)
