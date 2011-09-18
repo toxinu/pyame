@@ -62,9 +62,9 @@ end() {
   echo "=============================================================================="
   echo "Clean is finished"
   echo "=============================================================================="
-  echo "Log for the remove script         : $LOG_FILE"
-  echo "Removed pyhame folders            : /usr/bin/pyhame, /usr/lib/pyhame"
-  echo "Removed jinja2 folders            : /usr/lib/python3.2/site-packages/jina2*"
+  echo "Log for the remove script   : $LOG_FILE"
+  echo "Removed pyhame folders      : /usr/bin/pyhame, /usr/lib/pyhame"
+  echo "Removed jinja2 folders      : /usr/lib/python3.2/site-packages/{jina2*,Jinja*"
   echo "=============================================================================="
   echo ""
 }
