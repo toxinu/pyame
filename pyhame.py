@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.8.2"
+version = "0.8.1.1"
 
 import sys, os, configparser, stat, types
 sys.path.append("/usr/lib/pyhame/resources/lib")
