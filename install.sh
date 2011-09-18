@@ -75,20 +75,17 @@ fi
 }
 
 check_python() {
-if [ ! -d "/usr/bin/python3" ]; then
-    if which python >/dev/null; then
+PYTHON="/usr/bin/python3.2"
+if [ ! -f "$PYTHON" ]; then
+	PYTHON="/usr/bin/python3"
+    if [ ! -f "$PYTHON"]; then
     	PYTHON="/usr/bin/python"
 		PYTHON_OK=`$PYTHON -c 'import sys; print(sys.version_info >= (3, 0))'`
     	if [ "$PYTHON_OK" == False ]; then
 			echo -e "You have to download Python 3.2 (http://www.python.org/getit/releases/3.2/)"
         	exit
     	fi
-    else
-		echo -e "You have to download Python 3.2 (http://www.python.org/getit/releases/3.2/)"
-        exit
     fi
-else
-    PYTHON="/usr/bin/python3"
 fi
 }
 

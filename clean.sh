@@ -52,9 +52,15 @@ displayandexec() {
 }
 
 remove() {
-  displayandexec "Remove Pyhame libraries directorie" rm -fr /usr/lib/pyhame
-  displayandexec "Remove Pyhame" rm -fr /usr/bin/pyhame
-  displayandexec "Remove Jinja2" rm -fr /usr/lib/python3.2/site-packages/{jinja2*,Jinja*}
+  if [ -d "/usr/lib/pyhame" ]; then
+    displayandexec "Remove Pyhame libraries directorie" rm -fr /usr/lib/pyhame
+  fi
+  if [ -f "/usr/bin/pyhame" ]; then
+    displayandexec "Remove Pyhame" rm -fr /usr/bin/pyhame
+  fi
+  if [ ! -z "ls /usr/lib/python3.2/site-packages/ | grep '^[jJ]inja*'" ]; then
+    displayandexec "Remove Jinja2" rm -fr /usr/lib/python3.2/site-packages/{jinja2*,Jinja*}
+  fi
 }
 
 end() {
@@ -64,7 +70,7 @@ end() {
   echo "=============================================================================="
   echo "Log for the remove script   : $LOG_FILE"
   echo "Removed pyhame folders      : /usr/bin/pyhame, /usr/lib/pyhame"
-  echo "Removed jinja2 folders      : /usr/lib/python3.2/site-packages/{jina2*,Jinja*"
+  echo "Removed jinja2 folders      : /usr/lib/python3.2/site-packages/{jina2*,Jinja*}"
   echo "=============================================================================="
   echo ""
 }
