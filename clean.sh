@@ -75,6 +75,13 @@ end() {
   echo ""
 }
 
+# Check if root user is used
+if [ "$(id -u)" != "0" ]; then
+  echo "This script should be run as root."
+  echo "Syntaxe: sudo $0"
+  exit 1
+fi
+
 displaytitle "-- Clean"
 remove
 end
