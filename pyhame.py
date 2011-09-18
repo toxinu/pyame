@@ -51,9 +51,7 @@ def arg_check():
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
-		from conf import configuration as conf
-		global conf
-		conf.read(conf, config_file)
+		global config 	= Config(config_file)
 	try:
 		if sys.argv[1] == "run":
 			run()
@@ -78,10 +76,14 @@ logging.basicConfig(
 #--------------------------------------------------------------------#
 def init_pyhame():
 	import shutil
+	
+	#Check if the init.lock exists
 	if os.path.exists(init_lock_path):
 		logging.error('You have already initilize your pyhame installation. You can remove init.lock but.. seriously ?')
 		print(" \033[91m::\033[0m You have already initialize your pyhame installation. You can remove init.lock file but many files will be overwrite")
 		sys.exit(0)
+		
+	#Here, there is not the init.lock
 	else:
 		logging.info('Pyhame initilization')
 		print(" \033[93m::\033[0m Pyhame initilization...")
@@ -93,91 +95,59 @@ def init_pyhame():
 			else:
 				logging.info('Create resources project with "/usr/lib/pyhame/resources"')
 				shutil.copytree("/usr/lib/pyhame/resources", pwd+"/resources")
+		
 		open(init_lock_path, 'a').close()
+		
+		#TO CHECK
 		os.utime(init_lock_path, None)
+		
+		#Config file creation
 		if os.path.exists(config_file):
 			logging.info('Backup old configuration file (pyhame.conf.back)')
 			shutil.copyfile(config_file, config_file+".back")
 			os.remove(config_file)
 		logging.info('Create new configuration file based on "pyhame.conf.default"')
 		shutil.copyfile(config_file+".default", config_file)
-		from conf import configuration as conf
-		global conf
-		conf.read(conf, config_file)
-		if not os.path.exists(conf.content_folder):
-			logging.info('Create %s' % conf.content_folder)
-			os.makedirs(conf.content_folder)
-		if os.path.exists(conf.static_path):
-			logging.info('Remove %s' % conf.static_path)
-			shutil.rmtree(conf.static_path)
-		logging.info('Create %s' % conf.static_path)
-		os.makedirs(conf.static_path)
+		
+		#Read config file
+		global config = Config(config_file)
+		
+		
+		if not os.path.exists(config.content_folder):
+			logging.info('Create %s' % config.content_folder)
+			os.makedirs(config.content_folder)
+		if os.path.exists(config.static_path):
+			logging.info('Remove %s' % config.static_path)
+			shutil.rmtree(config.static_path)
+		logging.info('Create %s' % config.static_path)
+		os.makedirs(config.static_path)
+		
+		
 		# Create blank special files
 		special_files = ["welcome_message","footer","welcome_content"]
 		for f in special_files:
-			if not os.path.exists("%s/%s" % (conf.content_folder, f)):
-				tmp_file = open("%s/%s" % (conf.content_folder, f), 'w')
+			if not os.path.exists("%s/%s" % (config.content_folder, f)):
+				tmp_file = open("%s/%s" % (config.content_folder, f), 'w')
 				if f == "welcome_message":
-					logging.info('Create %s file in %s' % (f, conf.content_folder))
+					logging.info('Create %s file in %s' % (f, config.content_folder))
 					tmp_file.write("Edit welcome_message file")
 				elif f == "footer":
-					logging.info('Create %s file in %s' % (f, conf.content_folder))
+					logging.info('Create %s file in %s' % (f, config.content_folder))
 					tmp_file.write("Edit footer file")
 				elif f == "welcome_content":
-					logging.info('Create %s file in %s' % (f, conf.content_folder))
+					logging.info('Create %s file in %s' % (f, config.content_folder))
 					tmp_file.write("Edit welcome_content file")	
 				tmp_file.close()
 		logging.info('Don\'t forget to edit your resources/pyhame.conf')
 		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")
 
-# Replace content_folder by static_path in urls
-def re_content_static(path):
-	tmp = path.split('/')
-	tmp[0] = conf.static_path
-	new_path = ""
-	for i in tmp:
-		new_path += "/"+i
-	new_path = new_path[1:]
-	return new_path
-
-# Remove content folder name in path for menu generator
-def remove_content_folder_name(path):
-	tmp = path.split('/')
-	tmp = tmp[1:]
-	new_path = ""
-	for i in tmp:
-		new_path += "/"+i
-	return new_path
-
-# Html content rendering
-def html_content_file(path_to_file):
-	html_render_file = re_content_static(path_to_file) + ".html"
-	brute_file = open(path_to_file, 'r')
-	html_file = open(html_render_file, 'w')
-	html_file.write(text_to_html(brute_file.read()))
-	html_file.close()
-	brute_file.close()
-
-# Text file parser to html for view
-def text_to_html(brute_file):
-	global file_content
-	import markdown
-	file_content = markdown.markdown(brute_file)	
-	html_file_content = generate_view()
-	return html_file_content
-
-# Text file parser for special files
-def markdown_it(brute_content):
-	import markdown
-	return markdown.markdown(brute_content)
-
 # Html content folder
 def static_folder_maker(path):
 	if not 'reset_static' in globals():
 		import shutil
-		if os.path.exists(conf.static_path):
-			shutil.rmtree(conf.static_path)
-		os.makedirs(conf.static_path)
+		if os.path.exists(config.static_path):
+			shutil.rmtree(config.static_path)
+		os.makedirs(config.static_path)
 		global reset_static
 		reset_static = True
 	if not os.path.exists(re_content_static(path)):
@@ -194,6 +164,15 @@ def check_file_extension(filename):
 			return True
 			break
 	return False
+	
+# Browse tree to pick each file to construct an object from it
+def browse(dirname)
+	for f in os.listdir(dirname):
+		if os.path.isdir(os.path.join(dirname, f)):
+			parcourir(dirname+'/'+f)
+		elif os.path.isfile(os.path.join(dirname, f)):
+			#print(dirname + ' ' + f)
+			contentFile = ContentFile(dirname, config)
 
 # Recover special files
 def recover_special_files(content_folder, special_files, exclude_markdown):
@@ -310,7 +289,8 @@ def generate_view():
 # Start script #######################
 ######################################
 def run():
-	# Check every options and config file
+	conf = Config()
+	# Check config file
 	from conf import configuration as conf
 	conf.check(conf, logging)
 	# Create list of conf list entries

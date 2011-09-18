@@ -7,4 +7,3 @@ def file_extension(filename, extensions_to_render):
 			return True
 			break
 	return False
-
