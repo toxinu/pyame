@@ -96,12 +96,14 @@ installation() {
   mkdir $TMP_FOLDER
   cd $TMP_FOLDER
 
-  if [[ "$platform" == 'darwin' ]]; then
-    displayandexec "Download setuptools for Python 3.x" curl -0 $SETUPTOOLS_URL
-  else
-    displayandexec "Download setuptools for Python 3.x" wget $SETUPTOOLS_URL
+  if [[ -z "$(ls /usr/lib/python3.2/site-packages | grep '^setuptools*')" ]]; then
+    if [[ "$platform" == 'darwin' ]]; then
+      displayandexec "Download setuptools for Python 3.x" curl -0 $SETUPTOOLS_URL
+    else
+      displayandexec "Download setuptools for Python 3.x" wget $SETUPTOOLS_URL
+    fi
+    displayandexec "Install setuptools for Python 3.x" $PYTHON distribute_setup.py
   fi
-  displayandexec "Install setuptools for Python 3.x" $PYTHON distribute_setup.py
 
   if [[ "$platform" == 'darwin' ]]; then
     displayandexec "Download Jinja2 v$JINJA2_VER" curl -O $JINJA2_URL
