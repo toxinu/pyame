@@ -49,7 +49,8 @@ def arg_check():
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
-		global config 	= Config(config_file)
+		global config
+		config = Config(config_file)
 	try:
 		if sys.argv[1] == "run":
 			run()
@@ -89,7 +90,8 @@ def init_pyhame():
 		shutil.copyfile(config_file+".default", config_file)
 		
 		#Read config file
-		global config = Config(config_file)
+		global config
+		config = Config(config_file)
 
 		if not os.path.exists(config.content_folder):
 			os.makedirs(config.content_folder)
@@ -136,7 +138,7 @@ def check_file_extension(filename):
 	return False
 	
 # Browse tree to pick each file to construct an object from it
-def browse(dirname)
+def browse(dirname):
 	for f in os.listdir(dirname):
 		if os.path.isdir(os.path.join(dirname, f)):
 			parcourir(dirname+'/'+f)
