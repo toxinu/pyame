@@ -58,7 +58,7 @@ remove() {
   if [ -f "/usr/bin/pyhame" ]; then
     displayandexec "Remove Pyhame" rm -fr /usr/bin/pyhame
   fi
-  if [ ! -z "ls /usr/lib/python3.2/site-packages/ | grep '^[jJ]inja*'" ]; then
+  if [ -n "$(ls /usr/lib/python3.2/site-packages/ | grep '^[jJ]inja*')" ]; then
     displayandexec "Remove Jinja2" rm -fr /usr/lib/python3.2/site-packages/{jinja2*,Jinja*}
   fi
 }

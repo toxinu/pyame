@@ -3,10 +3,12 @@ script_version="0.1"
 
 #=============================================================================
 PYHAME_VER="0.8.1.1"
-PYHAME_URL="http://redmine.socketubs.net/attachments/download/12/Pyhame-$PYHAME_VER.tar.gz"
+PYHAME_URL="http://redmine.socketubs.net/attachments/download/15/Pyhame-$PYHAME_VER.tar.gz"
 
 JINJA2_VER="2.6"
 JINJA2_URL="http://pypi.python.org/packages/source/J/Jinja2/Jinja2-$JINJA2_VER.tar.gz"
+
+SETUPTOOLS_URL="http://python-distribute.org/distribute_setup.py"
 #=============================================================================
 
 # Globals variables
@@ -78,7 +80,7 @@ check_python() {
 PYTHON="/usr/bin/python3.2"
 if [ ! -f "$PYTHON" ]; then
 	PYTHON="/usr/bin/python3"
-    if [ ! -f "$PYTHON"]; then
+    if [ ! -f "$PYTHON" ]; then
     	PYTHON="/usr/bin/python"
 		PYTHON_OK=`$PYTHON -c 'import sys; print(sys.version_info >= (3, 0))'`
     	if [ "$PYTHON_OK" == False ]; then
@@ -92,8 +94,15 @@ fi
 # Function: installation
 installation() {
   mkdir $TMP_FOLDER
-  
   cd $TMP_FOLDER
+
+  if [[ "$platform" == 'darwin' ]]; then
+    displayandexec "Download setuptools for Python 3.x" curl -0 $SETUPTOOLS_URL
+  else
+    displayandexec "Download setuptools for Python 3.x" wget $SETUPTOOLS_URL
+  fi
+  displayandexec "Install setuptools for Python 3.x" $PYTHON distribute_setup.py
+
   if [[ "$platform" == 'darwin' ]]; then
     displayandexec "Download Jinja2 v$JINJA2_VER" curl -O $JINJA2_URL
   else
