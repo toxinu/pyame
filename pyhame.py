@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.8.2"
+version = "0.8.1.1"
 
 import sys, os, configparser, stat, types
 sys.path.append("/usr/lib/pyhame/resources/lib")
@@ -19,7 +19,6 @@ pwd				= os.getcwd()
 ##  Argu Check 
 #--------------------------------------------------------------------#
 def arg_check():
-	logging.info('Running pyhame v%s' % version)
 	def help():
 		print("""Usage : pyhame [OPTION] ...
 	init           ->  Init your new website project
@@ -47,7 +46,6 @@ def arg_check():
 	except IndexError:
 		sys.argv.append(None)
 	if not os.path.exists(config_file):
-		logging.error('There is no config file. Must run pyhame init')
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
@@ -59,19 +57,6 @@ def arg_check():
 		sys.argv.append(None)
 
 #--------------------------------------------------------------------#
-## Login
-#--------------------------------------------------------------------#
-import logging
-import time
-
-logging.basicConfig(
-    filename='pyhame.log',
-    level=logging.INFO,
-    format='%(asctime)s %(levelname)s - %(message)s',
-    datefmt='%d/%m/%Y %H:%M:%S',
-    )
-
-#--------------------------------------------------------------------#
 # Init Pyhame
 #--------------------------------------------------------------------#
 def init_pyhame():
@@ -79,23 +64,19 @@ def init_pyhame():
 	
 	#Check if the init.lock exists
 	if os.path.exists(init_lock_path):
-		logging.error('You have already initilize your pyhame installation. You can remove init.lock but.. seriously ?')
 		print(" \033[91m::\033[0m You have already initialize your pyhame installation. You can remove init.lock file but many files will be overwrite")
 		sys.exit(0)
 		
 	#Here, there is not the init.lock
 	else:
-		logging.info('Pyhame initilization')
 		print(" \033[93m::\033[0m Pyhame initilization...")
 		if not os.path.exists("resources"):
 			if not os.path.exists("/usr/lib/pyhame/resources"):
-				logging.critical('Important resources are missing. Reinstall pyhame.')
 				print(" \033[91m::\033[0m Critical resources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
 				sys.exit(0)
 			else:
-				logging.info('Create resources project with "/usr/lib/pyhame/resources"')
-				shutil.copytree("/usr/lib/pyhame/resources", pwd+"/resources")
-		
+				shutil.copytree("/usr/lib/pyhame/resources/tpl", pwd+"/resources/tpl")
+
 		open(init_lock_path, 'a').close()
 		
 		#TO CHECK
@@ -103,25 +84,18 @@ def init_pyhame():
 		
 		#Config file creation
 		if os.path.exists(config_file):
-			logging.info('Backup old configuration file (pyhame.conf.back)')
 			shutil.copyfile(config_file, config_file+".back")
 			os.remove(config_file)
-		logging.info('Create new configuration file based on "pyhame.conf.default"')
 		shutil.copyfile(config_file+".default", config_file)
 		
 		#Read config file
 		global config = Config(config_file)
-		
-		
+
 		if not os.path.exists(config.content_folder):
-			logging.info('Create %s' % config.content_folder)
 			os.makedirs(config.content_folder)
 		if os.path.exists(config.static_path):
-			logging.info('Remove %s' % config.static_path)
 			shutil.rmtree(config.static_path)
-		logging.info('Create %s' % config.static_path)
 		os.makedirs(config.static_path)
-		
 		
 		# Create blank special files
 		special_files = ["welcome_message","footer","welcome_content"]
@@ -129,16 +103,12 @@ def init_pyhame():
 			if not os.path.exists("%s/%s" % (config.content_folder, f)):
 				tmp_file = open("%s/%s" % (config.content_folder, f), 'w')
 				if f == "welcome_message":
-					logging.info('Create %s file in %s' % (f, config.content_folder))
 					tmp_file.write("Edit welcome_message file")
 				elif f == "footer":
-					logging.info('Create %s file in %s' % (f, config.content_folder))
 					tmp_file.write("Edit footer file")
 				elif f == "welcome_content":
-					logging.info('Create %s file in %s' % (f, config.content_folder))
 					tmp_file.write("Edit welcome_content file")	
 				tmp_file.close()
-		logging.info('Don\'t forget to edit your resources/pyhame.conf')
 		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")
 
 # Html content folder
@@ -292,7 +262,7 @@ def run():
 	conf = Config()
 	# Check config file
 	from conf import configuration as conf
-	conf.check(conf, logging)
+	conf.check(conf)
 	# Create list of conf list entries
 	from conf import build
 	extensions_to_render_list = build.string_to_list(conf.extensions_to_render)
@@ -308,7 +278,6 @@ def run():
 	root_menu, sub_menu = menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
 	rendering_html_content_files(no_list_no_render_list, special_files)
 	# Set up index content
-	logging.info('Running pyhame v%s' % version)
 	generate_index()
 	static_other()
 	sym_site_static()
