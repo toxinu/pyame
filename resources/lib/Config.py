@@ -5,17 +5,17 @@
 
 class Config(object):
 
-	# IMPORTS
-	import configparser, sys, os
-	
 	###############
 	# CONSTRUCTORS
 	###############
 	
 	def __init__(self, pathFile):
+
+		# IMPORTS
+		import configparser, sys, os
 	
 		config = configparser.RawConfigParser()
-		config.read(config_file)
+		config.read(pathFile)
 		
 		sections = ('general', 'others', 'remote')
 		
@@ -48,9 +48,9 @@ class Config(object):
 			print('There is an error in pyhame.conf (%s)' % err)
 			sys.exit(1)
 			
-		self.extensions_to_render = self.string_to_list(self.extensions_to_render)
-		self.no_list_no_render = self.string_to_list(self.no_list_no_render)
-		self.no_list_yes_render = self.string_to_list(self.no_list_yes_render)
+		self.extensions_to_render 	= self.string_to_list(self.extensions_to_render)
+		self.no_list_no_render 		= self.string_to_list(self.no_list_no_render)
+		self.no_list_yes_render 	= self.string_to_list(self.no_list_yes_render)
 
 	#########
 	# METHODS

@@ -10,7 +10,8 @@ if sys.version_info < (3, 0):
 	print("Must use Python 3.0")
 	sys.exit(0)
 
-lib_path 		= "/usr/lib/pyhame/resources/lib"
+pyhame_path 	= "/usr/lib/pyhame"
+lib_path 		= pyhame_path + "/resources/lib"
 config_file		= "resources/pyhame.conf"
 init_lock_path	= "resources/init.lock"
 pwd				= os.getcwd()
@@ -72,11 +73,12 @@ def init_pyhame():
 	else:
 		print(" \033[93m::\033[0m Pyhame initilization...")
 		if not os.path.exists("resources"):
-			if not os.path.exists("/usr/lib/pyhame/resources"):
+			if not os.path.exists(pyhame_path + "/resources"):
 				print(" \033[91m::\033[0m Critical resources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
 				sys.exit(0)
 			else:
-				shutil.copytree("/usr/lib/pyhame/resources/tpl", pwd+"/resources/tpl")
+				shutil.copytree(pyhame_path + "/resources/tpl", pwd + "/resources/tpl")
+				shutil.copyfile(pyhame_path + "/resources/pyhame.conf.default", config_file + ".default")
 
 		open(init_lock_path, 'a').close()
 		
@@ -85,11 +87,12 @@ def init_pyhame():
 		
 		#Config file creation
 		if os.path.exists(config_file):
-			shutil.copyfile(config_file, config_file+".back")
+			shutil.copyfile(config_file, config_file + ".back")
 			os.remove(config_file)
-		shutil.copyfile(config_file+".default", config_file)
+		shutil.copyfile(config_file + ".default", config_file)
 		
 		#Read config file
+		from Config import Config
 		global config
 		config = Config(config_file)
 
