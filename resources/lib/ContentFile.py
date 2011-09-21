@@ -4,10 +4,6 @@
 
 class ContentFile(object):
 
-	# IMPORTS
-	import markdown
-	from jinja2 import Template
-
 	###############
 	# CONSTRUCTORS
 	###############
@@ -16,6 +12,11 @@ class ContentFile(object):
 	# @param String path : The path of content file, written by user.
 	# @param Config config : The config Object with config file parameters.
 	def __init__(self, pathFromContent, config):
+
+		# IMPORTS
+		import markdown
+		from jinja2 import Template
+
 		self.pathFromContent = pathFromContent
 		self.pathFromStatic
 		self.contentFileName
@@ -66,7 +67,7 @@ class ContentFile(object):
 		self.fileLink = '_' + self.pathFromContent
 		
 	def generatePermalink(self):
-		self.permalink = config.
+		self.permalink = config.dada
 		
 	# Generate the HTML content, using HTML generated from Markdown
 	# and the template, using Jinja2.
@@ -132,9 +133,9 @@ class ContentFile(object):
 	def checkFileExtension(self, extensionList):
 		if(self.contentFile.split('.') > 1):
 			extension = self.contentFileName.split('.')[-1]
-			if extension in extensionList
+			if extension in extensionList:
 				return true
-			else
+			else:
 				return false
-		else
+		else:
 			return false
