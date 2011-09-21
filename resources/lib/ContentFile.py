@@ -12,7 +12,7 @@ class ContentFile(object):
 	# CONSTRUCTORS
 	###############
 	
-	# The main constructor of the ContentFile object, load all parameters.
+	# The main constructor of the ContentFile object, load all parameters from the created file.
 	# @param String path : The path of content file, written by user.
 	# @param Config config : The config Object with config file parameters.
 	def __init__(self, pathFromContent, config):
@@ -22,7 +22,7 @@ class ContentFile(object):
 		self.content
 		self.contentHTML_markdown
 		self.contentHTML_jinja
-		self.listed = true
+		self.listed = True
 		self.fileLink
 		self.permalink
 		
@@ -33,8 +33,8 @@ class ContentFile(object):
 		self.contentToHTML()
 		self.htmlToTemplate()
 		self.generateFileLink()
-		self.generatePermalink()
-	
+		self.generatePermalink(config)
+		
 	#########
 	# METHODS
 	#########
@@ -64,9 +64,10 @@ class ContentFile(object):
 	# i.e: _site/linux/myArticle.txt
 	def generateFileLink(self):
 		self.fileLink = '_' + self.pathFromContent
-		
-	def generatePermalink(self):
-		self.permalink = config.
+	
+	# Generate the permalink of this page.
+	def generatePermalink(self, config):
+		self.permalink = 
 		
 	# Generate the HTML content, using HTML generated from Markdown
 	# and the template, using Jinja2.
@@ -133,8 +134,8 @@ class ContentFile(object):
 		if(self.contentFile.split('.') > 1):
 			extension = self.contentFileName.split('.')[-1]
 			if extension in extensionList
-				return true
+				return True
 			else
-				return false
+				return False
 		else
-			return false
+			return False

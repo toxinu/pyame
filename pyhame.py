@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 version = "0.8.1.1"
 
-import sys, os, configparser, stat, types
+import sys, os, configparser, stat, types, shutil
 sys.path.append("/usr/lib/pyhame/resources/lib")
 
 # Check Python version
@@ -10,10 +10,18 @@ if sys.version_info < (3, 0):
 	print("Must use Python 3.0")
 	sys.exit(0)
 
-lib_path 		= "/usr/lib/pyhame/resources/lib"
-config_file		= "resources/pyhame.conf"
-init_lock_path	= "resources/init.lock"
-pwd				= os.getcwd()
+# Global declarations
+global GLOBAL_LIB_PATH				# The path of pyhame lib.
+global GLOBAL_CONFIG_FILE_PATH		# The path of config file from where the command is launched.
+global GLOBAL_INITLOCK_FILE_PATH	# The path of init.lock file from where the command is launched.
+global GLOBAL_PWD					# Actual directory, where the command is launched.
+global GLOBAL_CONFIG				# Global Config object which contains values from config file.
+
+# Global values
+GLOBAL_LIB_PATH = "/usr/lib/pyhame/resources/lib"
+GLOBAL_CONFIG_FILE_PATH = "resources/pyhame.conf"
+GLOBAL_INITLOCK_FILE_PATH = "resources/init.lock"
+GLOBAL_PWD = os.getcwd()
 
 #--------------------------------------------------------------------#
 ##  Argu Check 
@@ -45,15 +53,24 @@ def arg_check():
 			init_pyhame()
 	except IndexError:
 		sys.argv.append(None)
-	if not os.path.exists(config_file):
+	if not os.path.exists(GLOBAL_CONFIG_FILE_PATH):
 		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
 		sys.exit(0)
 	else:
-		global config
-		config = Config(config_file)
+		
+		######################
+		# CONFIG CREATION HERE
+		######################
+		GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
+		
 	try:
 		if sys.argv[1] == "run":
+			
+			###############
+			# RUN CALL HERE
+			###############
 			run()
+			
 	except IndexError:
 		sys.argv.append(None)
 
@@ -61,10 +78,9 @@ def arg_check():
 # Init Pyhame
 #--------------------------------------------------------------------#
 def init_pyhame():
-	import shutil
 	
 	#Check if the init.lock exists
-	if os.path.exists(init_lock_path):
+	if os.path.exists(GLOBAL_INITLOCK_FILE_PATH):
 		print(" \033[91m::\033[0m You have already initialize your pyhame installation. You can remove init.lock file but many files will be overwrite")
 		sys.exit(0)
 		
@@ -84,35 +100,33 @@ def init_pyhame():
 		os.utime(init_lock_path, None)
 		
 		#Config file creation
-		if os.path.exists(config_file):
-			shutil.copyfile(config_file, config_file+".back")
-			os.remove(config_file)
-		shutil.copyfile(config_file+".default", config_file)
+		if os.path.exists(GLOBAL_CONFIG_FILE_PATH):
+			shutil.copyfile(GLOBAL_CONFIG_FILE_PATH, GLOBAL_CONFIG_FILE_PATH+".back")
+			os.remove(GLOBAL_CONFIG_FILE_PATH)
+		shutil.copyfile(GLOBAL_CONFIG_FILE_PATH+".default", GLOBAL_CONFIG_FILE_PATH)
 		
 		#Read config file
-		global config
-		config = Config(config_file)
+		GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
 
-		if not os.path.exists(config.content_folder):
-			os.makedirs(config.content_folder)
-		if os.path.exists(config.static_path):
-			shutil.rmtree(config.static_path)
-		os.makedirs(config.static_path)
+		if not os.path.exists(GLOBAL_CONFIG.content_folder):
+			os.makedirs(GLOBAL_CONFIG.content_folder)
+		if os.path.exists(GLOBAL_CONFIG.static_path):
+			shutil.rmtree(GLOBAL_CONFIG.static_path)
+		os.makedirs(GLOBAL_CONFIG.static_path)
 		
 		# Create blank special files
-		special_files = ["welcome_message","footer","welcome_content"]
-		for f in special_files:
-			if not os.path.exists("%s/%s" % (config.content_folder, f)):
-				tmp_file = open("%s/%s" % (config.content_folder, f), 'w')
-				if f == "welcome_message":
-					tmp_file.write("Edit welcome_message file")
-				elif f == "footer":
-					tmp_file.write("Edit footer file")
-				elif f == "welcome_content":
-					tmp_file.write("Edit welcome_content file")	
-				tmp_file.close()
-		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")
-
+		specialFiles = {"welcome_message" : "Here your welcome message, edit welcome_message file in your content folder.",
+						"welcome_content" : "Here your welcome content, edit a welcome_content file in your content folder.",
+						"footer" : "Here your footer content, edit footer file in your content folder."}
+		
+		for key, value in specialFiles.iteritems():
+			if not os.path.exists("%s/%s" % (GLOBAL_CONFIG.content_folder, key)):
+				file = open("%s/%s" % (GLOBAL_CONFIG.content_folder, key), 'w')
+				file.write(value)
+				file.close()
+				
+		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")		
+		
 # Html content folder
 def static_folder_maker(path):
 	if not 'reset_static' in globals():
@@ -137,16 +151,45 @@ def check_file_extension(filename):
 			break
 	return False
 	
-# Browse tree to pick each file to construct an object from it
-def browse(dirname):
+# Build a ContentFile object for each file in dirname directory and
+# returns the list of ContentFile objects build by this way.
+# @param String dirname : The name of the directory we want to look in.
+# @param Boolean recursive: TRUE if we want to search in sub-directories of dirname, FALSE otherwise. Default : TRUE.
+# @return: A list of ContentFiles objects.
+def browseAndBuildAll(dirname, recursive = True):
+	contentFileList = []
 	for f in os.listdir(dirname):
+		
 		if os.path.isdir(os.path.join(dirname, f)):
-			parcourir(dirname+'/'+f)
+			if recursive: browseAndBuild(dirname+'/'+f)
+			
 		elif os.path.isfile(os.path.join(dirname, f)):
-			#print(dirname + ' ' + f)
-			contentFile = ContentFile(dirname, config)
+			contentFile = ContentFile(dirname+'/'+f, config)
+			contentFileList.append(contentFile)
+			
+	return contentFileList
+		
+# Browse all files in the dirname directory 
+# and return a ContentFile object if the file has been found, false othewise.
+# @param String dirname: The name of the directory we want to look in.
+# @param String fileName: The name of the file WITHOUT EXTENSION we want to look for.
+# @param Boolean recursive: TRUE if we want to search in sub-directories of dirname, FALSE otherwise. Default : TRUE.
+# @return: FALSE if no file has been found, else, returns a ContentFile build from the file itself.
+def browseAndSearchFile(dirname, fileName, recursive = True):
+	for f in os.listdir(dirname):
+		
+		if os.path.isdir(os.path.join(dirname, f)):
+			if recursive: browseAndSearch(dirname+'/'+f, fileName, True)
+			
+		elif os.path.isfile(os.path.join(dirname, f)):
+			if f.split('.')[0] == fileName:
+				return ContentFile(dirname, config)
+		
+	return False
+			
 
 # Recover special files
+"""
 def recover_special_files(content_folder, special_files, exclude_markdown):
 	import os
 	gl = globals()
@@ -168,6 +211,27 @@ def recover_special_files(content_folder, special_files, exclude_markdown):
 					gl[file] = gl[file][:-4]
 				else:
 					gl[file] = markdown.markdown(gl[file])
+"""
+
+# Get the special ContentFiles : "welcome_message","welcome_content","footer"
+# If files do not exist, they are created with default values.
+# @return: A list wich contains ContentFile object from special files.
+def getSpecialContentFiles():
+	specialContentFilesList = []
+	specialFiles = {"welcome_message" : "Here your welcome message, edit by creating a welcome_message file in your content folder.",
+					"welcome_content" : "Here your welcome content, edit by creating a welcome_content file in your content folder.",
+					"footer" : "Here your footer content, edit by creating a footer file in your content folder."}
+	
+	for key, value in specialFiles.iteritems():
+		if not browseAndSearchFile(GLOBAL_CONFIG.content_folder, key):				# Check if file doesn't exist
+			file = open("%s/%s" % (GLOBAL_CONFIG.content_folder, key), 'w')
+			file.write(value)
+			file.close()
+			
+		specialContentFilesList.append(browseAndSearchFile(GLOBAL_CONFIG.content_folder, key))
+		
+	return specialContentFilesList
+
 
 # Rendering html content files
 def rendering_html_content_files(no_list_no_render, special_files):
@@ -261,15 +325,12 @@ def generate_view():
 # Start script #######################
 ######################################
 def run():
-	conf = Config()
-	# Check config file
-	from conf import configuration as conf
-	conf.check(conf)
-	# Create list of conf list entries
-	from conf import build
-	extensions_to_render_list = build.string_to_list(conf.extensions_to_render)
-	no_list_no_render_list = build.string_to_list(conf.no_list_no_render)
-	no_list_yes_render_list = build.string_to_list(conf.no_list_yes_render)
+	
+	# Building config from config file and check it.
+	global config
+	config = Config()
+	config.check()
+	
 	# Recover special files like welcome_message ...
 	special_files = ["welcome_message","welcome_content","footer"]
 	exclude_markdown = []

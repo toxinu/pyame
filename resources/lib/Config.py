@@ -47,7 +47,8 @@ class Config(object):
 		except configparser.Error as err:
 			print('There is an error in pyhame.conf (%s)' % err)
 			sys.exit(1)
-			
+		
+		# Converts string values from config file into list values.
 		self.extensions_to_render = self.string_to_list(self.extensions_to_render)
 		self.no_list_no_render = self.string_to_list(self.no_list_no_render)
 		self.no_list_yes_render = self.string_to_list(self.no_list_yes_render)
