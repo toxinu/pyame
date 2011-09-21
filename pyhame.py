@@ -335,14 +335,14 @@ def run():
 	config.check()
 	
 	# Recover special files like welcome_message ...
-	special_files = ["welcome_message","welcome_content","footer"]
-	exclude_markdown = []
-	recover_special_files(conf.content_folder, special_files, exclude_markdown)
+	specialContentFiles = getSpecialContentFiles()
+	
 	# Set up content listing and other specials files
 	import menu
 	global root_menu, sub_menu
 	root_menu, sub_menu = menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
 	rendering_html_content_files(no_list_no_render_list, special_files)
+	
 	# Set up index content
 	generate_index()
 	static_other()
