@@ -5,17 +5,17 @@
 
 class Config(object):
 
-	# IMPORTS
-	import configparser, sys, os
-	
 	###############
 	# CONSTRUCTORS
 	###############
 	
 	def __init__(self, pathFile):
+
+		# IMPORTS
+		import configparser, sys, os
 	
 		config = configparser.RawConfigParser()
-		config.read(config_file)
+		config.read(pathFile)
 		
 		sections = ('general', 'others', 'remote')
 		
@@ -48,10 +48,16 @@ class Config(object):
 			print('There is an error in pyhame.conf (%s)' % err)
 			sys.exit(1)
 		
+<<<<<<< HEAD
 		# Converts string values from config file into list values.
 		self.extensions_to_render = self.string_to_list(self.extensions_to_render)
 		self.no_list_no_render = self.string_to_list(self.no_list_no_render)
 		self.no_list_yes_render = self.string_to_list(self.no_list_yes_render)
+=======
+		self.extensions_to_render 	= self.stringToList(self.extensions_to_render)
+		self.no_list_no_render 		= self.stringToList(self.no_list_no_render)
+		self.no_list_yes_render 	= self.stringToList(self.no_list_yes_render)
+>>>>>>> d2f04680ab941901718aea84bb37f739cd5bb621
 
 	#########
 	# METHODS
@@ -125,8 +131,8 @@ class Config(object):
 	# Transform a String elements into a List.
 	# @param String elements : The string elements extracted from the config file.
 	#	i.e.: "txt","md"	
-	def string_to_list(elements):
-		elements_list = []
+	def stringToList(elements):
+		elementsList = []
 		for element in elements.split(','):
-			elements_list.append(element.replace('"', '').strip())
-		return elements_list
+			elementsList.append(element.replace('"', '').strip())
+		return elementsList

@@ -23,6 +23,7 @@ GLOBAL_CONFIG_FILE_PATH = "resources/pyhame.conf"
 GLOBAL_INITLOCK_FILE_PATH = "resources/init.lock"
 GLOBAL_PWD = os.getcwd()
 
+
 #--------------------------------------------------------------------#
 ##  Argu Check 
 #--------------------------------------------------------------------#
@@ -88,11 +89,12 @@ def init_pyhame():
 	else:
 		print(" \033[93m::\033[0m Pyhame initilization...")
 		if not os.path.exists("resources"):
-			if not os.path.exists("/usr/lib/pyhame/resources"):
+			if not os.path.exists(pyhame_path + "/resources"):
 				print(" \033[91m::\033[0m Critical resources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
 				sys.exit(0)
 			else:
-				shutil.copytree("/usr/lib/pyhame/resources/tpl", pwd+"/resources/tpl")
+				shutil.copytree(pyhame_path + "/resources/tpl", pwd + "/resources/tpl")
+				shutil.copyfile(pyhame_path + "/resources/pyhame.conf.default", config_file + ".default")
 
 		open(init_lock_path, 'a').close()
 		
@@ -107,6 +109,7 @@ def init_pyhame():
 		
 		#Read config file
 		GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
+
 
 		if not os.path.exists(GLOBAL_CONFIG.content_folder):
 			os.makedirs(GLOBAL_CONFIG.content_folder)
