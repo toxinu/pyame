@@ -48,9 +48,9 @@ class Config(object):
 			print('There is an error in pyhame.conf (%s)' % err)
 			sys.exit(1)
 		
-		self.extensions_to_render 	= self.string_to_list(self.extensions_to_render)
-		self.no_list_no_render 		= self.string_to_list(self.no_list_no_render)
-		self.no_list_yes_render 	= self.string_to_list(self.no_list_yes_render)
+		self.extensions_to_render 	= self.stringToList(self.extensions_to_render)
+		self.no_list_no_render 		= self.stringToList(self.no_list_no_render)
+		self.no_list_yes_render 	= self.stringToList(self.no_list_yes_render)
 
 	#########
 	# METHODS
@@ -124,7 +124,7 @@ class Config(object):
 	# Transform a String elements into a List.
 	# @param String elements : The string elements extracted from the config file.
 	#	i.e.: "txt","md"	
-	def string_to_list(elements):
+	def stringToList(elements):
 		elementsList = []
 		for element in elements.split(','):
 			elementsList.append(element.replace('"', '').strip())
