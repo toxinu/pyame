@@ -186,7 +186,7 @@ def browseAndSearchFile(dirname, fileName, recursive = True):
 			
 		elif os.path.isfile(os.path.join(dirname, f)):
 			if f.split('.')[0] == fileName:
-				return ContentFile(dirname, config)
+				return ContentFile(dirname, GLOBAL_CONFIG)
 		
 	return False
 			
@@ -272,19 +272,23 @@ def rendering_html_content_files(no_list_no_render, special_files):
 						if check_file_extension(i):
 							html_content_file("%s/%s" % (oPaths, i))	
 
-# Read template index
-def read_template_index():
-	template_file_index = open("%s/%s/index.html" % (conf.tpl_path, conf.template_name), 'r')
-	template_content_index = template_file_index.read()
-	template_file_index.close()
-	return template_content_index
+
+# Get the index.html template from selected template in Config
+# to return it to Jinja2 Template() function.
+def getTemplate_index():
+	file = open("%s/%s/index.html" % (GLOBAL_CONFIG.tpl_path, GLOBAL_CONFIG.template_name), 'r')
+	templateIndex = file.read()
+	file.close()
+	return templateIndex
 
 # Read template view
+"""
 def read_template_view():
 	template_file_view = open("%s/%s/view.html" % (conf.tpl_path, conf.template_name), 'r')
 	template_content_view = template_file_view.read()
 	template_file_view.close()
 	return template_content_view
+"""
 
 # Write index
 def write_index(index_final):
@@ -330,18 +334,33 @@ def generate_view():
 def run():
 	
 	# Building config from config file and check it.
-	global config
-	config = Config()
-	config.check()
+	GLOBAL_CONFIG = Config()
+	GLOBAL_CONFIG.check()
 	
 	# Recover special files like welcome_message ...
 	specialContentFiles = getSpecialContentFiles()
+	welcomeMessageFile = browseAndSearchFile(GLOBAL_CONFIG.content_folder, "welcome_message", false)
+	welcomeContentFile = browseAndSearchFile(GLOBAL_CONFIG.content_folder, "welcome_content", false)
+	footerFile = browseAndSearchFile(GLOBAL_CONFIG.content_folder, "footer", false)
+	
 	
 	# Set up content listing and other specials files
 	import menu
 	global root_menu, sub_menu
 	root_menu, sub_menu = menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
 	rendering_html_content_files(no_list_no_render_list, special_files)
+	
+	# Generate index content
+	templateContent_index = getTemplate_index()
+	template = Template(templateContent_index)
+	htmlRender_index = template.render(	config 				= 	GLOBAL_CONFIG, 
+										welcome_message		=	welcomeMessageFile.content, 
+										welcome_content		=	welcomeContentFile.content, 
+										footer				=	footerFile.content, 
+										root_menu			=	root_menu, 
+										sub_menu			=	sub_menu
+										)
+#	htmlRender_index = template.render(website_title=conf.website_title, welcome_message=welcome_message, welcome_content=welcome_content, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=conf.website_url)
 	
 	# Set up index content
 	generate_index()

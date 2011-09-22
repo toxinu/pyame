@@ -1,7 +1,5 @@
-##################################################################
-# This class represents the config file.
+##This class represents the config file.
 # NOTE: This object have to be instancied to exploits all its parameters.
-##################################################################
 
 class Config(object):
 
@@ -57,9 +55,9 @@ class Config(object):
 	# METHODS
 	#########
 	
-	# Check the validity of the config file
+	## Check the validity of the config file
 	def check(self):
-		## General section
+		# General section
 		# Check if content_folder is set
 		if not self.content_folder:
 			logging.error('"content_folder" must be given in pyhame.conf (general section)')
@@ -82,13 +80,13 @@ class Config(object):
 			logging.error('"tpl_path", "static_path" must be given in pyhame.conf (general section)')
 			print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  must be given in pyhame.conf (general section)")
 			sys.exit(0)
-		## Others section
+		# Others section
 		# Check if archive is set
 		if self.archive != "true" and self.archive != "false" or not self.archive:
 			logging.error('"archive" must be "true" or "false" in pyhame.conf (other section)')
 			print(" \033[91m::\033[0m \"archive\" must be \"true\" or \"false\" in pyhame.conf (others section)")
 			sys.exit(0)
-		## Create defaults files
+		# Create defaults files
 		# Check if content_folder exist, if not, create it.
 		if not os.path.exists(self.content_folder):
 			logging.info('"content_folder" you have given not exist. It will be automatically create')
@@ -100,7 +98,7 @@ class Config(object):
 			logging.error('"template_name" you have given not exist. Or index.html, view.html are not in your template directori')
 			print(" \033[91m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: index.html, view.html must be in template folder.")
 			sys.exit(0)
-		## Remote section
+		# Remote section
 		# Check remote section
 		if self.remote != "true" and self.remote != "false" or not self.remote:
 			logging.error('"remote" must be "true" or "false" in pyhame.conf (remote section)')
@@ -113,18 +111,18 @@ class Config(object):
 				sys.exit(0)
 			if self.remote_user == "":
 				logging.error('"remote_user" must be given in pyhame.conf (remote section)')
-				print(" \033[91m::\033[0m \"remote_user\" must be given in pyhame.conf (remote section)")
+				print(" \033[91m::\033[0m \"remote_user\" must be given in pyhame.conf (remote section)") #The Config object which contains parameters
 				sys.exit(0)
 			if self.remote_path == "":
-				logging.error('"remote_path" must be given in pyhame.conf (remote section)')
+				logging.error('"remote_path" must be given in pyhame.conf (remote section)') #The Config object which contains parameters
 				print(" \033[91m::\033[0m \"remote_path\" must be given in pyhame.conf (remote section)")
 				sys.exit(0)
 		print(" \033[92m::\033[0m Generate your website...")
 
 
-	# Transform a String elements into a List.
+	## Transform a String elements into a List. i.e.: txt,md
 	# @param String elements : The string elements extracted from the config file.
-	#	i.e.: "txt","md"	
+	# @return The list of elements, splitted by a comma.
 	def stringToList(self, elements):
 		elementsList = []
 		for element in elements.split(','):
