@@ -106,7 +106,7 @@ def init_pyhame():
 		#Read config file
         #from Config import Config # utiliser from si c'est un package ou dossier, ce qui n'est pas le cas de config, importé maintenant dans le fichier en haut.
         # source : http://effbot.org/zone/import-confusion.htm
-		GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
+		GLOBAL_CONFIG = Config.Config(GLOBAL_CONFIG_FILE_PATH)
 
 		if not os.path.exists(GLOBAL_CONFIG.content_folder):
 			os.makedirs(GLOBAL_CONFIG.content_folder)
@@ -337,7 +337,7 @@ def run():
     # Pourquoi avoir déplacé global ici au lieu de son ancien emplacement (entete) ?
     # Si on fait comme ça,  GLOBAL_CONFIG est global n'est global que lors d'un run, plus lors d'un init (or il est nécessaire lors de l'init)
 	global GLOBAL_CONFIG 
-	GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
+	GLOBAL_CONFIG = Config.Config(GLOBAL_CONFIG_FILE_PATH)
 	GLOBAL_CONFIG.check()
 	
 	# Recover special files like welcome_message ...
