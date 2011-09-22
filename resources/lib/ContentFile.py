@@ -8,8 +8,8 @@ class ContentFile(object):
 	# CONSTRUCTORS
 	###############
 	
-	# The main constructor of the ContentFile object, load all parameters from the created file.
-	# @param String path : The path of content file, written by user.
+	## The main constructor of the ContentFile object, load all parameters from the created file.
+	# @param String pathFromContent : The path of content file, written by user.
 	# @param Config config : The config Object with config file parameters.
 	def __init__(self, pathFromContent, config):
 		""" The main constructor of the ContentFile object, load all parameters from the created file
@@ -22,15 +22,15 @@ class ContentFile(object):
 		import markdown
 		from jinja2 import Template
 
-		self.pathFromContent = pathFromContent
-		self.pathFromStatic
-		self.contentFileName
-		self.content
-		self.contentHTML_markdown
-		self.contentHTML_jinja
-		self.listed = True
-		self.fileLink
-		self.permalink
+		self.pathFromContent = pathFromContent		## The path to file in content i.e: content/linux/article.txt
+		self.pathFromStatic							## The path to file in static i.e: myWebsite/linux/article.html
+		self.contentFileName						## The filename of the content file (txt, dm, etc.)
+		self.content								## The content of the file, what the user wrote in it.
+		self.contentHTML_markdown					## The HTML render after Markdown process.
+		self.contentHTML_jinja						## The HTML render after Jinja process (merge with template), final HTML.
+		self.listed = True							## Do this file is listed in the menu ?
+		self.fileLink								## The link to download the file i.e : myWebsite/_content/article.txt
+		self.permalink								## Permalink of the article.
 		
 		# Loading of attributes
 		self.generatePathFromStatic()
@@ -45,19 +45,19 @@ class ContentFile(object):
 	# METHODS
 	#########
 	
-	# Load the natural file content, written by user.
+	## Load the natural file content, written by user.
 	def loadContent(self):
 		""" Load the natural file content, written by user """
 		file = open(self.pathFromContent, 'r')
 		self.content = file.read()
 		file.close()
 		
-	# Load the filename of the content file
+	## Load the filename of the content file
 	def getFileName(self):
 		""" Load the filename of the content file """
 		self.contentFileName = self.pathFromContent.split('/')[-1]
 	
-	# Generate the path from the static repertory from the content repertory
+	## Generate the path from the static repertory from the content repertory
 	# i.e. : content/linux/myArticle.txt -> static/linux/myArticle.txt
 	def generatePathFromStatic(self):
 		""" Generate the path from the static directorie from the content directorie 
@@ -68,18 +68,19 @@ class ContentFile(object):
 		tab[0] = ContentFile.conf.static_path
 		self.pathFromStatic = ''.join(tab)	
 	
-	# Turn the original content into html content, using Markdown syntax.
+	## Turn the original content into html content, using Markdown syntax.
 	def contentToHTML(self):
 		""" Turn the original content into html content, using Markdown module """
 		self.contentHTML_markdown = markdown.markdown(self.content)
 	
-	# Create the file link to download the original file.
+	## Create the file link to download the original file.
 	# i.e: _site/linux/myArticle.txt
 	def generateFileLink(self):
 		""" Generate the file link to download the original file """
 		self.fileLink = '_' + self.pathFromContent
 	
-	# Generate the permalink of this page.
+	## Generate the permalink of this page.
+	# @param Config config: The Config object which contains parameters
 	def generatePermalink(self, config):
 		""" Generate the permalink of this page
 		
@@ -87,7 +88,7 @@ class ContentFile(object):
 		"""
 		self.permalink = "NOTHING"
 		
-	# Generate the HTML content, using HTML generated from Markdown
+	## Generate the HTML content, using HTML generated from Markdown
 	# and the template, using Jinja2.
 	# @param Config config : The Config object which contains parameters
 	# @param ContentFile footer : The Footer ContentFile.
@@ -136,14 +137,14 @@ class ContentFile(object):
 													permalink 		= permalink
 												)
 		
-	# Build the HTML file with template structure and data.
+	## Build the HTML file with template structure and data.
 	def buildHTMLfile(self):
 		""" Build the HTML file with template structure and data """
 		file = open(self.pathFromStatic, 'a')
 		file.write(self.contentHTML_jinja)
 		file.close()
 		
-	# Load the template from template file, using Jinja2
+	## Load the template from template file, using Jinja2
 	# @param Config config : The config Object with config file parameters.
 	# @return Template : The template file 
 	def loadTemplate(self, config):
@@ -157,7 +158,7 @@ class ContentFile(object):
 		templateFile.close()		
 		return Template(templateContent)
 	
-	# Check if the extension file match with the authorized extension list
+	## Check if the extension file match with the authorized extension list
 	# in the config file.
 	# @param List(String) extensionList : The list of extension the file have to match to.
 	# @return Boolean : TRUE if the extension is correct, FALSE otherwise.

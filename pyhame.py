@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 version = "0.8.1.2"
 
-import sys, os, configparser, stat, types, shutil
+import sys, os, configparser, stat, types, shutil, Config
 sys.path.append("/usr/lib/pyhame/resources/lib")
 
 # Check Python version
@@ -11,6 +11,7 @@ if sys.version_info < (3, 0):
 	sys.exit(0)
 
 # Global declarations
+global GLOBAL_CONFIG                # Config object from Config class. (import Config)
 global GLOBAL_PYHAME_PATH 			# The path of pyhame
 global GLOBAL_LIB_PATH				# The path of pyhame lib.
 global GLOBAL_CONFIG_FILE_PATH		# The path of config file from where the command is launched.
@@ -102,7 +103,8 @@ def init_pyhame():
 		shutil.copyfile(GLOBAL_CONFIG_FILE_PATH+".default", GLOBAL_CONFIG_FILE_PATH)
 		
 		#Read config file
-		from Config import Config
+        #from Config import Config # utiliser from si c'est un package ou dossier, ce qui n'est pas le cas de config, importé maintenant dans le fichier en haut.
+        # source : http://effbot.org/zone/import-confusion.htm
 		GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
 
 		if not os.path.exists(GLOBAL_CONFIG.content_folder):
@@ -180,7 +182,7 @@ def browseAndSearchFile(dirname, fileName, recursive = True):
 			
 		elif os.path.isfile(os.path.join(dirname, f)):
 			if f.split('.')[0] == fileName:
-				return ContentFile(dirname, config)
+				return ContentFile(dirname, GLOBAL_CONFIG)
 		
 	return False
 			
@@ -266,19 +268,23 @@ def rendering_html_content_files(no_list_no_render, special_files):
 						if check_file_extension(i):
 							html_content_file("%s/%s" % (oPaths, i))	
 
-# Read template index
-def read_template_index():
-	template_file_index = open("%s/%s/index.html" % (conf.tpl_path, conf.template_name), 'r')
-	template_content_index = template_file_index.read()
-	template_file_index.close()
-	return template_content_index
+
+# Get the index.html template from selected template in Config
+# to return it to Jinja2 Template() function.
+def getTemplate_index():
+	file = open("%s/%s/index.html" % (GLOBAL_CONFIG.tpl_path, GLOBAL_CONFIG.template_name), 'r')
+	templateIndex = file.read()
+	file.close()
+	return templateIndex
 
 # Read template view
+"""
 def read_template_view():
 	template_file_view = open("%s/%s/view.html" % (conf.tpl_path, conf.template_name), 'r')
 	template_content_view = template_file_view.read()
 	template_file_view.close()
 	return template_content_view
+"""
 
 # Write index
 def write_index(index_final):
@@ -323,20 +329,40 @@ def generate_view():
 ######################################
 def run():
 
-	# Create Config class and check it	
-	from Config import Config
-	global GLOBAL_CONFIG
+	# Create Config object and check it	
+	#from Config import Config # utiliser from si c'est un package ou dossier, ce qui n'est pas le cas de config, importé maintenant dans le fichier en haut.
+    # source : http://effbot.org/zone/import-confusion.htm
+    
+    # Pourquoi avoir déplacé global ici au lieu de son ancien emplacement (entete) ?
+    # Si on fait comme ça,  GLOBAL_CONFIG est global n'est global que lors d'un run, plus lors d'un init (or il est nécessaire lors de l'init)
+	global GLOBAL_CONFIG 
 	GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
 	GLOBAL_CONFIG.check()
 	
 	# Recover special files like welcome_message ...
 	specialContentFiles = getSpecialContentFiles()
+	welcomeMessageFile = browseAndSearchFile(GLOBAL_CONFIG.content_folder, "welcome_message", false)
+	welcomeContentFile = browseAndSearchFile(GLOBAL_CONFIG.content_folder, "welcome_content", false)
+	footerFile = browseAndSearchFile(GLOBAL_CONFIG.content_folder, "footer", false)
+	
 	
 	# Set up content listing and other specials files
 	import Menu
 	global root_menu, sub_menu
 	root_menu, sub_menu = Menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
 	rendering_html_content_files(no_list_no_render_list, special_files)
+	
+	# Generate index content
+	templateContent_index = getTemplate_index()
+	template = Template(templateContent_index)
+	htmlRender_index = template.render(	config 				= 	GLOBAL_CONFIG, 
+										welcome_message		=	welcomeMessageFile.content, 
+										welcome_content		=	welcomeContentFile.content, 
+										footer				=	footerFile.content, 
+										root_menu			=	root_menu, 
+										sub_menu			=	sub_menu
+										)
+#	htmlRender_index = template.render(website_title=conf.website_title, welcome_message=welcome_message, welcome_content=welcome_content, footer=footer, root_menu=root_menu, sub_menu=sub_menu, website_url=conf.website_url)
 	
 	# Set up index content
 	generate_index()

@@ -1,7 +1,8 @@
-##################################################################
-# This class represents the config file.
+##This class represents the config file.
 # NOTE: This object have to be instancied to exploits all its parameters.
-##################################################################
+
+ # IMPORTS
+import configparser, sys, os
 
 class Config(object):
 	"""	This class represents the config file.
@@ -15,8 +16,6 @@ class Config(object):
 	###############
 	
 	def __init__(self, pathFile):
-		# IMPORTS
-		import configparser, sys, os
 	
 		config = configparser.RawConfigParser()
 		config.read(pathFile)
@@ -61,10 +60,8 @@ class Config(object):
 	# METHODS
 	#########
 	
-	# Check the validity of the config file
+	## Check the validity of the config file
 	def check(self):
-		"""	Check the validity of the config file """
-		import os
 
 		## General section
 		# Check if content_folder is set
@@ -84,12 +81,12 @@ class Config(object):
 		if not self.tpl_path or not self.static_path:
 			print(" \033[91m::\033[0m \"tpl_path\", \"static_path\"  must be given in pyhame.conf (general section)")
 			sys.exit(0)
-		## Others section
+		# Others section
 		# Check if archive is set
 		if self.archive != "true" and self.archive != "false" or not self.archive:
 			print(" \033[91m::\033[0m \"archive\" must be \"true\" or \"false\" in pyhame.conf (others section)")
 			sys.exit(0)
-		## Create defaults files
+		# Create defaults files
 		# Check if content_folder exist, if not, create it.
 		if not os.path.exists(self.content_folder):
 			print(" \033[93m::\033[0m \"content_folder\" you have given not exist. It will be automatically create")
@@ -99,7 +96,7 @@ class Config(object):
 		if not os.path.exists(self.template_path) or not os.path.exists("%s/index.html" % self.template_path) or not os.path.exists("%s/view.html" % self.template_path):
 			print(" \033[91m::\033[0m \"template_name\" you have given not exist.\n \033[93m::\033[0m These files: index.html, view.html must be in template folder.")
 			sys.exit(0)
-		## Remote section
+		# Remote section
 		# Check remote section
 		if self.remote != "true" and self.remote != "false" or not self.remote:
 			print(" \033[91m::\033[0m \"remote\" must be \"true\" or \"false\" in pyhame.conf (remote section)")
@@ -117,9 +114,9 @@ class Config(object):
 		print(" \033[92m::\033[0m Generate your website...")
 
 
-	# Transform a String elements into a List.
+	## Transform a String elements into a List. i.e.: txt,md
 	# @param String elements : The string elements extracted from the config file.
-	#	i.e.: "txt","md"	
+	# @return The list of elements, splitted by a comma.
 	def stringToList(self, elements):
 		"""	Transform a String elements into a List
 
