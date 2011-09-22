@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 version = "0.8.1.2"
 
-import sys, os, configparser, stat, types, shutil, Config
+import sys
 sys.path.append("/usr/lib/pyhame/resources/lib")
+import os, configparser, stat, types, shutil, Config
 
 # Check Python version
 if sys.version_info < (3, 0):
