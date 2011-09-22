@@ -4,13 +4,17 @@
 ##################################################################
 
 class Config(object):
+	"""	This class represents the config file.
+
+		:param pathFile: Path to config file
+		:type pathFile: string
+	"""
 
 	###############
 	# CONSTRUCTORS
 	###############
 	
 	def __init__(self, pathFile):
-
 		# IMPORTS
 		import configparser, sys, os
 	
@@ -59,7 +63,7 @@ class Config(object):
 	
 	# Check the validity of the config file
 	def check(self):
-
+		"""	Check the validity of the config file """
 		import os
 
 		## General section
@@ -117,6 +121,12 @@ class Config(object):
 	# @param String elements : The string elements extracted from the config file.
 	#	i.e.: "txt","md"	
 	def stringToList(self, elements):
+		"""	Transform a String elements into a List
+
+			:param elements: The string elements extracted from the config file
+			:type elements: string
+			:rtype: list
+		"""
 		elementsList = []
 		for element in elements.split(','):
 			elementsList.append(element.replace('"', '').strip())

@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.8.1.1"
+version = "0.8.1.2"
 
 import sys, os, configparser, stat, types, shutil
 sys.path.append("/usr/lib/pyhame/resources/lib")
@@ -128,9 +128,9 @@ def init_pyhame():
 def static_folder_maker(path):
 	if not 'reset_static' in globals():
 		import shutil
-		if os.path.exists(config.static_path):
-			shutil.rmtree(config.static_path)
-		os.makedirs(config.static_path)
+		if os.path.exists(GLOBAL_CONFIG.static_path):
+			shutil.rmtree(GLOBAL_CONFIG.static_path)
+		os.makedirs(GLOBAL_CONFIG.static_path)
 		global reset_static
 		reset_static = True
 	if not os.path.exists(re_content_static(path)):
@@ -234,7 +234,7 @@ def getSpecialContentFiles():
 def rendering_html_content_files(no_list_no_render, special_files):
 	from urllib.parse import quote
 	aDirs = []
-	for oDirPaths, oDirNames, oFiles in os.walk(conf.content_folder, True, None):
+	for oDirPaths, oDirNames, oFiles in os.walk(GLOBAL_CONFIG.content_folder, True, None):
 		static_folder_maker(re_content_static(oDirPaths))
 		aDirs.append(oDirPaths)
 		oDirNames.sort()
@@ -333,26 +333,26 @@ def run():
 	specialContentFiles = getSpecialContentFiles()
 	
 	# Set up content listing and other specials files
-	import menu
+	import Menu
 	global root_menu, sub_menu
-	root_menu, sub_menu = menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
+	root_menu, sub_menu = Menu.generate(no_list_no_render_list, no_list_yes_render_list, extensions_to_render_list, conf.content_folder, special_files)
 	rendering_html_content_files(no_list_no_render_list, special_files)
 	
 	# Set up index content
 	generate_index()
 	static_other()
 	sym_site_static()
-	if conf.archive == "true":
-		import archive
-		archive_list = [conf.static_path,conf.content_folder]
-		archive.create(conf.archive_path, archive_list)
-	if conf.remote == "true":
-		import remote
-		remote.check_ssh(conf.remote_host, conf.remote_user)
-		remote.push_ssh(conf.remote_host, conf.remote_user, conf.remote_path, conf.static_path)
+	if GLOBAL_CONFIG.archive == "true":
+		import Archive
+		ArchiveList = [GLOBAL_CONFIG.static_path, GLOBAL_CONFIG.content_folder]
+		Archive.create(GLOBAL_CONFIG.archive_path, archiveList)
+	if GLOBAL_CONFIG.remote == "true":
+		import Remote
+		Remote.checkSsh(GLOBAL_CONFIG.remote_host, GLOBAL_CONFIG.remote_user)
+		Remote.pushSsh(GLOBAL_CONFIG.remote_host, GLOBAL_CONFIG.remote_user, GLOBAL_CONFIG.remote_path, GLOBAL_CONFIG.static_path)
 	# Clear cache
-	import clear
-	cache_list = ["__pycache__"]
-	clear.cache(cache_list)
+	import Clear
+	cacheList = ["__pycache__"]
+	Clear.cache(cacheList)
 
 arg_check()
