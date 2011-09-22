@@ -158,10 +158,10 @@ def browseAndBuildAll(dirname, recursive = True):
 	for f in os.listdir(dirname):
 		
 		if os.path.isdir(os.path.join(dirname, f)):
-			if recursive: browseAndBuild(dirname+'/'+f)
+			if recursive: browseAndBuild(dirname + '/' + f)
 			
 		elif os.path.isfile(os.path.join(dirname, f)):
-			contentFile = ContentFile(dirname+'/'+f, config)
+			contentFile = ContentFile(dirname + '/' + f, config)
 			contentFileList.append(contentFile)
 			
 	return contentFileList
@@ -176,7 +176,7 @@ def browseAndSearchFile(dirname, fileName, recursive = True):
 	for f in os.listdir(dirname):
 		
 		if os.path.isdir(os.path.join(dirname, f)):
-			if recursive: browseAndSearch(dirname+'/'+f, fileName, True)
+			if recursive: browseAndSearch(dirname + '/' + f, fileName, True)
 			
 		elif os.path.isfile(os.path.join(dirname, f)):
 			if f.split('.')[0] == fileName:
@@ -215,9 +215,9 @@ def recover_special_files(content_folder, special_files, exclude_markdown):
 # @return: A list wich contains ContentFile object from special files.
 def getSpecialContentFiles():
 	specialContentFilesList = []
-	specialFiles = {"welcome_message" : "Here your welcome message, edit by creating a welcome_message file in your content folder.",
-					"welcome_content" : "Here your welcome content, edit by creating a welcome_content file in your content folder.",
-					"footer" : "Here your footer content, edit by creating a footer file in your content folder."}
+	specialFiles = {"welcome_message": "Here your welcome message, edit by creating a welcome_message file in your content folder.",
+					"welcome_content": "Here your welcome content, edit by creating a welcome_content file in your content folder.",
+					"footer": "Here your footer content, edit by creating a footer file in your content folder."}
 	
 	for key, value in specialFiles.items():
 		if not browseAndSearchFile(GLOBAL_CONFIG.content_folder, key):				# Check if file doesn't exist
@@ -291,19 +291,19 @@ def static_other():
 	from distutils import dir_util
 
 	# template
-	dest_dir = conf.static_path+"/_template" 
-	src_dir = conf.tpl_path+"/"+conf.template_name
+	dest_dir = conf.static_path + "/_template" 
+	src_dir = conf.tpl_path + "/" + conf.template_name
 	dir_util.copy_tree(src_dir, dest_dir)
 
 	# hightlight
-	dest_dir = conf.static_path+"/_other/highlight"
-	src_dir = lib_path+"/highlight"
+	dest_dir = conf.static_path + "/_other/highlight"
+	src_dir = lib_path + "/highlight"
 	dir_util.copy_tree(src_dir, dest_dir)
 
 # Symlink site into static
 def sym_site_static():
-	src_dir 	= "../"+conf.content_folder 
-	dest_dir 	= conf.static_path+"/_"+conf.content_folder
+	src_dir 	= "../" + conf.content_folder 
+	dest_dir 	= conf.static_path + "/_" + conf.content_folder
 	if not os.path.exists(dest_dir):
 		os.symlink(src_dir, dest_dir)
 
