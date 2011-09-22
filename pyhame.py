@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 version = "0.8.1.1"
 
-import sys, os, configparser, stat, types, shutil
+import sys, os, configparser, stat, types, shutil, Config
 sys.path.append("/usr/lib/pyhame/resources/lib")
 
 # Check Python version
@@ -11,17 +11,19 @@ if sys.version_info < (3, 0):
 	sys.exit(0)
 
 # Global declarations
+global GLOBAL_CONFIG                # Config object from Config class. (import Config)
+global GLOBAL_PYHAME_PATH 			# The path of pyhame
 global GLOBAL_LIB_PATH				# The path of pyhame lib.
 global GLOBAL_CONFIG_FILE_PATH		# The path of config file from where the command is launched.
 global GLOBAL_INITLOCK_FILE_PATH	# The path of init.lock file from where the command is launched.
 global GLOBAL_PWD					# Actual directory, where the command is launched.
-global GLOBAL_CONFIG				# Global Config object which contains values from config file.
 
 # Global values
-GLOBAL_LIB_PATH = "/usr/lib/pyhame/resources/lib"
-GLOBAL_CONFIG_FILE_PATH = "resources/pyhame.conf"
-GLOBAL_INITLOCK_FILE_PATH = "resources/init.lock"
-GLOBAL_PWD = os.getcwd()
+GLOBAL_PYHAME_PATH  		= "/usr/lib/pyhame"
+GLOBAL_LIB_PATH 			= "/usr/lib/pyhame/resources/lib"
+GLOBAL_CONFIG_FILE_PATH 	= "resources/pyhame.conf"
+GLOBAL_INITLOCK_FILE_PATH 	= "resources/init.lock"
+GLOBAL_PWD 					= os.getcwd()
 
 
 #--------------------------------------------------------------------#
@@ -54,24 +56,17 @@ def arg_check():
 			init_pyhame()
 	except IndexError:
 		sys.argv.append(None)
-	if not os.path.exists(GLOBAL_CONFIG_FILE_PATH):
-		print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
-		sys.exit(0)
-	else:
-		
-		######################
-		# CONFIG CREATION HERE
-		######################
-		GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
-		
+
 	try:
 		if sys.argv[1] == "run":
-			
-			###############
-			# RUN CALL HERE
-			###############
-			run()
-			
+			if not os.path.exists(GLOBAL_CONFIG_FILE_PATH):
+				print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
+				sys.exit(0)
+			else:
+				###############
+				# RUN CALL HERE
+				###############
+				run()
 	except IndexError:
 		sys.argv.append(None)
 
@@ -89,17 +84,17 @@ def init_pyhame():
 	else:
 		print(" \033[93m::\033[0m Pyhame initilization...")
 		if not os.path.exists("resources"):
-			if not os.path.exists(pyhame_path + "/resources"):
+			if not os.path.exists(GLOBAL_PYHAME_PATH + "/resources"):
 				print(" \033[91m::\033[0m Critical resources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
 				sys.exit(0)
 			else:
-				shutil.copytree(pyhame_path + "/resources/tpl", pwd + "/resources/tpl")
-				shutil.copyfile(pyhame_path + "/resources/pyhame.conf.default", config_file + ".default")
+				shutil.copytree(GLOBAL_PYHAME_PATH + "/resources/tpl", GLOBAL_PWD + "/resources/tpl")
+				shutil.copyfile(GLOBAL_PYHAME_PATH + "/resources/pyhame.conf.default", GLOBAL_CONFIG_FILE_PATH + ".default")
 
-		open(init_lock_path, 'a').close()
+		open(GLOBAL_INITLOCK_FILE_PATH, 'a').close()
 		
 		#TO CHECK
-		os.utime(init_lock_path, None)
+		os.utime(GLOBAL_INITLOCK_FILE_PATH, None)
 		
 		#Config file creation
 		if os.path.exists(GLOBAL_CONFIG_FILE_PATH):
@@ -108,8 +103,9 @@ def init_pyhame():
 		shutil.copyfile(GLOBAL_CONFIG_FILE_PATH+".default", GLOBAL_CONFIG_FILE_PATH)
 		
 		#Read config file
+        #from Config import Config # utiliser from si c'est un package ou dossier, ce qui n'est pas le cas de config, importé maintenant dans le fichier en haut.
+        # source : http://effbot.org/zone/import-confusion.htm
 		GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
-
 
 		if not os.path.exists(GLOBAL_CONFIG.content_folder):
 			os.makedirs(GLOBAL_CONFIG.content_folder)
@@ -118,11 +114,11 @@ def init_pyhame():
 		os.makedirs(GLOBAL_CONFIG.static_path)
 		
 		# Create blank special files
-		specialFiles = {"welcome_message" : "Here your welcome message, edit welcome_message file in your content folder.",
-						"welcome_content" : "Here your welcome content, edit a welcome_content file in your content folder.",
-						"footer" : "Here your footer content, edit footer file in your content folder."}
+		specialFiles = {"welcome_message": "Here your welcome message, edit welcome_message file in your content folder.",
+						"welcome_content": "Here your welcome content, edit a welcome_content file in your content folder.",
+						"footer": "Here your footer content, edit footer file in your content folder."}
 		
-		for key, value in specialFiles.iteritems():
+		for key, value in specialFiles.items():
 			if not os.path.exists("%s/%s" % (GLOBAL_CONFIG.content_folder, key)):
 				file = open("%s/%s" % (GLOBAL_CONFIG.content_folder, key), 'w')
 				file.write(value)
@@ -164,10 +160,10 @@ def browseAndBuildAll(dirname, recursive = True):
 	for f in os.listdir(dirname):
 		
 		if os.path.isdir(os.path.join(dirname, f)):
-			if recursive: browseAndBuild(dirname+'/'+f)
+			if recursive: browseAndBuild(dirname + '/' + f)
 			
 		elif os.path.isfile(os.path.join(dirname, f)):
-			contentFile = ContentFile(dirname+'/'+f, config)
+			contentFile = ContentFile(dirname + '/' + f, config)
 			contentFileList.append(contentFile)
 			
 	return contentFileList
@@ -182,7 +178,7 @@ def browseAndSearchFile(dirname, fileName, recursive = True):
 	for f in os.listdir(dirname):
 		
 		if os.path.isdir(os.path.join(dirname, f)):
-			if recursive: browseAndSearch(dirname+'/'+f, fileName, True)
+			if recursive: browseAndSearch(dirname + '/' + f, fileName, True)
 			
 		elif os.path.isfile(os.path.join(dirname, f)):
 			if f.split('.')[0] == fileName:
@@ -221,11 +217,11 @@ def recover_special_files(content_folder, special_files, exclude_markdown):
 # @return: A list wich contains ContentFile object from special files.
 def getSpecialContentFiles():
 	specialContentFilesList = []
-	specialFiles = {"welcome_message" : "Here your welcome message, edit by creating a welcome_message file in your content folder.",
-					"welcome_content" : "Here your welcome content, edit by creating a welcome_content file in your content folder.",
-					"footer" : "Here your footer content, edit by creating a footer file in your content folder."}
+	specialFiles = {"welcome_message": "Here your welcome message, edit by creating a welcome_message file in your content folder.",
+					"welcome_content": "Here your welcome content, edit by creating a welcome_content file in your content folder.",
+					"footer": "Here your footer content, edit by creating a footer file in your content folder."}
 	
-	for key, value in specialFiles.iteritems():
+	for key, value in specialFiles.items():
 		if not browseAndSearchFile(GLOBAL_CONFIG.content_folder, key):				# Check if file doesn't exist
 			file = open("%s/%s" % (GLOBAL_CONFIG.content_folder, key), 'w')
 			file.write(value)
@@ -301,19 +297,19 @@ def static_other():
 	from distutils import dir_util
 
 	# template
-	dest_dir = conf.static_path+"/_template" 
-	src_dir = conf.tpl_path+"/"+conf.template_name
+	dest_dir = conf.static_path + "/_template" 
+	src_dir = conf.tpl_path + "/" + conf.template_name
 	dir_util.copy_tree(src_dir, dest_dir)
 
 	# hightlight
-	dest_dir = conf.static_path+"/_other/highlight"
-	src_dir = lib_path+"/highlight"
+	dest_dir = conf.static_path + "/_other/highlight"
+	src_dir = lib_path + "/highlight"
 	dir_util.copy_tree(src_dir, dest_dir)
 
 # Symlink site into static
 def sym_site_static():
-	src_dir 	= "../"+conf.content_folder 
-	dest_dir 	= conf.static_path+"/_"+conf.content_folder
+	src_dir 	= "../" + conf.content_folder 
+	dest_dir 	= conf.static_path + "/_" + conf.content_folder
 	if not os.path.exists(dest_dir):
 		os.symlink(src_dir, dest_dir)
 
@@ -332,9 +328,15 @@ def generate_view():
 # Start script #######################
 ######################################
 def run():
-	
-	# Building config from config file and check it.
-	GLOBAL_CONFIG = Config()
+
+	# Create Config object and check it	
+	#from Config import Config # utiliser from si c'est un package ou dossier, ce qui n'est pas le cas de config, importé maintenant dans le fichier en haut.
+    # source : http://effbot.org/zone/import-confusion.htm
+    
+    # Pourquoi avoir déplacé global ici au lieu de son ancien emplacement (entete) ?
+    # Si on fait comme ça,  GLOBAL_CONFIG est global n'est global que lors d'un run, plus lors d'un init (or il est nécessaire lors de l'init)
+	global GLOBAL_CONFIG 
+	GLOBAL_CONFIG = Config(GLOBAL_CONFIG_FILE_PATH)
 	GLOBAL_CONFIG.check()
 	
 	# Recover special files like welcome_message ...
