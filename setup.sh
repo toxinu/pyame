@@ -11,8 +11,6 @@ JINJA2_URL="http://pypi.python.org/packages/source/J/Jinja2/Jinja2-$JINJA2_VER.t
 SETUPTOOLS_URL="http://python-distribute.org/distribute_setup.py"
 #=============================================================================
 
-source /home/glehee/Repositories/pyhame/simple_curses.sh
-
 # Globals variables
 #-----------------------------------------------------------------------------
 
@@ -23,14 +21,13 @@ LOG_FILE="/tmp/pyhame-install-$DATE.log"
 
 # Functions
 #-----------------------------------------------------------------------------
-#displaymessage() {
-#  echo $*
-#}
+displaymessage() {
+  echo $*
+}
 
 displaytitle() {
-  echo "|                                                                 |"
   echo "#-----------------------------------------------------------------#"
-  echo "|$*"
+  echo "| $*"
   echo "#-----------------------------------------------------------------#"
 }
 
@@ -43,7 +40,7 @@ displayerror() {
 displayerrorandexit() {
   local exitcode=$1
   shift
-  echo "$*"
+  displaymessage $*
   exit $exitcode
 }
 
@@ -51,15 +48,17 @@ displayerrorandexit() {
 # Others parameters: COMMAND (! not |)
 displayandexec() {
   local message=$1
-  echo -n "| [In progress] $message                                             |"
+  echo -n "[In progress] $message"
   shift
-  $* >> $LOG_FILE 2>&1 
+  $* >> $LOG_FILE 2>&1
   local ret=$?
   if [ $ret -ne 0 ]; then
-    echo -e " \r\e [0;31m    [ERROR]\e[0m $message"
+    echo -e "\r\e[0;31m      [ERROR]\e[0m $message"
+    # echo -e "\r   [ERROR] $message"
   else
-    echo -e " \r\e [0;32m       [OK]\e[0m $message"
-  fi 
+    echo -e "\r\e[0;32m         [OK]\e[0m $message"
+    # echo -e "\r      [OK] $message"
+  fi
   return $ret
 }
 
@@ -100,8 +99,9 @@ fi
 }
 
 # Function: installation
-installation() {
-  displaytitle "-- Installation                                                  |"
+installation() { 
+  clear
+  displaytitle "-- Installation"
 
   mkdir $TMP_FOLDER
   cd $TMP_FOLDER
@@ -117,6 +117,7 @@ installation() {
   fi
 
   check_module jinja2
+  result="dada"
   if [[ "$result" == "False" ]]; then
     if [[ "$platform" == 'darwin' ]]; then
       displayandexec "Download Jinja2 v$JINJA2_VER" curl -O $JINJA2_URL
@@ -152,16 +153,17 @@ end_install() {
   echo "#=================================================================#"
   echo "| Installation is finished                                        |"
   echo "#=================================================================#"
-  echo "| Log for the installation script   : $LOG_FILE                   |"
-  echo "| Pyhame executable                 : /usr/bin/pyhame             |"
-  echo "| Pyhame libraries                  : /usr/lib/pyhame             |"
-  echo "| Help                              : pyhame --help               |"
+  echo "| Installation log      : $LOG_FILE"
+  echo "| Pyhame executable     : /usr/bin/pyhame"
+  echo "| Pyhame libraries      : /usr/lib/pyhame"
+  echo "| Help                  : pyhame --help"
   echo "#=================================================================#"
   echo ""
   exit 1
 }
 
 remove() {
+  clear
   displaytitle "-- Clean"
 
   if [ -d "/usr/lib/pyhame" ]; then
@@ -181,9 +183,9 @@ end_remove() {
   echo "#=================================================================#"
   echo "| Clean is finished                                               |"
   echo "#=================================================================#"
-  echo "| Log for the remove script : $LOG_FILE                           |"
-  echo "| Removed pyhame folders    : /usr/bin/pyhame, /usr/lib/pyhame    |"
-  echo "| Removed jinja2 folders : Done                                   |"
+  echo "| Remove log         : $LOG_FILE"
+  echo "| Pyhame             : /usr/bin/pyhame, /usr/lib/pyhame"
+  echo "| Jinja2             : Done"
   echo "#=================================================================#"
   echo ""
   exit 1
@@ -203,9 +205,25 @@ fi
 check_python
 check_os
 
-  choice=$(dialog --stdout --title "Pyhame Setup Wizard" --menu "Choice :" "10" "40" "3" "1" "Installation" "2" "Remove" "3" "Update")
-  case "$choice" in
-    "1") installation;;
-    "2") remove;;
-    "3") echo "Update feature [WIP]"; exit;;
-  esac
+showMenu () {
+  clear
+  echo "#=================================================================#"
+  echo "|                   -- Pyhame Setup Wizard --                     |"
+  echo "#=================================================================#"
+  echo "| 1) Installation                                                 |"
+  echo "| 2) Remove                                                       |"
+  echo "| 3) Update                                                       |"
+  echo "| 4) Quit                                                         |"
+  echo "#=================================================================#"
+  read -p "Choice : " choice
+}
+  while [ 1 ]
+  do
+    showMenu
+    case "$choice" in
+      "1") installation;;
+      "2") remove;;
+      "3") echo "Update feature [WIP]"; exit;;
+      "4") exit;;
+    esac
+  done

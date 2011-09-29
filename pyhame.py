@@ -1,9 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-version = "0.8.1.2"
+pyhame_version		= "0.8.1.2"
+jinja2_version 		= "2.6"
+markdown_version	= "2.0.3"
 
 import sys
-sys.path.append("/usr/lib/pyhame/resources/lib")
+sys.path.append("/usr/lib/pyhame/lib")
 import os, configparser, stat, types, shutil, Config
 
 # Check Python version
@@ -12,7 +14,7 @@ if sys.version_info < (3, 0):
 	sys.exit(0)
 
 # Global declarations
-global GLOBAL_CONFIG                # Config object from Config class. (import Config)
+global GLOBAL_CONFIG               	# Config object from Config class. (import Config)
 global GLOBAL_PYHAME_PATH 			# The path of pyhame
 global GLOBAL_LIB_PATH				# The path of pyhame lib.
 global GLOBAL_CONFIG_FILE_PATH		# The path of config file from where the command is launched.
@@ -21,9 +23,10 @@ global GLOBAL_PWD					# Actual directory, where the command is launched.
 
 # Global values
 GLOBAL_PYHAME_PATH  		= "/usr/lib/pyhame"
-GLOBAL_LIB_PATH 			= "/usr/lib/pyhame/resources/lib"
-GLOBAL_CONFIG_FILE_PATH 	= "resources/pyhame.conf"
-GLOBAL_INITLOCK_FILE_PATH 	= "resources/init.lock"
+GLOBAL_LIB_PATH 			= GLOBAL_PYHAME_PATH + "/lib"
+GLOBAL_TPL_PATH 			= GLOBAL_PYHAME_PATH + "/tpl"
+GLOBAL_INITLOCK_FILE_PATH 	= GLOBAL_PYHAME_PATH + "/init.lock"
+GLOBAL_CONFIG_FILE_PATH 	= "pyhame.conf"
 GLOBAL_PWD 					= os.getcwd()
 
 
@@ -48,7 +51,7 @@ def arg_check():
 		sys.argv.append(None)
 	try:
 		if sys.argv[1] == "version":
-			print(version)
+			print(pyhame_version)
 			sys.exit(0)
 	except IndexError:
 		sys.argv.append(None)
@@ -84,13 +87,13 @@ def init_pyhame():
 	#Here, there is not the init.lock
 	else:
 		print(" \033[93m::\033[0m Pyhame initilization...")
-		if not os.path.exists("resources"):
-			if not os.path.exists(GLOBAL_PYHAME_PATH + "/resources"):
+		if not os.path.exists("tpl"):
+			if not os.path.exists(GLOBAL_TPL_PATH):
 				print(" \033[91m::\033[0m Critical resources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
 				sys.exit(0)
 			else:
-				shutil.copytree(GLOBAL_PYHAME_PATH + "/resources/tpl", GLOBAL_PWD + "/resources/tpl")
-				shutil.copyfile(GLOBAL_PYHAME_PATH + "/resources/pyhame.conf.default", GLOBAL_CONFIG_FILE_PATH + ".default")
+				shutil.copytree(GLOBAL_TPL_PATH, GLOBAL_PWD + "/tpl")
+				shutil.copyfile(GLOBAL_PYHAME_PATH + "/pyhame.conf.default", GLOBAL_CONFIG_FILE_PATH + ".default")
 
 		open(GLOBAL_INITLOCK_FILE_PATH, 'a').close()
 		
@@ -125,7 +128,7 @@ def init_pyhame():
 				file.write(value)
 				file.close()
 				
-		print(" \033[93m::\033[0m You have to configure your resources/pyhame.conf file")		
+		print(" \033[93m::\033[0m You have to configure your pyhame.conf file")		
 		
 # Html content folder
 def static_folder_maker(path):

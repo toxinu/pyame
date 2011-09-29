@@ -20,7 +20,7 @@ no_list_no_render		=
 no_list_yes_render 		= 
 
 # Ressources
-tpl_path				= resources/tpl
+tpl_path				= tpl
 static_path 			= static
 content_folder          = site
 
