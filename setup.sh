@@ -4,11 +4,6 @@ script_version="0.2"
 #=============================================================================
 PYHAME_VER="0.8.1.1"
 PYHAME_URL="http://redmine.socketubs.net/attachments/download/15/Pyhame-$PYHAME_VER.tar.gz"
-
-JINJA2_VER="2.6"
-JINJA2_URL="http://pypi.python.org/packages/source/J/Jinja2/Jinja2-$JINJA2_VER.tar.gz"
-
-SETUPTOOLS_URL="http://python-distribute.org/distribute_setup.py"
 #=============================================================================
 
 # Globals variables
@@ -89,46 +84,12 @@ check_python() {
   fi
 }
 
-check_module () {
-if ! $($PYTHON -c "import $1" &> /dev/null); then
-	result=False
-else
-	result=True
-	echo -e "\r\e[0;32m         [OK]\e[0m $1 is already installed"
-fi
-}
-
 # Function: installation
 installation() { 
   clear
   displaytitle "-- Installation"
 
   mkdir $TMP_FOLDER
-  cd $TMP_FOLDER
-
-  check_module setuptools
-  if [[ "$result" == "False" ]]; then
-    if [[ "$platform" == 'darwin' ]]; then
-      displayandexec "Download setuptools for Python 3.x" curl -0 $SETUPTOOLS_URL
-    else
-      displayandexec "Download setuptools for Python 3.x" wget $SETUPTOOLS_URL
-    fi
-    displayandexec "Install setuptools for Python 3.x" $PYTHON distribute_setup.py
-  fi
-
-  check_module jinja2
-  result="dada"
-  if [[ "$result" == "False" ]]; then
-    if [[ "$platform" == 'darwin' ]]; then
-      displayandexec "Download Jinja2 v$JINJA2_VER" curl -O $JINJA2_URL
-    else
-      displayandexec "Download Jinja2 v$JINJA2_VER" wget $JINJA2_URL
-    fi
-    displayandexec "Untar Jinja2 v$JINJA2_VER" tar xvf Jinja2-$JINJA2_VER.tar.gz
-    cd Jinja2-$JINJA2_VER
-    displayandexec "Install Jinja2 v$JINJA2_VER" $PYTHON setup.py install
-  fi
-
   cd $TMP_FOLDER
   if [[ "$platform" == 'darwin' ]]; then
     displayandexec "Download Pyhame v$PYHAME_VER" curl -O $PYHAME_URL
@@ -172,9 +133,6 @@ remove() {
   if [ -f "/usr/bin/pyhame" ]; then
     displayandexec "Remove Pyhame" rm -fr /usr/bin/pyhame
   fi
-  if [ -n "$(ls /usr/lib/python3.2/site-packages/ | grep '^[jJ]inja*')" ]; then
-    displayandexec "Remove Jinja2" rm -fr /usr/lib/python3.2/site-packages/{jinja2*,Jinja*}
-  fi
 
   end_remove
 }
@@ -185,7 +143,6 @@ end_remove() {
   echo "#=================================================================#"
   echo "| Remove log         : $LOG_FILE"
   echo "| Pyhame             : /usr/bin/pyhame, /usr/lib/pyhame"
-  echo "| Jinja2             : Done"
   echo "#=================================================================#"
   echo ""
   exit 1
