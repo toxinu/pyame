@@ -91,12 +91,22 @@ if [ ! -f "$PYTHON" ]; then
 fi
 }
 
+check_module () {
+if ! $($PYTHON -c "import $1" &> /dev/null); then
+	result=False
+else
+	result=True
+	echo -e "\r\e[0;32m         [OK]\e[0m $1 is already installed"
+fi
+}
+
 # Function: installation
 installation() {
   mkdir $TMP_FOLDER
   cd $TMP_FOLDER
 
-  if [[ -z "$(ls /usr/lib/python3.2/site-packages | grep '^setuptools*')" ]]; then
+  check_module setuptools
+  if [[ "$result" == "False" ]]; then
     if [[ "$platform" == 'darwin' ]]; then
       displayandexec "Download setuptools for Python 3.x" curl -0 $SETUPTOOLS_URL
     else
@@ -105,14 +115,17 @@ installation() {
     displayandexec "Install setuptools for Python 3.x" $PYTHON distribute_setup.py
   fi
 
-  if [[ "$platform" == 'darwin' ]]; then
-    displayandexec "Download Jinja2 v$JINJA2_VER" curl -O $JINJA2_URL
-  else
-    displayandexec "Download Jinja2 v$JINJA2_VER" wget $JINJA2_URL
+  check_module jinja2
+  if [[ "$result" == "False" ]]; then
+    if [[ "$platform" == 'darwin' ]]; then
+      displayandexec "Download Jinja2 v$JINJA2_VER" curl -O $JINJA2_URL
+    else
+      displayandexec "Download Jinja2 v$JINJA2_VER" wget $JINJA2_URL
+    fi
+    displayandexec "Untar Jinja2 v$JINJA2_VER" tar xvf Jinja2-$JINJA2_VER.tar.gz
+    cd Jinja2-$JINJA2_VER
+    displayandexec "Install Jinja2 v$JINJA2_VER" $PYTHON setup.py install
   fi
-  displayandexec "Untar Jinja2 v$JINJA2_VER" tar xvf Jinja2-$JINJA2_VER.tar.gz
-  cd Jinja2-$JINJA2_VER
-  displayandexec "Install Jinja2 v$JINJA2_VER" $PYTHON setup.py install
 
   cd $TMP_FOLDER
   if [[ "$platform" == 'darwin' ]]; then
@@ -134,7 +147,6 @@ installation() {
 
 # Fonction: Affiche le résumé de l'installation
 end() {
-  echo ""
   echo "=============================================================================="
   echo "Installation is finished"
   echo "=============================================================================="
@@ -143,7 +155,6 @@ end() {
   echo "Pyhame libraries                  : /usr/lib/pyhame"
   echo "Help                              : pyhame --help"
   echo "=============================================================================="
-  echo ""
 }
 
 # Main program
