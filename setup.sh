@@ -2,15 +2,13 @@
 script_version="0.2"
 
 #=============================================================================
-PYHAME_VER="0.8.1.1"
-PYHAME_URL="http://redmine.socketubs.net/attachments/download/15/Pyhame-$PYHAME_VER.tar.gz"
+PYHAME_VER="0.8.1.2"
+PYHAME_URL="http://dl.socketubs.net/pyhame/pyhame-$PYHAME_VER.tar.gz"
 #=============================================================================
 
 # Globals variables
 #-----------------------------------------------------------------------------
-
 DATE=`date +"%Y%m%d%H%M%S"`
-
 TMP_FOLDER="/tmp/pyhame-install.$DATE"
 LOG_FILE="/tmp/pyhame-install-$DATE.log"
 
@@ -96,14 +94,15 @@ installation() {
   else
     displayandexec "Download Pyhame v$PYHAME_VER" wget $PYHAME_URL
   fi
-  displayandexec "Untar Pyhame v$PYHAME_VER" tar xvf Pyhame-$PYHAME_VER.tar.gz
-  cd Pyhame-$PYHAME_VER
+  displayandexec "Untar Pyhame v$PYHAME_VER" tar xvf pyhame-$PYHAME_VER.tar.gz
+  cd pyhame-$PYHAME_VER
   if [ ! -d "/usr/lib/pyhame" ]; then
 	mkdir /usr/lib/pyhame
   fi
-  displayandexec "Install Pyhame v$PYHAME_VER" cp -R resources /usr/lib/pyhame/ && cp pyhame.py /usr/lib/pyhame
-  echo -e '#!/bin/sh \nexec /usr/lib/pyhame/pyhame.py $1' > /usr/bin/pyhame
-  displayandexec "Set Pyhame v$PYHAME_VER executable" chmod +x /usr/bin/pyhame
+  displayandexec "Install Pyhame v$PYHAME_VER" cp -R * /usr/lib/pyhame/
+  echo -e '#!/bin/sh \n$PYTHON /usr/lib/pyhame/pyhame.py $1' > /usr/bin/pyhame
+  echo -e '#!/bin/sh \n$exec /usr/lib/pyhame/setup.sh --update' > /usr/bin/pyhame-update
+  displayandexec "Set Pyhame v$PYHAME_VER executable" chmod +x /usr/bin/pyhame*
   
   rm -rf $TMP_FOLDER
   
@@ -169,8 +168,7 @@ showMenu () {
   echo "#=================================================================#"
   echo "| 1) Installation                                                 |"
   echo "| 2) Remove                                                       |"
-  echo "| 3) Update                                                       |"
-  echo "| 4) Quit                                                         |"
+  echo "| 3) Quit                                                         |"
   echo "#=================================================================#"
   read -p "Choice : " choice
 }
@@ -180,7 +178,6 @@ showMenu () {
     case "$choice" in
       "1") installation;;
       "2") remove;;
-      "3") echo "Update feature [WIP]"; exit;;
       "4") exit;;
     esac
   done
