@@ -25,7 +25,7 @@ global GLOBAL_PWD					# Actual directory, where the command is launched.
 GLOBAL_PYHAME_PATH  		= "/usr/lib/pyhame"
 GLOBAL_LIB_PATH 			= GLOBAL_PYHAME_PATH + "/lib"
 GLOBAL_TPL_PATH 			= GLOBAL_PYHAME_PATH + "/tpl"
-GLOBAL_INITLOCK_FILE_PATH 	= GLOBAL_PYHAME_PATH + "/init.lock"
+GLOBAL_INITLOCK_FILE_PATH 	= "init.lock"
 GLOBAL_CONFIG_FILE_PATH 	= "pyhame.conf"
 GLOBAL_PWD 					= os.getcwd()
 
