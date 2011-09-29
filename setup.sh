@@ -1,5 +1,5 @@
 #!/bin/bash
-script_version="0.1"
+script_version="0.2"
 
 #=============================================================================
 PYHAME_VER="0.8.1.1"
@@ -11,6 +11,8 @@ JINJA2_URL="http://pypi.python.org/packages/source/J/Jinja2/Jinja2-$JINJA2_VER.t
 SETUPTOOLS_URL="http://python-distribute.org/distribute_setup.py"
 #=============================================================================
 
+source /home/glehee/Repositories/pyhame/simple_curses.sh
+
 # Globals variables
 #-----------------------------------------------------------------------------
 
@@ -21,16 +23,15 @@ LOG_FILE="/tmp/pyhame-install-$DATE.log"
 
 # Functions
 #-----------------------------------------------------------------------------
-
-displaymessage() {
-  echo "$*"
-}
+#displaymessage() {
+#  echo $*
+#}
 
 displaytitle() {
-  displaymessage "------------------------------------------------------------------------------"
-  displaymessage "$*"  
-  displaymessage "------------------------------------------------------------------------------"
-
+  echo "|                                                                 |"
+  echo "#-----------------------------------------------------------------#"
+  echo "|$*"
+  echo "#-----------------------------------------------------------------#"
 }
 
 displayerror() {
@@ -42,7 +43,7 @@ displayerror() {
 displayerrorandexit() {
   local exitcode=$1
   shift
-  displayerror "$*"
+  echo "$*"
   exit $exitcode
 }
 
@@ -50,45 +51,43 @@ displayerrorandexit() {
 # Others parameters: COMMAND (! not |)
 displayandexec() {
   local message=$1
-  echo -n "[In progress] $message"
+  echo -n "| [In progress] $message                                             |"
   shift
   $* >> $LOG_FILE 2>&1 
   local ret=$?
   if [ $ret -ne 0 ]; then
-    echo -e "\r\e[0;31m      [ERROR]\e[0m $message"
-    # echo -e "\r      [ERROR] $message"
+    echo -e " \r\e [0;31m    [ERROR]\e[0m $message"
   else
-    echo -e "\r\e[0;32m         [OK]\e[0m $message"
-    # echo -e "\r         [OK] $message"
+    echo -e " \r\e [0;32m       [OK]\e[0m $message"
   fi 
   return $ret
 }
 
 check_os() {
-platform='unknown'
-unamestr=`uname`
-if [[ "$unamestr" == 'Linux' ]]; then
-   platform='linux'
-elif [[ "$unamestr" == 'FreeBSD' ]]; then
-   platform='freebsd'
-elif [[ "$unamestr" == 'Darwin' ]]; then
-   platform='darwin'
-fi
+  platform='unknown'
+  unamestr=`uname`
+  if [[ "$unamestr" == 'Linux' ]]; then
+    platform='linux'
+  elif [[ "$unamestr" == 'FreeBSD' ]]; then
+    platform='freebsd'
+  elif [[ "$unamestr" == 'Darwin' ]]; then
+    platform='darwin'
+  fi
 }
 
 check_python() {
-PYTHON="/usr/bin/python3.2"
-if [ ! -f "$PYTHON" ]; then
-	PYTHON="/usr/bin/python3"
+  PYTHON="/usr/bin/python3.2"
+  if [ ! -f "$PYTHON" ]; then
+    PYTHON="/usr/bin/python3"
     if [ ! -f "$PYTHON" ]; then
-    	PYTHON="/usr/bin/python"
-		PYTHON_OK=`$PYTHON -c 'import sys; print(sys.version_info >= (3, 0))'`
-    	if [ "$PYTHON_OK" == False ]; then
-			echo -e "You have to download Python 3.2 (http://www.python.org/getit/releases/3.2/)"
-        	exit
-    	fi
+      PYTHON="/usr/bin/python"
+	  PYTHON_OK=`$PYTHON -c 'import sys; print(sys.version_info >= (3, 0))'`
+      if [ "$PYTHON_OK" == False ]; then
+	    echo -e "You have to download Python 3.2 (http://www.python.org/getit/releases/3.2/)"
+        exit
+      fi
     fi
-fi
+  fi
 }
 
 check_module () {
@@ -102,6 +101,8 @@ fi
 
 # Function: installation
 installation() {
+  displaytitle "-- Installation                                                  |"
+
   mkdir $TMP_FOLDER
   cd $TMP_FOLDER
 
@@ -143,18 +144,49 @@ installation() {
   displayandexec "Set Pyhame v$PYHAME_VER executable" chmod +x /usr/bin/pyhame
   
   rm -rf $TMP_FOLDER
+  
+  end_install
 }
 
-# Fonction: Affiche le résumé de l'installation
-end() {
-  echo "=============================================================================="
-  echo "Installation is finished"
-  echo "=============================================================================="
-  echo "Log for the installation script   : $LOG_FILE"
-  echo "Pyhame executable                 : /usr/bin/pyhame"
-  echo "Pyhame libraries                  : /usr/lib/pyhame"
-  echo "Help                              : pyhame --help"
-  echo "=============================================================================="
+end_install() {
+  echo "#=================================================================#"
+  echo "| Installation is finished                                        |"
+  echo "#=================================================================#"
+  echo "| Log for the installation script   : $LOG_FILE                   |"
+  echo "| Pyhame executable                 : /usr/bin/pyhame             |"
+  echo "| Pyhame libraries                  : /usr/lib/pyhame             |"
+  echo "| Help                              : pyhame --help               |"
+  echo "#=================================================================#"
+  echo ""
+  exit 1
+}
+
+remove() {
+  displaytitle "-- Clean"
+
+  if [ -d "/usr/lib/pyhame" ]; then
+    displayandexec "Remove Pyhame libraries directorie" rm -fr /usr/lib/pyhame
+  fi
+  if [ -f "/usr/bin/pyhame" ]; then
+    displayandexec "Remove Pyhame" rm -fr /usr/bin/pyhame
+  fi
+  if [ -n "$(ls /usr/lib/python3.2/site-packages/ | grep '^[jJ]inja*')" ]; then
+    displayandexec "Remove Jinja2" rm -fr /usr/lib/python3.2/site-packages/{jinja2*,Jinja*}
+  fi
+
+  end_remove
+}
+
+end_remove() {
+  echo "#=================================================================#"
+  echo "| Clean is finished                                               |"
+  echo "#=================================================================#"
+  echo "| Log for the remove script : $LOG_FILE                           |"
+  echo "| Removed pyhame folders    : /usr/bin/pyhame, /usr/lib/pyhame    |"
+  echo "| Removed jinja2 folders : Done                                   |"
+  echo "#=================================================================#"
+  echo ""
+  exit 1
 }
 
 # Main program
@@ -170,6 +202,10 @@ fi
 # Check python version
 check_python
 check_os
-displaytitle "-- Installation"
-installation
-end
+
+  choice=$(dialog --stdout --title "Pyhame Setup Wizard" --menu "Choice :" "10" "40" "3" "1" "Installation" "2" "Remove" "3" "Update")
+  case "$choice" in
+    "1") installation;;
+    "2") remove;;
+    "3") echo "Update feature [WIP]"; exit;;
+  esac
