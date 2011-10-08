@@ -16,6 +16,7 @@ setup(
     license = "GPL",
     keywords = "website static markdown",
     url = "http://pyhame.socketubs.net/",
+	include_package_data=True,
 	packages = find_packages('src'),
 	package_dir = {'':'src'},
 	scripts = ['bin/pyhame'],
