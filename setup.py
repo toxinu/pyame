@@ -18,7 +18,6 @@ setup(
     url = "http://pyhame.socketubs.net/",
 	packages = find_packages('src'),
 	package_dir = {'':'src'},
-	include_package_data=True,
 	scripts = ['bin/pyhame'],
 	install_requires=[
 		'setuptools',
