@@ -13,6 +13,7 @@ setup(
 	author = "Socketubs",
     author_email = "socketubs@gmail.com",
     description = "Static website creator with Markdown syntax",
+	long_description=read('README'),
     license = "GPL",
     keywords = "website static markdown",
     url = "http://pyhame.socketubs.net/",
@@ -23,5 +24,5 @@ setup(
 	install_requires=[
 		'setuptools',
 		'Jinja2',
-	],
+    ],
 )
