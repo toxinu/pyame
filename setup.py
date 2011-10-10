@@ -22,6 +22,6 @@ setup(
 	scripts = ['bin/pyhame'],
 	install_requires=[
 		'setuptools',
-		'jinja2',
+		'Jinja2',
 	],
 )
