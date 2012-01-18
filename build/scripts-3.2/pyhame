@@ -1,0 +1,5 @@
+#!/Library/Frameworks/Python.framework/Versions/3.2/Resources/Python.app/Contents/MacOS/Python
+from pyhame import pyhame
+
+if __name__=="__main__":      
+	pyhame.main()
