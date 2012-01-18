@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #-*- coding:utf-8 -*-
 import sys
-from setuptools import setup, find_packages
+from setuptools import setup
 
 if sys.version_info <= (3, 0):
 	print("Pyhame at least need Python 3.0.")
