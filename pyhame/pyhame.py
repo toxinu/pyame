@@ -1,16 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-pyhame_version		= "0.8.3"
-markdown_version	= "2.0.3"
-
-import sys
-sys.path.append("/usr/lib/pyhame") 
-import os, configparser, stat, types, shutil
+import sys, os, configparser, stat, types, shutil
 
 # Check Python version
 if sys.version_info < (3, 0):
 	print("Must use Python 3.0")
 	sys.exit(0)
+
+def version():
+	import pkg_resources
+	return pkg_resources.get_distribution("pyhame").version
 
 # Global declarations
 global GLOBAL_CONFIG               	# Config object from Config class. (import Config)
@@ -20,11 +19,11 @@ global GLOBAL_INITLOCK_FILE_PATH	# The path of init.lock file from where the com
 global GLOBAL_PWD					# Actual directory, where the command is launched.
 
 # Global values
-GLOBAL_PYHAME_PATH			= os.path.dirname(__file__)
-GLOBAL_TPL_PATH 			= GLOBAL_PYHAME_PATH + "/data/tpl"
-GLOBAL_INITLOCK_FILE_PATH 	= "init.lock"
+GLOBAL_PYHAME_PATH				= os.path.dirname(__file__)
+GLOBAL_TPL_PATH 					= GLOBAL_PYHAME_PATH + "/data/tpl"
+GLOBAL_INITLOCK_FILE_PATH = "init.lock"
 GLOBAL_CONFIG_FILE_PATH 	= "pyhame.conf"
-GLOBAL_PWD 					= os.getcwd()
+GLOBAL_PWD 								= os.getcwd()
 
 #--------------------------------------------------------------------#
 ##  Argu Check 
@@ -47,7 +46,7 @@ def main():
 		sys.argv.append(None)
 	try:
 		if sys.argv[1] == "version":
-			print(pyhame_version)
+			print(version())
 			sys.exit(0)
 	except IndexError:
 		sys.argv.append(None)
