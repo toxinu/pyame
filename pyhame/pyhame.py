@@ -1,22 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import sys, os, configparser, stat, types, shutil
+from clint.textui import puts, indent, colored
 
 # Check Python version
 if sys.version_info < (3, 0):
 	print("Must use Python 3.0")
 	sys.exit(0)
 
-def version():
-	import pkg_resources
-	return pkg_resources.get_distribution("pyhame").version
-
-# Global declarations
-global GLOBAL_CONFIG               	# Config object from Config class. (import Config)
-global GLOBAL_PYHAME_PATH 			# The path of pyhame
+	# Global declarations
+global GLOBAL_CONFIG							# Config object from Config class. (import Config)
+global GLOBAL_PYHAME_PATH 				# The path of pyhame
 global GLOBAL_CONFIG_FILE_PATH		# The path of config file from where the command is launched.
 global GLOBAL_INITLOCK_FILE_PATH	# The path of init.lock file from where the command is launched.
-global GLOBAL_PWD					# Actual directory, where the command is launched.
+global GLOBAL_PWD									# Actual directory, where the command is launched.
 
 # Global values
 GLOBAL_PYHAME_PATH				= os.path.dirname(__file__)
@@ -30,11 +27,25 @@ GLOBAL_PWD 								= os.getcwd()
 #--------------------------------------------------------------------#
 def main():
 	def help():
-		print("""Usage : pyhame [OPTION]
-	init           ->  Init your new website project
-	run            ->  Run pyhame to generate website
-	version        ->  Print pyhame version
-	help           ->  Print this help""")
+		with indent(2, quote=(' :: ')):
+			puts('Usage : pyhame [OPTION]')
+		print()
+		with indent(2, quote=(' :: ')):
+			puts('Actions')
+		with indent(4):
+			puts('- init           ->  Initialize your project')
+			puts('- run            ->  Generate your content')
+			puts('- version        ->  Show Pyhame version')
+			puts('- help           ->  Print this help\n')
+		with indent(2, quote=(' :: ')):
+			puts('Examples')
+		with indent(4):
+			puts('mkdir my_project')
+			puts('cd my_project')
+			puts('pyhame init')
+			puts('pyhame run')
+		print()
+		puts('More informations at https://github.com/Socketubs/Pyhame')
 	if len(sys.argv) < 2:
 		help()
 		sys.exit(0)
@@ -46,7 +57,9 @@ def main():
 		sys.argv.append(None)
 	try:
 		if sys.argv[1] == "version":
-			print(version())
+			import pkg_resources
+			with indent(2, quote=' > '):
+				puts("%s %s" % (colored.blue('Pyhame'), pkg_resources.get_distribution("pyhame").version))
 			sys.exit(0)
 	except IndexError:
 		sys.argv.append(None)
@@ -59,12 +72,14 @@ def main():
 	try:
 		if sys.argv[1] == "run":
 			if not os.path.exists(GLOBAL_CONFIG_FILE_PATH):
-				print(" \033[91m::\033[0m There is no config file. Must run pyhame init")
+				with indent(2, quote=colored.yellow(' :: ')):
+					puts('This directory is not a Pyhame project')
+				puts()
+				with indent(2, quote=colored.green(' > ')):
+					puts('Maybe you have not initialize your project')
+					puts('So you have to run: pyhame init')
 				sys.exit(0)
 			else:
-				###############
-				# RUN CALL HERE
-				###############
 				run()
 	except IndexError:
 		sys.argv.append(None)
@@ -75,15 +90,22 @@ def main():
 def init_pyhame():
 	#Check if the init.lock exists
 	if os.path.exists(GLOBAL_INITLOCK_FILE_PATH):
-		print(" \033[91m::\033[0m You have already initialize your pyhame installation. You can remove init.lock file but many files will be overwrite")
+		with indent(2, quote=colored.yellow(' :: ')):
+			puts('You have already initialize your project.')
+			puts('You can remove init.lock file but many files will be overwrite')
+			puts('Be very careful!')
 		sys.exit(0)
 		
 	#Here, there is not the init.lock
 	else:
-		print(" \033[93m::\033[0m Pyhame initilization...")
+		with indent(2, quote=colored.yellow(' :: ')):
+			puts('Initializing your project')
+			puts('Import templates and libraries')
 		if not os.path.exists("tpl"):
 			if not os.path.exists(GLOBAL_TPL_PATH):
-				print(" \033[91m::\033[0m Critical resources missing. Redownload or reinstall pyhame (socketubs@gmail.com)")
+				with indent(2, quote=colored.red(' :: ')):
+					puts('Critical resources missing')
+					puts('Reinstall Pyhame or check issues on GitHub')
 				sys.exit(0)
 			else:
 				shutil.copytree(GLOBAL_TPL_PATH, GLOBAL_PWD + "/tpl")
@@ -93,12 +115,16 @@ def init_pyhame():
 		os.utime(GLOBAL_INITLOCK_FILE_PATH, None)
 		
 		#Config file creation
+		with indent(2, quote=colored.yellow(' :: ')):
+			puts('Create default configuration')
 		if os.path.exists(GLOBAL_CONFIG_FILE_PATH):
 			shutil.copyfile(GLOBAL_CONFIG_FILE_PATH, GLOBAL_CONFIG_FILE_PATH + ".back")
 			os.remove(GLOBAL_CONFIG_FILE_PATH)
 		shutil.copyfile(GLOBAL_CONFIG_FILE_PATH + ".default", GLOBAL_CONFIG_FILE_PATH)
 		
 		#Read config file
+		with indent(2, quote=colored.yellow(' :: ')):
+			puts('Load default parameters')
 		from pyhame import config
 		GLOBAL_CONFIG = config.config(GLOBAL_CONFIG_FILE_PATH)
 
@@ -109,6 +135,8 @@ def init_pyhame():
 		os.makedirs(GLOBAL_CONFIG.static_path)
 		
 		# Create blank special files
+		with indent(2, quote=colored.yellow(' :: ')):
+			puts('Build project structure')
 		special_files = {"welcome_message": "Here your welcome message, edit welcome_message file in your content folder.",
 						"welcome_content": "Here your welcome content, edit a welcome_content file in your content folder.",
 						"footer": "Here your footer content, edit footer file in your content folder."}
@@ -118,7 +146,12 @@ def init_pyhame():
 				file = open("%s/%s" % (GLOBAL_CONFIG.content_folder, key), 'w')
 				file.write(value)
 				file.close()
-		print(" \033[93m::\033[0m You have to configure your pyhame.conf file")		
+		puts()
+		with indent(2, quote=colored.green(' > ')):
+			puts('Success ! Your project is ready.')
+			puts()
+			puts('You can write your docs into \"%s\" and run your project.' % GLOBAL_CONFIG.content_folder)
+			puts('But get a look at \"pyhame.conf\" before.')	
 		
 # Html content folder
 def static_folder_maker(path):

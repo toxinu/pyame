@@ -19,5 +19,5 @@ setup(
 	include_package_data = True,
 	packages = ['pyhame'],
 	scripts = ['bin/pyhame'],
-	install_requires=['Markdown', 'Jinja2']
+	install_requires=['Markdown', 'Jinja2', 'clint']
 )

@@ -3,6 +3,7 @@
 
  # IMPORTS
 import sys, os
+from clint.textui import puts, indent, colored
 
 class config(object):
 	"""	This class represents the config file.
@@ -106,7 +107,8 @@ class config(object):
 			if self.remote_path == "":
 				print(" \033[91m::\033[0m \"remote_path\" must be given in pyhame.conf (remote section)")
 				sys.exit(0)
-		print(" \033[92m::\033[0m Generate your website...")
+		with indent(2, quote=colored.yellow(' :: ')):
+			puts('Generate your project')
 
 
 	def string_to_list(self, elements):
