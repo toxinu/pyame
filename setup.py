@@ -9,16 +9,15 @@ if sys.version_info <= (3, 0):
 
 setup(
 	name = 'pyhame',
-	version = '0.8.2',
+	version = '0.8.3',
 	author = "Socketubs",
 	author_email = "socketubs@gmail.com",
 	description = "Static website creator with Markdown syntax",
 	license = "AGPLv3",
-	keywords = "website static markdown",
+	keywords = "website static markdown html",
 	url = "http://pyhame.socketubs.net/",
 	include_package_data = True,
 	packages = ['pyhame'],
-	#package_data={'pyhame': ['data/*']},	
 	scripts = ['bin/pyhame'],
 	install_requires=['Markdown', 'Jinja2']
 )
