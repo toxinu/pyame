@@ -7,9 +7,7 @@ You just put files/folders in your content folder and launch pyhame. You don't n
 Where is the magic ?
 --------------------
 
-    wget http://dl.socketubs.net/pyhame/setup.sh
-    chmod +x setup.sh
-    sudo ./setup.sh
+		pip-3.2 pyhame
     mkdir mywebsite
     cd mywebsite
     pyhame init
