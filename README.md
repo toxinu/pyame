@@ -7,11 +7,11 @@ You just put files/folders in your content folder and launch pyhame. You don't n
 Where is the magic ?
 --------------------
 
-		pip-3.2 pyhame
-    mkdir mywebsite
-    cd mywebsite
-    pyhame init
-    pyhame run
+	pip-3.2 pyhame
+	mkdir mywebsite
+	cd mywebsite
+	pyhame init
+ 	pyhame run
 
 **Good things for simple users** :
 
