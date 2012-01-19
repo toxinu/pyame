@@ -91,9 +91,9 @@ def init_pyhame():
 	#Check if the init.lock exists
 	if os.path.exists(GLOBAL_INITLOCK_FILE_PATH):
 		with indent(2, quote=colored.yellow(' :: ')):
-			puts('You have already initialize your project.')
+			puts('You have already initialize your project !')
 			puts('You can remove init.lock file but many files will be overwrite')
-			puts('Be very careful!')
+			puts('Be very careful.')
 		sys.exit(0)
 		
 	#Here, there is not the init.lock

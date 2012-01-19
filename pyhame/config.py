@@ -109,6 +109,10 @@ class config(object):
 				sys.exit(0)
 		with indent(2, quote=colored.yellow(' :: ')):
 			puts('Generate your project')
+		puts()
+		with indent(2, quote=colored.green(' > ')):
+			puts('Success ! Your project has been rendered')
+			puts('You can see output into \"%s\" folder.' % self.static_path)
 
 
 	def string_to_list(self, elements):
