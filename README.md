@@ -7,11 +7,14 @@ You just put files/folders in your content folder and launch pyhame. You don't n
 Where is the magic ?
 --------------------
 
-  easy_install-3.2 pyhame
-  mkdir mywebsite
-  cd mywebsite
-  pyhame init
-  pyhame run
+
+```easy_install-3.2 pyhame
+mkdir mywebsite
+cd mywebsite
+pyhame init
+pyhame serve
+```
+And look at http://127.0.0.1:8080 in your web browser.
 
 **Good things for simple users** :
 
