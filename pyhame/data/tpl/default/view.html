@@ -1,48 +1,48 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<LINK REL=StyleSheet HREF="/_template/style.css" TYPE="text/css" MEDIA=screen>
-		<meta charset="utf-8">
-		<title>{{ website_title }}</title>
-		<!-- Highlight script and css -->
-		<script src="/_other/highlight/highlight.pack.js"></script>
-		<script type="text/javascript">
-			hljs.initHighlightingOnLoad();
-		</script>
-		<link rel="stylesheet" href="/_other/highlight/styles/dark.css">
-		<!-- End of Highlight import -->
-	</head>
-	<body>
-		<h2 id="website_title"><a href="{{ website_url }}">{{ website_title }}</a></h2>
-		<div id="file_description">
+    <head>
+        <LINK REL=StyleSheet HREF="/_template/style.css" TYPE="text/css" MEDIA=screen>
+        <meta charset="utf-8">
+        <title>{{ website_title }}</title>
+        <!-- Highlight script and css -->
+        <script src="/_other/highlight/highlight.pack.js"></script>
+        <script type="text/javascript">
+            hljs.initHighlightingOnLoad();
+        </script>
+        <link rel="stylesheet" href="/_other/highlight/styles/dark.css">
+        <!-- End of Highlight import -->
+    </head>
+    <body>
+        <h2 id="website_title"><a href="{{ website_url }}">{{ website_title }}</a></h2>
+        <div id="file_description">
             <div id="file_name">{{ file_name }}</div>
             <div id="file_links">
                 [<a href="{{ filelink }}">download</a>|<a href="{{ permalink }}">permalink</a>]
             </div>
         </div>
-		<div id="menu">
-			<div id="root_menu">
-				<ul>
+        <div id="menu">
+            <div id="root_menu">
+                <ul>
                 {% for url, file in root_menu %}
                     <li><a href="{{ url }}">{{ file }}</a></li>
-		        {% endfor %}
+                {% endfor %}
                 </ul>
-			</div>
-			<div id="sub_menu">
-	        {% for foldername, filelist in sub_menu %}
-        	{{ foldername }}
-				<ul>
-				{% for fileurl, filename in filelist %}
-		        	<li><a href="{{ fileurl }}">{{ filename }}</a></li>
-               	{% endfor %}
-				</ul>
-			{% endfor %}
-			</div>
-		</div>
-		<div id="file_content">{{ file_content }}</div>
-	<footer>
-		{{ footer }}
-		Powered by <a href="http://pyhame.socketubs.net/">Pyhame</a>
-	</footer>
-	</body>
+            </div>
+            <div id="sub_menu">
+            {% for foldername, filelist in sub_menu %}
+            {{ foldername }}
+                <ul>
+                {% for fileurl, filename in filelist %}
+                    <li><a href="{{ fileurl }}">{{ filename }}</a></li>
+                   {% endfor %}
+                </ul>
+            {% endfor %}
+            </div>
+        </div>
+        <div id="file_content">{{ file_content }}</div>
+    <footer>
+        {{ footer }}
+        Powered by <a href="https://github.com/Socketubs/Pyhame">Pyhame</a>
+    </footer>
+    </body>
 </html>
