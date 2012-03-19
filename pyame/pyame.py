@@ -24,10 +24,13 @@ GLOBAL_PYAME_PATH = os.path.dirname(__file__)
 GLOBAL_TPL_PATH = GLOBAL_PYAME_PATH + "/data/tpl"
 GLOBAL_CONFIG_FILE_PATH = GLOBAL_PWD + "/pyame.conf"
 
-#--------------------------------------------------------------------#
-##  Argu Check 
-#--------------------------------------------------------------------#
+from pyame import version
+global version
+version = version.Version()
+version.start()
+
 def main():
+    """ Argu Check """
     def help():
         puts()
         print("        Pyame, and the ame is coming, 雨.")
@@ -49,9 +52,8 @@ def main():
             puts('cd my_website')
             puts('pyame serve')
         puts()
-        from pyame import version
         with indent(2, quote=' > '):
-            puts("%s" % version.check())
+            puts("%s" % version.get())
             puts('More informations at https://github.com/Socketubs/pyame')
     if len(sys.argv) < 2:
         help()
@@ -105,11 +107,6 @@ def main():
 # Init pyame
 #--------------------------------------------------------------------#
 def init_pyame(project):
-#    global GLOBAL_PWD
-#    global GLOBAL_CONFIG_FILE_PATH
-#    GLOBAL_PWD = os.getcwd() + "/" + project
-#    GLOBAL_CONFIG_FILE_PATH = GLOBAL_PWD + "/pyame.conf"
-
 
     # Create project folder
     if not os.path.exists(project):
@@ -123,7 +120,6 @@ def init_pyame(project):
         with indent(2, quote=colored.red(' :: ')):
             puts("A folder with this name already exist !")
             puts("My heart say to me that I can't delete it")
-
 
     # Check if the init.lock exists
     if os.path.exists(GLOBAL_PWD + "/init.lock"):
@@ -227,13 +223,15 @@ def browse_and_build_all(dirname, no_list_no_render, special_files, root_menu, s
                     content_file_list.append(content)
     return content_file_list
 
-# Browse all files in the dirname directory 
-# and return a ContentFile object if the file has been found, false othewise.
-# @param String dirname: The name of the directory we want to look in.
-# @param String fileName: The name of the file WITHOUT EXTENSION we want to look for.
-# @param Boolean recursive: TRUE if we want to search in sub-directories of dirname, FALSE otherwise. Default : TRUE.
-# @return: FALSE if no file has been found, else, returns a ContentFile build from the file itself.
 def browse_and_search_file(dirname, filename, recursive = True):
+    """
+        Browse all files in the dirname directory
+
+        :param str dirname: The name of the directory we want to look in
+        :param str filename: The name of the file WITHOUT EXTENSION we want to look for
+        :param bool recursive: TRUE if we want to search in sub-directories of dirname, FALSE otherwise (True)
+        :rtype: content_file (or False if no file has been found)
+    """
     for f in os.listdir(dirname):
         if os.path.isdir(os.path.join(dirname, f)):
             if recursive: browse_and_search_file(dirname + '/' + f, filename, True)
@@ -242,10 +240,12 @@ def browse_and_search_file(dirname, filename, recursive = True):
                 return content_file(dirname + "/" + f, GLOBAL_CONFIG, build = False)
     return False
 
-# Get the special ContentFiles : "welcome_message","welcome_content","footer"
-# If files do not exist, they are created with default values.
-# @return: A list wich contains contentfile object from special files.
 def get_special_content_files():
+    """
+        Get the special ContentFiles : "welcome_message","welcome_content","footer"
+
+        :rtype: list wich ontains contentfile object from special files
+    """
 
     def search_special_files(dirname, special_files):
         for f in os.listdir(dirname):
@@ -275,22 +275,24 @@ def get_special_content_files():
 
     return special_files
 
-# Get the index.html template from selected template in Config
-# to return it to Jinja2 Template() function.
 def get_template_index():
+    """
+        Get the index.html template from selected template in Config
+        to return it to Jinja2 Template() function
+    """
     file = open("%s/%s/index.html" % (GLOBAL_CONFIG.tpl_path, GLOBAL_CONFIG.template_name), 'r')
     template_index = file.read()
     file.close()
     return template_index
 
-# Write index
 def write_index(index_final):
+    """ Write index """
     index = open("%s/index.html" % GLOBAL_CONFIG.static_path, 'w')
     index.write(index_final)
     index.close()
 
-# Copy template to static
 def static_other():
+    """ Copy template to static """
     from distutils import dir_util
 
     # Template
@@ -309,15 +311,15 @@ def static_other():
     robots.close()
 
 
-# Symlink site into static
 def sym_site_static():
+    """ Symlink site into static """
     src_dir     = "../" + GLOBAL_CONFIG.content_folder 
     dest_dir     = GLOBAL_CONFIG.static_path + "/_" + GLOBAL_CONFIG.content_folder
     if not os.path.exists(dest_dir):
         os.symlink(src_dir, dest_dir)
 
-# Serve command
 def serve():
+    """ Serve command """
     import pyame.server
     import time
 
@@ -345,8 +347,8 @@ def serve():
         except KeyboardInterrupt:
             pyameserver.shutdown()
 
-# Run command
 def run():
+    """ Run command """
     with indent(2, quote=colored.yellow(' :: ')):
         puts('Read your configuration file')
 

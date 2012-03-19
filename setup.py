@@ -9,7 +9,7 @@ if sys.version_info <= (3, 0):
 
 setup(
     name = 'pyame',
-    version = '0.8.4',
+    version = '0.8.5',
     author = "Socketubs",
     author_email = "geoffrey@lehee.name",
     description = "Static website creator with Markdown syntax",
@@ -19,5 +19,5 @@ setup(
     include_package_data = True,
     packages = ['pyame'],
     scripts = ['bin/pyame'],
-    install_requires=['Markdown', 'Jinja2', 'clint']
+    install_requires=['pip', 'Markdown', 'Jinja2', 'clint']
 )
