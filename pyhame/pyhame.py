@@ -279,6 +279,12 @@ def static_other():
     src_dir = GLOBAL_PYHAME_PATH + "/data/highlight"
     dir_util.copy_tree(src_dir, dest_dir)
 
+    # Robot.txt
+    robots = open("%s/robots.txt" % GLOBAL_CONFIG.static_path, 'w')
+    robots.write("User-agent: *\nAllow: /")
+    robots.close()
+
+
 # Symlink site into static
 def sym_site_static():
     src_dir     = "../" + GLOBAL_CONFIG.content_folder 
