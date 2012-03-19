@@ -20,7 +20,7 @@ And look at http://127.0.0.1:8080 in your web browser.
 **Good things for simple users** :
 
 <pre>
-+ Markdown usage with highlight.js for code rendering
++ Markdown usage with highlight.js
 + Just create directories
 + Simple Html template
 + Very light static web site
@@ -39,4 +39,4 @@ And look at http://127.0.0.1:8080 in your web browser.
 + Python 3.x
 </pre>
 
-Pyhame is under AGPLv3.
+___Pyhame__ is under AGPLv3._
