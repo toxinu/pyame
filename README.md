@@ -1,18 +1,18 @@
 Description
 -----------
-Pyhame is an easy static website creator written in Python3.
+Pyame is an easy static website creator written in Python3.
 
-You just put files/folders in your content folder and launch pyhame. You don't need to do Html/Css/Php or other web language.
+You just put files/folders in your content folder and launch pyame. You don't need to do Html/Css/Php or other web language.
 
 Where is the magic ?
 --------------------
 
 <pre>
-easy_install-3.2 pyhame
+easy_install-3.2 pyame
 mkdir mywebsite
 cd mywebsite
-pyhame init
-pyhame serve
+pyame init
+pyame serve
 </pre>
 
 And look at http://127.0.0.1:8080 in your web browser.
@@ -39,4 +39,4 @@ And look at http://127.0.0.1:8080 in your web browser.
 + Python 3.x
 </pre>
 
-___Pyhame__ is under AGPLv3._
+___Pyame__ is under AGPLv3._

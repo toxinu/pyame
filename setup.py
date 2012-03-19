@@ -4,20 +4,20 @@ import sys
 from setuptools import setup
 
 if sys.version_info <= (3, 0):
-    print("Pyhame at least need Python 3.0.")
+    print("Pyame at least need Python 3.0.")
     exit(0)
 
 setup(
-    name = 'pyhame',
+    name = 'pyame',
     version = '0.8.4',
     author = "Socketubs",
-    author_email = "socketubs@gmail.com",
+    author_email = "geoffrey@lehee.name",
     description = "Static website creator with Markdown syntax",
     license = "AGPLv3",
     keywords = "website static markdown html",
-    url = "https://github.com/Socketubs/Pyhame",
+    url = "https://github.com/Socketubs/Pyame",
     include_package_data = True,
-    packages = ['pyhame'],
-    scripts = ['bin/pyhame'],
+    packages = ['pyame'],
+    scripts = ['bin/pyame'],
     install_requires=['Markdown', 'Jinja2', 'clint']
 )
