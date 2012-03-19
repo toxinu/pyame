@@ -27,10 +27,12 @@ And look at http://127.0.0.1:8080 in your web browser.
  * Simple archive generator
  * Write with your preferred editor
  * Light and easy to use
+ * Embedded web server
+ * Auto new version detection
 
 **Others good things for advanced users** :
 
- * Jinja2
+ * Jinja2 for easy templating
  * Python 3.x
 
 Pyhame is under AGPLv3.
