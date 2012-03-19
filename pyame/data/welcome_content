@@ -1,0 +1,29 @@
+Introduction
+------------
+So ! Your slave have made for you a new website.
+
+This i a fresh installation, and I encourage you yo customize and play with it.
+
+Help
+----
+
+If you want to modifie this text you have to edit welcome_content file.
+There are three special files:
+
+ * welcome_message
+ * welcome_content
+ * footer
+
+You are heavly encourage to edit them and create new files into "site" folder.
+
+After that, you will have to run:
+<pre>
+pyame run
+</pre>
+
+If you want to modifie advanced settings, have a look to ```pyame.conf``` file.
+
+More
+----
+
+More help is available at [Github Wiki](https://github.com/Socketubs/Pyame/wiki).
