@@ -16,16 +16,13 @@ if sys.version_info < (3, 0):
 global GLOBAL_CONFIG                # Config object from Config class. (import Config)
 global GLOBAL_PYAME_PATH           # The path of pyame
 global GLOBAL_CONFIG_FILE_PATH      # The path of config file from where the command is launched.
-global GLOBAL_INITLOCK_FILE_PATH    # The path of init.lock file from where the command is launched.
 global GLOBAL_PWD                   # Actual directory, where the command is launched.
 
 # Global values
+GLOBAL_PWD = os.getcwd()
 GLOBAL_PYAME_PATH = os.path.dirname(__file__)
 GLOBAL_TPL_PATH = GLOBAL_PYAME_PATH + "/data/tpl"
-GLOBAL_INITLOCK_FILE_PATH = "init.lock"
-GLOBAL_CONFIG_FILE_PATH = "pyame.conf"
-GLOBAL_PWD = os.getcwd()
-
+GLOBAL_CONFIG_FILE_PATH = GLOBAL_PWD + "/pyame.conf"
 
 #--------------------------------------------------------------------#
 ##  Argu Check 
@@ -33,24 +30,23 @@ GLOBAL_PWD = os.getcwd()
 def main():
     def help():
         puts()
-        print("        Pyame and the ame arrived, 雨.")
+        print("        Pyame, and the ame is coming, 雨.")
         puts()
         with indent(2, quote=(' :: ')):
-            puts('Usage : pyame [OPTION]')
+            puts('Usage : pyame [OPTION] [ARG]')
         print()
         with indent(2, quote=(' :: ')):
             puts('Actions')
         with indent(4):
-            puts('init           ->  Initialize your project')
-            puts('run            ->  Generate your content')
-            puts('serve          ->  Run webserver')
+            puts('create [NAME]     ->  Create new project')
+            puts('generate          ->  Generate your content')
+            puts('serve             ->  Run webserver')
         puts()
         with indent(2, quote=(' :: ')):
             puts('Example')
         with indent(4):
-            puts('mkdir my_project')
-            puts('cd my_project')
-            puts('pyame init')
+            puts('pyame create my_website')
+            puts('cd my_website')
             puts('pyame serve')
         puts()
         from pyame import version
@@ -61,7 +57,7 @@ def main():
         help()
         sys.exit(0)
     try:
-        if sys.argv[1] != "run" and sys.argv[1] != "init" and sys.argv[1] != "serve":
+        if sys.argv[1] != "generate" and sys.argv[1] != "create" and sys.argv[1] != "serve":
             help()
             sys.exit(0)
     except IndexError:
@@ -74,28 +70,31 @@ def main():
                 puts()
                 with indent(2, quote=colored.green(' > ')):
                     puts('Maybe you have not initialize your project')
-                    puts('So you have to run: pyame init')
+                    puts('So you have to run: pyame create')
+                    puts('Or, you are just not in your project folder ?')
                 sys.exit(0)
             else:
                 serve()
     except IndexError:
         sys.argv.append(None)
     try:
-        if sys.argv[1] == "init":
-            init_pyame()
-            puts()
-            run()
+        if sys.argv[1] == "create":
+            if sys.argv[2]:
+                init_pyame(sys.argv[2])
+                run()
     except IndexError:
-        sys.argv.append(None)
+        with indent(2, quote=colored.red(' :: ')):
+            puts('Please, give me your website name after create')
+        help()
     try:
-        if sys.argv[1] == "run":
+        if sys.argv[1] == "generate":
             if not os.path.exists(GLOBAL_CONFIG_FILE_PATH):
                 with indent(2, quote=colored.yellow(' :: ')):
                     puts('This directory is not a pyame project')
                 puts()
                 with indent(2, quote=colored.green(' > ')):
                     puts('Maybe you have not initialize your project')
-                    puts('So you have to run: pyame init')
+                    puts('So you have to run: pyame create')
                 sys.exit(0)
             else:
                 run()
@@ -105,9 +104,29 @@ def main():
 #--------------------------------------------------------------------#
 # Init pyame
 #--------------------------------------------------------------------#
-def init_pyame():
+def init_pyame(project):
+#    global GLOBAL_PWD
+#    global GLOBAL_CONFIG_FILE_PATH
+#    GLOBAL_PWD = os.getcwd() + "/" + project
+#    GLOBAL_CONFIG_FILE_PATH = GLOBAL_PWD + "/pyame.conf"
+
+
+    # Create project folder
+    if not os.path.exists(project):
+        global GLOBAL_PWD
+        global GLOBAL_CONFIG_FILE_PATH
+        GLOBAL_PWD = os.getcwd() + "/" + project
+        GLOBAL_CONFIG_FILE_PATH = GLOBAL_PWD + "/pyame.conf"
+        os.makedirs(project)
+        os.chdir(project)
+    else:
+        with indent(2, quote=colored.red(' :: ')):
+            puts("A folder with this name already exist !")
+            puts("My heart say to me that I can't delete it")
+
+
     # Check if the init.lock exists
-    if os.path.exists(GLOBAL_INITLOCK_FILE_PATH):
+    if os.path.exists(GLOBAL_PWD + "/init.lock"):
         with indent(2, quote=colored.yellow(' :: ')):
             puts('You have already initialize your project !')
             puts('You can remove init.lock file but many files will be overwrite')
@@ -143,25 +162,26 @@ def init_pyame():
                 with indent(2, quote=colored.yellow(' :: ')):
                     puts('Build project structure')
                 puts()
-                if not os.path.exists(GLOBAL_CONFIG.content_folder):
-                    os.makedirs(GLOBAL_CONFIG.content_folder)
-                if os.path.exists(GLOBAL_CONFIG.static_path):
-                    shutil.rmtree(GLOBAL_CONFIG.static_path)
-                os.makedirs(GLOBAL_CONFIG.static_path)
+                if not os.path.exists(GLOBAL_PWD + "/" + GLOBAL_CONFIG.content_folder):
+                    os.makedirs(GLOBAL_PWD + "/" + GLOBAL_CONFIG.content_folder)
+                if os.path.exists(GLOBAL_PWD + "/" + GLOBAL_CONFIG.static_path):
+                    shutil.rmtree(GLOBAL_PWD + "/" + GLOBAL_CONFIG.static_path)
+                os.makedirs(GLOBAL_PWD + "/" + GLOBAL_CONFIG.static_path)
 
                 shutil.copytree(GLOBAL_TPL_PATH, GLOBAL_PWD + "/tpl")
-                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/welcome_message", GLOBAL_CONFIG.content_folder + "/welcome_message")
-                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/welcome_content", GLOBAL_CONFIG.content_folder + "/welcome_content")
-                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/footer", GLOBAL_CONFIG.content_folder + "/footer")
-                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/_pyame", GLOBAL_CONFIG.content_folder + "/Pyame.md")
+                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/welcome_message", GLOBAL_PWD + "/" + GLOBAL_CONFIG.content_folder + "/welcome_message")
+                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/welcome_content", GLOBAL_PWD + "/" + GLOBAL_CONFIG.content_folder + "/welcome_content")
+                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/footer", GLOBAL_PWD + "/" + GLOBAL_CONFIG.content_folder + "/footer")
+                shutil.copyfile(GLOBAL_PYAME_PATH + "/data/_pyame", GLOBAL_PWD + "/" + GLOBAL_CONFIG.content_folder + "/Pyame.md")
 
-        open(GLOBAL_INITLOCK_FILE_PATH, 'a').close()
-        os.utime(GLOBAL_INITLOCK_FILE_PATH, None)
+        open(GLOBAL_PWD + "/init.lock", 'a').close()
+        os.utime(GLOBAL_PWD + "/init.lock", None)
 
         with indent(2, quote=colored.green(' > ')):
             puts('Success ! Your project is ready.')
-            puts('You can write your docs into \"%s\" and run your project.' % GLOBAL_CONFIG.content_folder)
+            puts('You can write your docs into \"%s/%s\" and run your project.' % (project, GLOBAL_CONFIG.content_folder))
             puts('But get a look at \"pyame.conf\" before.')    
+        puts()
 
 # Html content folder
 def static_folder_maker(path):
