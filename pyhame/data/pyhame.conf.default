@@ -1,5 +1,5 @@
 [general]
-website_title = localhost
+website_title = Your new website
 template_name = default
 # Leave blank for default root website link
 website_url =

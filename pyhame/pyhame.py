@@ -26,6 +26,7 @@ GLOBAL_INITLOCK_FILE_PATH = "init.lock"
 GLOBAL_CONFIG_FILE_PATH = "pyhame.conf"
 GLOBAL_PWD = os.getcwd()
 
+
 #--------------------------------------------------------------------#
 ##  Argu Check 
 #--------------------------------------------------------------------#
@@ -64,7 +65,16 @@ def main():
         sys.argv.append(None)
     try:
         if sys.argv[1] == "serve":
-            serve()
+            if not os.path.exists(GLOBAL_CONFIG_FILE_PATH):
+                with indent(2, quote=colored.yellow(' :: ')):
+                    puts('This directory is not a Pyhame project')
+                puts()
+                with indent(2, quote=colored.green(' > ')):
+                    puts('Maybe you have not initialize your project')
+                    puts('So you have to run: pyhame init')
+                sys.exit(0)
+            else:
+                serve()
     except IndexError:
         sys.argv.append(None)
     try:
@@ -113,46 +123,37 @@ def init_pyhame():
                     puts('Reinstall Pyhame or check issues on GitHub')
                 sys.exit(0)
             else:
-                shutil.copytree(GLOBAL_TPL_PATH, GLOBAL_PWD + "/tpl")
+                # Config file creation
+                with indent(2, quote=colored.yellow(' :: ')):
+                    puts('Create default configuration')
                 shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/pyhame.conf.default", GLOBAL_CONFIG_FILE_PATH + ".default")
+                if os.path.exists(GLOBAL_CONFIG_FILE_PATH):
+                    shutil.copyfile(GLOBAL_CONFIG_FILE_PATH, GLOBAL_CONFIG_FILE_PATH + ".back")
+                    os.remove(GLOBAL_CONFIG_FILE_PATH)
+                shutil.copyfile(GLOBAL_CONFIG_FILE_PATH + ".default", GLOBAL_CONFIG_FILE_PATH)
+
+                # Read config file
+                with indent(2, quote=colored.yellow(' :: ')):
+                    puts('Load default parameters')
+                from pyhame import config
+                GLOBAL_CONFIG = config.config(GLOBAL_CONFIG_FILE_PATH)
+                with indent(2, quote=colored.yellow(' :: ')):
+                    puts('Build project structure')
+                if not os.path.exists(GLOBAL_CONFIG.content_folder):
+                    os.makedirs(GLOBAL_CONFIG.content_folder)
+                if os.path.exists(GLOBAL_CONFIG.static_path):
+                    shutil.rmtree(GLOBAL_CONFIG.static_path)
+                os.makedirs(GLOBAL_CONFIG.static_path)
+
+                shutil.copytree(GLOBAL_TPL_PATH, GLOBAL_PWD + "/tpl")
+                shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/welcome_message", GLOBAL_CONFIG.content_folder + "/welcome_message")
+                shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/welcome_content", GLOBAL_CONFIG.content_folder + "/welcome_content")
+                shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/footer", GLOBAL_CONFIG.content_folder + "/footer")
+                shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/_pyhame", GLOBAL_CONFIG.content_folder + "/Pyhame.md")
 
         open(GLOBAL_INITLOCK_FILE_PATH, 'a').close()
         os.utime(GLOBAL_INITLOCK_FILE_PATH, None)
 
-        # Config file creation
-        with indent(2, quote=colored.yellow(' :: ')):
-            puts('Create default configuration')
-        if os.path.exists(GLOBAL_CONFIG_FILE_PATH):
-            shutil.copyfile(GLOBAL_CONFIG_FILE_PATH, GLOBAL_CONFIG_FILE_PATH + ".back")
-            os.remove(GLOBAL_CONFIG_FILE_PATH)
-        shutil.copyfile(GLOBAL_CONFIG_FILE_PATH + ".default", GLOBAL_CONFIG_FILE_PATH)
-
-        # Read config file
-        with indent(2, quote=colored.yellow(' :: ')):
-            puts('Load default parameters')
-        from pyhame import config
-        GLOBAL_CONFIG = config.config(GLOBAL_CONFIG_FILE_PATH)
-
-        if not os.path.exists(GLOBAL_CONFIG.content_folder):
-            os.makedirs(GLOBAL_CONFIG.content_folder)
-        if os.path.exists(GLOBAL_CONFIG.static_path):
-            shutil.rmtree(GLOBAL_CONFIG.static_path)
-        os.makedirs(GLOBAL_CONFIG.static_path)
-
-        # Create blank special files
-        with indent(2, quote=colored.yellow(' :: ')):
-            puts('Build project structure')
-        special_files = {
-            "welcome_message": "Here your welcome message, edit welcome_message file in your content folder.",
-            "welcome_content": "Here your welcome content, edit a welcome_content file in your content folder.",
-            "footer": "Here your footer content, edit footer file in your content folder."}
-
-        for key, value in special_files.items():
-            if not os.path.exists("%s/%s" % (GLOBAL_CONFIG.content_folder, key)):
-                file = open("%s/%s" % (GLOBAL_CONFIG.content_folder, key), 'w')
-                file.write(value)
-                file.close()
-        puts()
         with indent(2, quote=colored.green(' > ')):
             puts('Success ! Your project is ready.')
             puts('You can write your docs into \"%s\" and run your project.' % GLOBAL_CONFIG.content_folder)
@@ -201,7 +202,7 @@ def browse_and_build_all(dirname, no_list_no_render, special_files, root_menu, s
                     content = content_file(dirname + '/' + f, GLOBAL_CONFIG, special_files, root_menu, sub_menu, build=True)
                     content_file_list.append(content)
     return content_file_list
-        
+
 # Browse all files in the dirname directory 
 # and return a ContentFile object if the file has been found, false othewise.
 # @param String dirname: The name of the directory we want to look in.
@@ -236,18 +237,18 @@ def get_special_content_files():
         file.close()
         return markdown(special_file_to_html)
 
-    special_content_files_list = []
-    special_files = {
-        "welcome_message": "Here your welcome message, edit by creating a welcome_message file in your content folder.",
-        "welcome_content": "Here your welcome content, edit by creating a welcome_content file in your content folder.",
-        "footer": "Here your footer content, edit by creating a footer file in your content folder."}
+    if not search_special_files(GLOBAL_CONFIG.content_folder, 'welcome_message'):
+        shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/welcome_message", GLOBAL_CONFIG.content_folder)
+    if not search_special_files(GLOBAL_CONFIG.content_folder, 'welcome_content'):
+        shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/welcome_content", GLOBAL_CONFIG.content_folder)
+    if not search_special_files(GLOBAL_CONFIG.content_folder, 'footer'):
+        shutil.copyfile(GLOBAL_PYHAME_PATH + "/data/footer", GLOBAL_CONFIG.content_folder)
 
-    for key, value in special_files.items():
-        if not search_special_files(GLOBAL_CONFIG.content_folder, key):
-            file = open("%s/%s" % (GLOBAL_CONFIG.content_folder, key), 'w')
-            file.write(value)
-            file.close()
-        special_files[key] = search_special_files(GLOBAL_CONFIG.content_folder, key)
+    special_files = {}
+    special_files['welcome_message'] = search_special_files(GLOBAL_CONFIG.content_folder, 'welcome_message')
+    special_files['welcome_content'] = search_special_files(GLOBAL_CONFIG.content_folder, 'welcome_content')
+    special_files['footer'] = search_special_files(GLOBAL_CONFIG.content_folder, 'footer')
+
     return special_files
 
 # Get the index.html template from selected template in Config
@@ -268,12 +269,12 @@ def write_index(index_final):
 def static_other():
     from distutils import dir_util
 
-    # template
+    # Template
     dest_dir = GLOBAL_CONFIG.static_path + "/_template" 
-    src_dir = GLOBAL_TPL_PATH + "/" + GLOBAL_CONFIG.template_name
+    src_dir = GLOBAL_PWD + "/" + GLOBAL_CONFIG.tpl_path + "/" + GLOBAL_CONFIG.template_name
     dir_util.copy_tree(src_dir, dest_dir)
 
-    # hightlight
+    # Hightlight
     dest_dir = GLOBAL_CONFIG.static_path + "/_other/highlight"
     src_dir = GLOBAL_PYHAME_PATH + "/data/highlight"
     dir_util.copy_tree(src_dir, dest_dir)

@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<LINK REL=StyleSheet HREF="/_template/simple.css" TYPE="text/css" MEDIA=screen>
+    <head>
+        <LINK REL=StyleSheet HREF="/_template/style.css" TYPE="text/css" MEDIA=screen>
         <meta charset="utf-8">
-        <title>set_website_title</title>
+        <title>{{ website_title }}</title>
         <!-- Highlight script and css -->
         <script src="/_other/highlight/highlight.pack.js"></script>
         <link rel="stylesheet" href="/_other/highlight/styles/dark.css">
@@ -15,30 +15,49 @@
             animatedcollapse.ontoggle=function($, divobj, state){}
             animatedcollapse.init()
         </script>
-	</head>
-	<body>
-		<div id="container">
-			<div id="header">
-				<h2 id="website_title"><a href="set_website_url">set_website_title</a></h2>
-				<div id="root_menu">set_root_menu_01</div>
-			</div>
-			<div id="open_menu">
-				<a href="'void(0)'" rel="toggle[menu]">&diams;</a>
-			</div> 
-			<div id="menu"> 
-				<div id="sub_menu">set_sub_menu_01</div>
-			</div>
-			<div id="file">
-				<div id="file_description">
-				<div id="file_name">set_file_name</div>
-				<div id="file_links">[set_dl_file_link|set_permalink]</div>
-				</div>
-				<div id="file_content">set_file_content</div>
-			</div>
-			<footer>
-				set_footer
-				Powered by <a href="http://pyhame.socketubs.net/">Pyhame</a>
-			</footer>
-		</div>
-	</body>
+    </head>
+    <body>
+        <div id="container">
+            <div id="header">
+              <h2 id="website_title"><a href="{{ website_url }}">{{ website_title }}</a></h2>
+              <div id="welcome_message">{{ welcome_message }}</div>
+              <div id="root_menu">
+                <ul>
+                  <li><a href="/">Home</a>
+                  {% for url, file in root_menu %}
+                    <li><a href="{{ url }}">{{ file }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+            {% if sub_menu %}
+              <div id="open_menu">
+                  <a href="'void(0)'" rel="toggle[menu]">&diams;</a>
+              </div> 
+              <div id="menu"> 
+                <div id="sub_menu">
+                  {% for foldername, filelist in sub_menu %}$
+                    {{ foldername }}
+                    <ul>
+                      {% for fileurl, filename in filelist %}
+                      <li><a href="{{ fileurl }}">{{ filename }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endif %}
+            <div id="file">
+                <div id="file_description">
+                <div id="file_name">{{ file_name }}</div>
+                <div id="file_links">[ <a href="{{ filelink }}">download</a> | <a href="{{ permalink }}">permalink</a> ]</div>
+                </div>
+                <div id="file_content">{{ file_content }}</div>
+            </div>
+            <footer>
+                {{ footer }}
+                Powered by <a href="http://pyhame.socketubs.net/">Pyhame</a>
+            </footer>
+        </div>
+    </body>
 </html>
