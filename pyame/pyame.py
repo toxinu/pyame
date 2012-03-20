@@ -13,10 +13,10 @@ if sys.version_info < (3, 0):
     sys.exit(0)
 
 # Global declarations
-global GLOBAL_CONFIG                # Config object from Config class. (import Config)
-global GLOBAL_PYAME_PATH           # The path of pyame
-global GLOBAL_CONFIG_FILE_PATH      # The path of config file from where the command is launched.
-global GLOBAL_PWD                   # Actual directory, where the command is launched.
+global GLOBAL_CONFIG            # Config object from Config class. (import Config)
+global GLOBAL_PYAME_PATH        # The path of pyame
+global GLOBAL_CONFIG_FILE_PATH  # The path of config file from where the command is launched.
+global GLOBAL_PWD               # Actual directory, where the command is launched.
 
 # Global values
 GLOBAL_PWD = os.getcwd()
@@ -120,6 +120,7 @@ def init_pyame(project):
         with indent(2, quote=colored.red(' :: ')):
             puts("A folder with this name already exist !")
             puts("My heart say to me that I can't delete it")
+        sys.exit(0)
 
     # Check if the init.lock exists
     if os.path.exists(GLOBAL_PWD + "/init.lock"):
@@ -214,6 +215,8 @@ def browse_and_build_all(dirname, no_list_no_render, special_files, root_menu, s
     content_file_list = []
     static_folder_maker(dirname)
     for f in os.listdir(dirname):
+#        if f[0] == '.':
+#            continue
         if os.path.isdir(os.path.join(dirname, f)):
             if recursive: browse_and_build_all(dirname + '/' + f, no_list_no_render, special_files, root_menu, sub_menu)
         elif os.path.isfile(os.path.join(dirname, f)):
@@ -222,23 +225,6 @@ def browse_and_build_all(dirname, no_list_no_render, special_files, root_menu, s
                     content = content_file(dirname + '/' + f, GLOBAL_CONFIG, special_files, root_menu, sub_menu, build=True)
                     content_file_list.append(content)
     return content_file_list
-
-def browse_and_search_file(dirname, filename, recursive = True):
-    """
-        Browse all files in the dirname directory
-
-        :param str dirname: The name of the directory we want to look in
-        :param str filename: The name of the file WITHOUT EXTENSION we want to look for
-        :param bool recursive: TRUE if we want to search in sub-directories of dirname, FALSE otherwise (True)
-        :rtype: content_file (or False if no file has been found)
-    """
-    for f in os.listdir(dirname):
-        if os.path.isdir(os.path.join(dirname, f)):
-            if recursive: browse_and_search_file(dirname + '/' + f, filename, True)
-        elif os.path.isfile(os.path.join(dirname, f)):
-            if f.split('.')[0] == filename:
-                return content_file(dirname + "/" + f, GLOBAL_CONFIG, build = False)
-    return False
 
 def get_special_content_files():
     """

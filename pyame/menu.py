@@ -17,6 +17,8 @@ def generate(no_list_no_render, no_list_yes_render, extensions_to_render, conten
         aDirs.append(oDirPaths)
         oDirNames.sort()
     for oDir in aDirs:
+        if oDir.split('/')[-1][0] == '.':
+            continue
         if os.listdir(oDir):
             if oDir != content_folder:
                 tmp_check = False
@@ -30,6 +32,8 @@ def generate(no_list_no_render, no_list_yes_render, extensions_to_render, conten
             oDirs.sort()
             oDirFiles.sort()
             for i in oDirFiles:
+                if i[0] == '.':
+                    continue
                 tmp_check = False
                 if oDir in no_list_no_render:
                     tmp_check = True

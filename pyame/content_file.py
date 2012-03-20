@@ -34,7 +34,11 @@ class content_file(object):
             :rtype: string
         """
         file = open(self.path_from_content, 'r')
-        return file.read()
+        try:
+            return file.read()
+        except Exception as err:
+            return 'I have some problem with this file:\n%s' % self.path_from_content
+            file.close()
         file.close()
 
     def get_filename(self):
