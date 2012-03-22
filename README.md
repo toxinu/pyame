@@ -39,4 +39,4 @@ And look at http://127.0.0.1:8080 in your web browser.
 + Python 3.x
 </pre>
 
-___Pyame__ is under AGPLv3._
+___Pyame__ is under no licence, copy it._

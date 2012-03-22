@@ -13,7 +13,7 @@ setup(
     author = "Socketubs",
     author_email = "geoffrey@lehee.name",
     description = "Static website creator with Markdown syntax",
-    license = "AGPLv3",
+    license = "No Licence",
     keywords = "website static markdown html",
     url = "https://github.com/Socketubs/Pyame",
     include_package_data = True,
