@@ -9,9 +9,8 @@ Where is the magic ?
 
 <pre>
 easy_install-3.2 pyame
-mkdir mywebsite
-cd mywebsite
-pyame init
+pyame create my_website
+cd my_website
 pyame serve
 </pre>
 
