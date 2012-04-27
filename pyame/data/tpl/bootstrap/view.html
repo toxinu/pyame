@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<LINK REL=StyleSheet HREF="/_template/css/bootstrap.css" TYPE="text/css" MEDIA=screen>
+		<LINK REL=StyleSheet HREF="/_template/css/bootstrap-responsive.css" TYPE="text/css" MEDIA=screen>
+		<meta charset="utf-8">
+		<title>{{ website_title }}</title>
+		<!-- Highlight script and css -->
+		<script src="/_other/highlight/highlight.pack.js"></script>
+		<script type="text/javascript">
+			hljs.initHighlightingOnLoad();
+		</script>
+		<link rel="stylesheet" href="/_other/highlight/styles/dark.css">
+		<!-- End of Highlight import -->
+
+		<style type="text/css">
+			body {
+				padding-top: 60px;
+				padding-bottom: 40px;
+			}
+			.sidebar-nav {
+				padding: 9px 0;
+			}
+			.container-fluid[role="main"] {
+				padding-bottom: 60px;
+			}
+			.bottombar {
+				text-align:left;
+				font-size: 9px;
+				position: fixed;
+				margin-left: 10px;
+				bottom: 5px;
+				left: 5px;
+				right: 5px;
+			}
+			.bottombar p {
+				font-size: 10px;
+			}
+		</style>
+
+	</head>
+	<body>
+		<div class="navbar navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					</a>
+					<a class="brand" href="{{ website_url }}">{{ website_title }}</a>
+					<div class="nav-collapse">
+						<ul class="nav">
+							{% for url, file in root_menu %}
+							<li class="active"><a href="{{ url }}">{{ file }}</a></li>
+							{% endfor %}
+						</ul>
+					</div><!--/.nav-collapse -->
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid" role="main">
+			<div class="row-fluid">
+				<div class="span3">
+					<div class="well sidebar-nav">
+						<ul class="nav nav-list">
+							<li class="nav-header">Menu</li>
+							{% for foldername, filelist in sub_menu %}
+								<li class="nav-header">{{ foldername }}</li>
+								{% for fileurl, filename in filelist %}
+									<li><a href="{{ fileurl }}">{{ filename }}</a></li>
+								{% endfor %}
+							{% else %}
+								<li><a href="#">Unbelievable. No element here so far</a></li>
+							{% endfor %}
+						</ul>
+					</div><!--/.well -->
+				</div><!--/span-->
+				<div class="span9">
+					<div class="row-fluid">
+						<div class="span6">
+							<h2>{{ file_name }}</h2>
+							<a href="{{ filelink }}" class="btn btn-primary btn-large">
+								Source
+							</a>
+							<a href="{{ permalink }}" class="btn btn-primary btn-large">
+								Permalink
+							</a>
+						</div><!--/span-->
+					</div><!--/row-->
+					<div class="row-fluid">
+						<div class="span9">
+							<p>{{ file_content }}</p>
+						</div><!--/span-->
+					</div><!--/row-->
+				</div><!--/span-->
+			</div><!--/row-->
+		</div><!--/.fluid-container-->
+		<div class="bottombar">
+			{{ footer }}
+			Powered by <a href="https://github.com/Socketubs/Pyame">Pyame</a>
+		</div>
+	</body>
+</html>
