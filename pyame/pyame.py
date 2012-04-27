@@ -322,8 +322,8 @@ def serve():
     puts()
 
     pyameserver = pyame.server.Server(
-            address = '127.0.0.1',
-            port = '8080')
+            address = GLOBAL_CONFIG.address,
+            port = GLOBAL_CONFIG.port)
 
     pyameserver.start()
 

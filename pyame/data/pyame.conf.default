@@ -1,6 +1,6 @@
 [general]
 website_title = Your new website
-template_name = default
+template_name = bootstrap
 # Leave blank for default root website link
 website_url =
 
@@ -25,7 +25,7 @@ archive_path = archives
 
 [server]
 address = 127.0.0.1
-port = 8080
+port = 4666
 
 [remote]
 # Send output to remote server. Set true or false
