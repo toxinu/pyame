@@ -9,7 +9,7 @@ if sys.version_info <= (3, 0):
 
 setup(
     name = 'pyame',
-    version = '0.8.7',
+    version = '0.8.8',
     author = "Socketubs",
     author_email = "geoffrey@lehee.name",
     description = "Static website creator with Markdown syntax",
