@@ -33,7 +33,7 @@ def main():
 	""" Argu Check """
 	def help():
 		puts()
-		print("		Pyame, and the ame is coming, 雨.")
+		print("      Pyame, and the ame is coming, 雨.")
 		puts()
 		with indent(2, quote=(' :: ')):
 			puts('Usage : pyame [OPTION] [ARG]')
@@ -41,9 +41,9 @@ def main():
 		with indent(2, quote=(' :: ')):
 			puts('Actions')
 		with indent(4):
-			puts('create [NAME]	 ->  Create new project')
-			puts('generate		  ->  Generate your content')
-			puts('serve			 ->  Run webserver')
+			puts('create [NAME]  ->  Create new project')
+			puts('generate       ->  Generate your content')
+			puts('serve          ->  Run webserver')
 		puts()
 		with indent(2, quote=(' :: ')):
 			puts('Example')
