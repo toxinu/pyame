@@ -54,7 +54,7 @@ def main():
 		puts()
 		with indent(2, quote=' > '):
 			puts("%s" % version.get())
-			puts('More informations at https://github.com/Socketubs/pyame')
+			puts('More informations at http://socketubs.github.com/Pyame/')
 	if len(sys.argv) < 2:
 		help()
 		sys.exit(0)
