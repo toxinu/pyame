@@ -18,7 +18,6 @@ And look at http://127.0.0.1:8080 in your web browser.
 
 **Good things for simple users** :
 
-<pre>
 + Markdown usage with highlight.js
 + Just create directories
 + Simple Html template
@@ -29,13 +28,10 @@ And look at http://127.0.0.1:8080 in your web browser.
 + Light and easy to use
 + Embedded web server
 + Auto new version detection
-</pre>
 
 **Others good things for advanced users** :
 
-<pre>
 + Jinja2 for easy templating
 + Python 3.x
-</pre>
 
 No licence, copy it.
