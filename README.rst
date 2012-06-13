@@ -34,3 +34,5 @@ And look at http://127.0.0.1:8080 in your web browser.
 
 - Jinja2 for easy templating
 - Python3
+
+See `LICENSE <https://raw.github.com/Socketubs/Pyame/master/LICENSE>`_.
