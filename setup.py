@@ -8,12 +8,8 @@ try:
 except ImportError:
 	from distutils.core import setup
 
-if sys.version_info <= (3, 0):
-    print("Pyame at least need Python 3.0.")
-    exit(0)
-
 if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
+    os.system('python3 setup.py sdist upload')
     sys.exit()
 
 setup(

@@ -1,2 +1,3 @@
+include LICENSE
 graft pyame/data
 graft pyame/tools
