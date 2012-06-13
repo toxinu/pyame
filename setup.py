@@ -18,7 +18,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name = 'pyame',
-    version = '0.8.8',
+    version = '0.8.9',
     author = "Geoffrey Lehée",
     author_email = "geoffrey@lehee.name",
     description = "Static website creator with Markdown syntax",
