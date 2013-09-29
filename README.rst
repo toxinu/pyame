@@ -2,8 +2,8 @@
 Pyame
 =====
 
-An easy static website engine written in Python.  
-You just put files/folders in your content folder and launch pyame.  
+An easy static website engine written in Python.
+You just put files/folders in your content folder and launch pyame.
 You don't need to do Html/Css/Php or other web language.
 
 Where is the magic ?
@@ -35,4 +35,4 @@ And look at http://127.0.0.1:8080 in your web browser.
 - Jinja2 for easy templating
 - Python3
 
-See `LICENSE <https://raw.github.com/Socketubs/Pyame/master/LICENSE>`_.
+See `LICENSE <https://git.socketubs.org/?p=pyame.git;a=blob_plain;f=LICENSE;hb=HEAD>`_.
